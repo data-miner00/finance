@@ -1,3 +1,5 @@
+/* Imports
+=========================================== */
 #include <fstream>
 #include <string>
 #include <limits>
@@ -10,6 +12,8 @@
 #include <cstring>
 #pragma warning (disable: 4996)
 
+/* Function prototype
+=========================================== */
 void record_data();
 void menu();
 void getTime(int*, int*, int*);
@@ -32,6 +36,8 @@ void backupSys();
 bool backupReader();
 void quit_program();
 
+/* Entry point
+=========================================== */
 int main(int argc, char *argv[])
 {
 	menu();
@@ -40,6 +46,8 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+/* Functions
+=========================================== */
 void getTime(int* day, int* month, int* year) {
 	std::time_t t = std::time(NULL);   // get time now
 	std::tm* now = std::localtime(&t);
@@ -550,7 +558,7 @@ void help() {
 	std::cout << "\t    particular month.\n";
 	std::cout << "\t  > If the data failed to update or save, please restart the program and try it again,\n";
 	std::cout << "\t    everything should be working as it should.\n"; setlocale(LC_ALL, "german");
-	std::cout << "\t  > Contact Björn Tetsuya (MK): HP (+60)10-9419641 for feedback and recommendation.\n\n\n";
+	std::cout << "\t  > Contact BjÃ¶rn Tetsuya (MK): HP (+60)10-9419641 for feedback and recommendation.\n\n\n";
 	std::cout << "\t  >> "; std::cin.ignore(); std::cin.get(); menu();
 
 }
