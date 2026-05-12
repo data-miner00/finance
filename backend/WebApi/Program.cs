@@ -1,15 +1,19 @@
 
 using Core.Repositories;
+using WebApi.Options;
 
 namespace WebApi
 {
-    public class Program
+    public static class Program
     {
+        private static readonly string CorsPolicyName = "FinanceCorsPolicy";
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.ConfigureCors();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
@@ -30,6 +34,26 @@ namespace WebApi
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static WebApplicationBuilder ConfigureCors(this WebApplicationBuilder builder)
+        {
+            var corsOptions = builder.Configuration.GetSection("Cors").Get<CorsOptions>()
+                ?? throw new InvalidOperationException("Cors option not found.");
+
+            builder.Services.AddCors((opt) =>
+            {
+                opt.AddPolicy(
+                    name: CorsPolicyName,
+                    (policy) =>
+                    {
+                        policy.WithOrigins(corsOptions.AllowedOrigins)
+                              .WithHeaders(corsOptions.AllowedHeaders)
+                              .WithMethods(corsOptions.AllowedMethods);
+                    });
+            });
+
+            return builder;
         }
     }
 }
