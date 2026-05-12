@@ -13,15 +13,15 @@ namespace WebApi
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(MemoryRepository<>));
+            builder.Services.AddSingleton(typeof(IRepository<>), typeof(MemoryRepository<>));
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.MapOpenApi();
+            app.UseSwaggerUI(opt =>
             {
-                app.MapOpenApi();
-            }
+                opt.SwaggerEndpoint("/openapi/v1.json", "Finance API V1"); // /swagger/index
+            });
 
             app.UseHttpsRedirection();
 
