@@ -1,4 +1,6 @@
 
+using Core.Repositories;
+
 namespace WebApi
 {
     public class Program
@@ -8,10 +10,10 @@ namespace WebApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(MemoryRepository<>));
 
             var app = builder.Build();
 
@@ -24,7 +26,6 @@ namespace WebApi
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
