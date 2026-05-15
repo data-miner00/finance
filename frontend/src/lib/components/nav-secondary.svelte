@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import type { WithoutChildren } from "$lib/utils.js";
-	import type { ComponentProps } from "svelte";
-	import type { Icon } from "@tabler/icons-svelte";
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import type { WithoutChildren } from '$lib/utils.js';
+	import type { ComponentProps } from 'svelte';
+	import type { Icon } from '@tabler/icons-svelte';
 
 	let {
 		items,
 		...restProps
-	}: { items: { title: string; url: string; icon: Icon }[] } & WithoutChildren<
+	}: { items: { title: string; url: string; icon: Icon; external?: boolean }[] } & WithoutChildren<
 		ComponentProps<typeof Sidebar.Group>
 	> = $props();
 </script>
@@ -19,7 +19,7 @@
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton>
 						{#snippet child({ props })}
-							<a href={item.url} {...props}>
+							<a href={item.url} {...props} target={item.external ? '_blank' : '_self'}>
 								<item.icon />
 								<span>{item.title}</span>
 							</a>
