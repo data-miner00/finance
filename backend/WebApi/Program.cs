@@ -29,6 +29,8 @@ namespace WebApi
 
             app.UseHttpsRedirection();
 
+            app.UseCors(CorsPolicyName);
+
             app.UseAuthorization();
 
             app.MapControllers();
