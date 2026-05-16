@@ -4,7 +4,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import SiteHeader from '$lib/components/site-header.svelte';
-	import AddExpenseDialog from '$lib/components/custom/add-expense-dialog.svelte';
+	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
 	import { appState } from '$lib/states.svelte';
 
 	let { children } = $props();
@@ -26,4 +26,4 @@
 	</Sidebar.Inset>
 </Sidebar.Provider>
 
-<AddExpenseDialog bind:open={appState.isAddExpenseDialogOpen} />
+<AddTransactionDialog bind:open={appState.isAddTransactionDialogOpen} />

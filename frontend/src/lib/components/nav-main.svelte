@@ -8,8 +8,8 @@
 
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
 
-	function toggleAddExpenseDialog() {
-		appState.isAddExpenseDialogOpen = !appState.isAddExpenseDialogOpen;
+	function toggleAddTransactionDialog() {
+		appState.isAddTransactionDialogOpen = !appState.isAddTransactionDialogOpen;
 	}
 </script>
 
@@ -20,7 +20,7 @@
 				<Sidebar.MenuButton
 					class="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
 					tooltipContent="Quick create"
-					onclick={toggleAddExpenseDialog}
+					onclick={toggleAddTransactionDialog}
 				>
 					<CirclePlusFilledIcon />
 					<span>Quick Create</span>
