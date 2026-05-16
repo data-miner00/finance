@@ -50,9 +50,14 @@ namespace WebApi.Controllers
                 Currency = request.Currency,
                 Location = request.Location,
                 ReceiptImage = request.ReceiptImage,
-                ActionedAt = request.ActionedAt,
                 CreatedAt = DateTime.UtcNow
             };
+
+            if (!string.IsNullOrWhiteSpace(request.ActionedAt)
+                && DateTime.TryParse(request.ActionedAt, out var actionedAt))
+            {
+                expense.ActionedAt = actionedAt;
+            }
 
             await _repository.CreateAsync(expense, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = expense.Id }, expense);

@@ -46,7 +46,7 @@ export interface CreateExpenseRequest {
 	currency?: string | null;
 	location?: string | null;
 	receiptImage?: string | null;
-	actionedAt: string;
+	actionedAt?: string | null;
 }
 
 export interface UpdateExpenseRequest extends CreateExpenseRequest {}

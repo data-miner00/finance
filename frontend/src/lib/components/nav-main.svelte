@@ -1,11 +1,16 @@
 <script lang="ts">
-	import CirclePlusFilledIcon from "@tabler/icons-svelte/icons/circle-plus-filled";
-	import MailIcon from "@tabler/icons-svelte/icons/mail";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import type { Icon } from "@tabler/icons-svelte";
+	import CirclePlusFilledIcon from '@tabler/icons-svelte/icons/circle-plus-filled';
+	import MailIcon from '@tabler/icons-svelte/icons/mail';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import type { Icon } from '@tabler/icons-svelte';
+	import { appState } from '$lib/states.svelte';
 
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
+
+	function toggleAddExpenseDialog() {
+		appState.isAddExpenseDialogOpen = !appState.isAddExpenseDialogOpen;
+	}
 </script>
 
 <Sidebar.Group>
@@ -13,8 +18,9 @@
 		<Sidebar.Menu>
 			<Sidebar.MenuItem class="flex items-center gap-2">
 				<Sidebar.MenuButton
-					class="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
+					class="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
 					tooltipContent="Quick create"
+					onclick={toggleAddExpenseDialog}
 				>
 					<CirclePlusFilledIcon />
 					<span>Quick Create</span>
