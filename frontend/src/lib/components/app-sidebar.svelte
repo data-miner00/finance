@@ -1,19 +1,17 @@
 <script lang="ts">
 	import CameraIcon from '@tabler/icons-svelte/icons/camera';
-	import ChartBarIcon from '@tabler/icons-svelte/icons/chart-bar';
 	import DashboardIcon from '@tabler/icons-svelte/icons/dashboard';
 	import DatabaseIcon from '@tabler/icons-svelte/icons/database';
 	import FileAiIcon from '@tabler/icons-svelte/icons/file-ai';
 	import FileDescriptionIcon from '@tabler/icons-svelte/icons/file-description';
 	import FileWordIcon from '@tabler/icons-svelte/icons/file-word';
-	import FolderIcon from '@tabler/icons-svelte/icons/folder';
 	import Braces from '@tabler/icons-svelte/icons/braces';
-	import InnerShadowTopIcon from '@tabler/icons-svelte/icons/inner-shadow-top';
+	import PigMoney from '@tabler/icons-svelte/icons/pig-money';
 	import ListDetailsIcon from '@tabler/icons-svelte/icons/list-details';
 	import ReportIcon from '@tabler/icons-svelte/icons/report';
 	import SearchIcon from '@tabler/icons-svelte/icons/search';
 	import SettingsIcon from '@tabler/icons-svelte/icons/settings';
-	import UsersIcon from '@tabler/icons-svelte/icons/users';
+	import InfinityIcon from '@tabler/icons-svelte/icons/infinity';
 	import NavDocuments from './nav-documents.svelte';
 	import NavMain from './nav-main.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -21,6 +19,9 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 	import { PUBLIC_API_BASE_URL } from '$env/static/public';
+	import { CircleDollarSignIcon } from '@lucide/svelte';
+	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
+	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
 
 	const data = {
 		user: {
@@ -31,28 +32,33 @@
 		navMain: [
 			{
 				title: 'Dashboard',
-				url: '#',
+				url: '/',
 				icon: DashboardIcon
 			},
 			{
-				title: 'Lifecycle',
-				url: '#',
+				title: 'Accounts',
+				url: '/account',
 				icon: ListDetailsIcon
 			},
 			{
-				title: 'Analytics',
-				url: '#',
-				icon: ChartBarIcon
+				title: 'Expenses',
+				url: '/expense',
+				icon: MoneybagMove
 			},
 			{
-				title: 'Projects',
-				url: '#',
-				icon: FolderIcon
+				title: 'Income',
+				url: '/income',
+				icon: MoneybagMoveBack
 			},
 			{
-				title: 'Team',
-				url: '#',
-				icon: UsersIcon
+				title: 'Recurring',
+				url: '/recurring',
+				icon: InfinityIcon
+			},
+			{
+				title: 'Piggy Bank',
+				url: '/piggy-bank',
+				icon: PigMoney
 			}
 		],
 		navClouds: [
@@ -150,8 +156,8 @@
 				<Sidebar.MenuButton class="data-[slot=sidebar-menu-button]:!p-1.5">
 					{#snippet child({ props })}
 						<a href="##" {...props}>
-							<InnerShadowTopIcon class="!size-5" />
-							<span class="text-base font-semibold">Acme Inc.</span>
+							<CircleDollarSignIcon class="!size-5" />
+							<span class="text-base font-semibold">Finance</span>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
