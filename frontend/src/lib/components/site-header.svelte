@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { appState } from '$lib/states.svelte';
 	import { SunIcon } from '@lucide/svelte';
 </script>
 
@@ -11,7 +12,7 @@
 	<div class="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
 		<Sidebar.Trigger class="-ms-1" />
 		<Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" />
-		<h1 class="text-base font-medium">Dashboard</h1>
+		<h1 class="text-base font-medium">{appState.pageTitle}</h1>
 		<div class="ms-auto flex items-center gap-2">
 			<Button
 				href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"

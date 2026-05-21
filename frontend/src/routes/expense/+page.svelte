@@ -2,6 +2,11 @@
 	import { appState } from '$lib/states.svelte';
 	import DataTable from './table/index.svelte';
 	import { columns } from './table/column';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		appState.pageTitle = 'Expenses';
+	});
 </script>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
