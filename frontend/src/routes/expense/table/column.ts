@@ -4,6 +4,14 @@ import type { ColumnDef } from '@tanstack/table-core';
 import DataTableActions from './data-table-actions.svelte';
 export const columns: ColumnDef<Expense>[] = [
 	{
+		header: 'No.',
+		id: 'rowNumber',
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			return pageIndex * pageSize + row.index + 1;
+		}
+	},
+	{
 		accessorKey: 'name',
 		header: 'Name'
 	},
@@ -12,12 +20,12 @@ export const columns: ColumnDef<Expense>[] = [
 		header: 'Category'
 	},
 	{
-		accessorKey: 'currency',
-		header: 'Currency'
+		cell: () => 'Credit Card',
+		header: 'Method'
 	},
 	{
-		accessorKey: 'amount',
-		header: 'Amount'
+		header: 'Amount',
+		accessorFn: (row) => row.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
 	},
 	{
 		accessorKey: 'createdAt',
