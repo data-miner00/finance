@@ -6,9 +6,11 @@ export type AppState = {
 	recurringIncomes: Awaited<ReturnType<typeof import('./services').getRecurringIncomes>>;
 	piggyBanks: Awaited<ReturnType<typeof import('./services').getPiggyBanks>>;
 	isAddTransactionDialogOpen: boolean;
+	pageTitle: string;
 };
 
 export const appState = $state<AppState>({
+	pageTitle: 'Dashboard',
 	accounts: [],
 	expenses: [],
 	incomes: [],

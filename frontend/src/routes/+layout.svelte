@@ -6,8 +6,24 @@
 	import SiteHeader from '$lib/components/site-header.svelte';
 	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
 	import { appState } from '$lib/states.svelte';
+	import { onMount } from 'svelte';
+	import {
+		getAccounts,
+		getExpenses,
+		getIncomes,
+		getRecurringExpenses,
+		getRecurringIncomes
+	} from '$lib/services';
 
 	let { children } = $props();
+
+	onMount(async () => {
+		appState.expenses = await getExpenses();
+		appState.accounts = await getAccounts();
+		appState.incomes = await getIncomes();
+		appState.recurringExpenses = await getRecurringExpenses();
+		appState.recurringIncomes = await getRecurringIncomes();
+	});
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
