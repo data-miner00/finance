@@ -7,6 +7,7 @@
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Recurrings_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Recurrings_UpdatedAt] DEFAULT (getdate()) NOT NULL,
     [Type]        NVARCHAR (50)    NOT NULL,
+    [Amount]      MONEY            NOT NULL DEFAULT (0.00),
     CONSTRAINT [PK_Recurrings] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

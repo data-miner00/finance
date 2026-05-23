@@ -58,6 +58,7 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Recurrings.sql" />
@@ -66,5 +67,11 @@
     <Build Include="dbo\Tables\Expenses.sql" />
     <Build Include="dbo\Tables\Categories.sql" />
     <Build Include="dbo\Tables\Accounts.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddRecurrings.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddPiggyBank.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddIncome.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddExpense.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddCategory.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddAccount.sql" />
   </ItemGroup>
 </Project>
