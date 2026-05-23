@@ -17,9 +17,5 @@ namespace Core.Models
         public string? Currency { get; set; }
 
         public DateTime? Deadline { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
     }
 }

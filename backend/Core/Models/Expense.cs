@@ -21,7 +21,5 @@ namespace Core.Models
         public string? ReceiptImage { get; set; }
 
         public DateTime ActionedAt { get; set; }
-
-        public DateTime CreatedAt { get; set; }
     }
 }

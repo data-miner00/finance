@@ -12,8 +12,6 @@ namespace Core.Models
 
         public bool IsActive { get; set; }
 
-        public DateTime ExecutedAt { get; set; }
-
-        public DateTime CreatedAt { get; set; }
+        public DateTime RecurringAt { get; set; }
     }
 }

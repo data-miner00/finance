@@ -15,12 +15,6 @@ namespace Core.Models
         public decimal Amount { get; set; }
 
         public string? Currency { get; set; }
-
-        public DateTime ActionedAt { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
     }
 
     public enum AccountType
