@@ -48,7 +48,6 @@ namespace WebApi.Controllers
                 AccountType = (AccountType)request.AccountType,
                 Amount = request.Amount,
                 Currency = request.Currency,
-                ActionedAt = request.ActionedAt,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -68,7 +67,6 @@ namespace WebApi.Controllers
                 account.AccountType = (AccountType)request.AccountType;
                 account.Amount = request.Amount;
                 account.Currency = request.Currency;
-                account.ActionedAt = request.ActionedAt;
                 account.UpdatedAt = DateTime.UtcNow;
 
                 await _repository.UpdateAsync(account, cancellationToken);

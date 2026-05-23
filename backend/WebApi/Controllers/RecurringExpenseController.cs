@@ -46,7 +46,7 @@ namespace WebApi.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 IsActive = request.IsActive,
-                ExecutedAt = request.ExecutedAt,
+                RecurringAt = request.ExecutedAt,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
                 recurringExpense.Name = request.Name;
                 recurringExpense.Description = request.Description;
                 recurringExpense.IsActive = request.IsActive;
-                recurringExpense.ExecutedAt = request.ExecutedAt;
+                recurringExpense.RecurringAt = request.ExecutedAt;
 
                 await _repository.UpdateAsync(recurringExpense, cancellationToken);
                 return NoContent();
