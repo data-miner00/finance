@@ -42,14 +42,13 @@ namespace WebApi.Controllers
         {
             var income = new Income
             {
-                Id = Guid.NewGuid().ToString(),
                 Name = request.Name,
                 Description = request.Description,
                 Amount = request.Amount,
-                CreatedAt = DateTime.UtcNow
             };
 
             await _repository.CreateAsync(income, cancellationToken);
+            // Get Id from database
             return CreatedAtAction(nameof(GetById), new { id = income.Id }, income);
         }
 

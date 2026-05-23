@@ -42,7 +42,6 @@ namespace WebApi.Controllers
         {
             var expense = new Expense
             {
-                Id = Guid.NewGuid().ToString(),
                 Category = request.Category,
                 Name = request.Name,
                 Description = request.Description,
@@ -50,7 +49,6 @@ namespace WebApi.Controllers
                 Currency = request.Currency,
                 Location = request.Location,
                 ReceiptImage = request.ReceiptImage,
-                CreatedAt = DateTime.UtcNow
             };
 
             if (!string.IsNullOrWhiteSpace(request.ActionedAt)
@@ -60,6 +58,7 @@ namespace WebApi.Controllers
             }
 
             await _repository.CreateAsync(expense, cancellationToken);
+            // Get ID from database
             return CreatedAtAction(nameof(GetById), new { id = expense.Id }, expense);
         }
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Models
+namespace WebApi.Models
 {
-    public class RecurringExpense : Entity
+    public class UpdateRecurringActionRequest
     {
         public string Name { get; set; }
 

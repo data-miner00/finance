@@ -42,18 +42,16 @@ namespace WebApi.Controllers
         {
             var piggyBank = new PiggyBank
             {
-                Id = Guid.NewGuid().ToString(),
                 Name = request.Name,
                 Description = request.Description,
                 Amount = request.Amount,
                 Target = request.Target,
                 Currency = request.Currency,
                 Deadline = request.Deadline,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
             };
 
             await _repository.CreateAsync(piggyBank, cancellationToken);
+            // Get Id from database
             return CreatedAtAction(nameof(GetById), new { id = piggyBank.Id }, piggyBank);
         }
 
@@ -69,7 +67,6 @@ namespace WebApi.Controllers
                 piggyBank.Target = request.Target;
                 piggyBank.Currency = request.Currency;
                 piggyBank.Deadline = request.Deadline;
-                piggyBank.UpdatedAt = DateTime.UtcNow;
 
                 await _repository.UpdateAsync(piggyBank, cancellationToken);
                 return NoContent();
