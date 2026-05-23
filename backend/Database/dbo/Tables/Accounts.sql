@@ -9,3 +9,17 @@
     CONSTRAINT [PK_Accounts] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+GO
+
+CREATE TRIGGER [dbo].[Trigger_Accounts_OnUpdate]
+    ON [dbo].[Accounts]
+    AFTER UPDATE
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        UPDATE [dbo].[Accounts]
+        SET [UpdatedAt] = GETDATE()
+        FROM [dbo].[Accounts] T
+        INNER JOIN inserted I ON T.Id = I.Id;
+    END;

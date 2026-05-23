@@ -7,3 +7,17 @@
     CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+GO
+
+CREATE TRIGGER [dbo].[Trigger_Categories_OnUpdate]
+    ON [dbo].[Categories]
+    AFTER UPDATE
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        UPDATE [dbo].[Categories]
+        SET [UpdatedAt] = GETDATE()
+        FROM [dbo].[Categories] T
+        INNER JOIN inserted I ON T.Id = I.Id;
+    END;

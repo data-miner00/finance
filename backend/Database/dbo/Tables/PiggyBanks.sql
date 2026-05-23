@@ -10,3 +10,17 @@
     CONSTRAINT [PK_PiggyBanks] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+GO
+
+CREATE TRIGGER [dbo].[Trigger_PiggyBanks_OnUpdate]
+    ON [dbo].[PiggyBanks]
+    AFTER UPDATE
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        UPDATE [dbo].[PiggyBanks]
+        SET [UpdatedAt] = GETDATE()
+        FROM [dbo].[PiggyBanks] T
+        INNER JOIN inserted I ON T.Id = I.Id;
+    END;

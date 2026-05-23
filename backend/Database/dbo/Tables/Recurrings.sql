@@ -10,3 +10,17 @@
     CONSTRAINT [PK_Recurrings] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+GO
+
+CREATE TRIGGER [dbo].[Trigger_Recurrings_OnUpdate]
+    ON [dbo].[Recurrings]
+    AFTER UPDATE
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        UPDATE [dbo].[Recurrings]
+        SET [UpdatedAt] = GETDATE()
+        FROM [dbo].[Recurrings] T
+        INNER JOIN inserted I ON T.Id = I.Id;
+    END;

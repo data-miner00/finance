@@ -16,3 +16,17 @@
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Hello World', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'Expenses', @level2type = N'CONSTRAINT', @level2name = N'FK_Expenses_Categories1';
 
+GO
+
+CREATE TRIGGER [dbo].[Trigger_Expenses_OnUpdate]
+    ON [dbo].[Expenses]
+    AFTER UPDATE
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        UPDATE [dbo].[Expenses]
+        SET [UpdatedAt] = GETDATE()
+        FROM [dbo].[Expenses] T
+        INNER JOIN inserted I ON T.Id = I.Id;
+    END;

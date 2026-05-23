@@ -8,3 +8,17 @@
     CONSTRAINT [PK_Incomes] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
+GO
+
+CREATE TRIGGER [dbo].[Trigger_Incomes_OnUpdate]
+    ON [dbo].[Incomes]
+    AFTER UPDATE
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        UPDATE [dbo].[Incomes]
+        SET [UpdatedAt] = GETDATE()
+        FROM [dbo].[Incomes] T
+        INNER JOIN inserted I ON T.Id = I.Id;
+    END;
