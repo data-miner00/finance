@@ -2,6 +2,8 @@ export type AccountType = 0 | 1 | 2 | 3 | 4;
 
 export interface EntityBase {
 	id: string;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface Account extends EntityBase {
@@ -10,9 +12,6 @@ export interface Account extends EntityBase {
 	accountType: AccountType;
 	amount: number;
 	currency?: string | null;
-	actionedAt: string;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface CreateAccountRequest {
@@ -21,7 +20,6 @@ export interface CreateAccountRequest {
 	accountType: AccountType;
 	amount: number;
 	currency?: string | null;
-	actionedAt: string;
 }
 
 export interface UpdateAccountRequest extends CreateAccountRequest {}
@@ -35,7 +33,6 @@ export interface Expense extends EntityBase {
 	location?: string | null;
 	receiptImage?: string | null;
 	actionedAt: string;
-	createdAt: string;
 }
 
 export interface CreateExpenseRequest {
@@ -55,7 +52,6 @@ export interface Income extends EntityBase {
 	name: string;
 	description?: string | null;
 	amount: number;
-	createdAt: string;
 }
 
 export interface CreateIncomeRequest {
@@ -73,8 +69,6 @@ export interface PiggyBank extends EntityBase {
 	target: number;
 	currency?: string | null;
 	deadline?: string | null;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface CreatePiggyBankRequest {
@@ -88,36 +82,20 @@ export interface CreatePiggyBankRequest {
 
 export interface UpdatePiggyBankRequest extends CreatePiggyBankRequest {}
 
-export interface RecurringExpense extends EntityBase {
+export interface RecurringAction extends EntityBase {
 	name: string;
 	description?: string | null;
 	isActive: boolean;
-	executedAt: string;
-	createdAt: string;
+	recurringAt: string;
+	type: number;
 }
 
-export interface CreateRecurringExpenseRequest {
+export interface CreateRecurringActionRequest {
 	name: string;
 	description?: string | null;
 	isActive: boolean;
-	executedAt: string;
+	recurringAt: string;
+	type: number;
 }
 
-export interface UpdateRecurringExpenseRequest extends CreateRecurringExpenseRequest {}
-
-export interface RecurringIncome extends EntityBase {
-	name: string;
-	description?: string | null;
-	isActive: boolean;
-	executedAt: string;
-	createdAt: string;
-}
-
-export interface CreateRecurringIncomeRequest {
-	name: string;
-	description?: string | null;
-	isActive: boolean;
-	executedAt: string;
-}
-
-export interface UpdateRecurringIncomeRequest extends CreateRecurringIncomeRequest {}
+export interface UpdateRecurringActionRequest extends Omit<CreateRecurringActionRequest, 'type'> {}

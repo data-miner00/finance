@@ -11,8 +11,8 @@
 		getAccounts,
 		getExpenses,
 		getIncomes,
-		getRecurringExpenses,
-		getRecurringIncomes
+		getPiggyBanks,
+		getRecurringActions
 	} from '$lib/services';
 
 	let { children } = $props();
@@ -21,8 +21,8 @@
 		appState.expenses = await getExpenses();
 		appState.accounts = await getAccounts();
 		appState.incomes = await getIncomes();
-		appState.recurringExpenses = await getRecurringExpenses();
-		appState.recurringIncomes = await getRecurringIncomes();
+		appState.recurringActions = await getRecurringActions();
+		appState.piggyBanks = await getPiggyBanks();
 	});
 </script>
 
