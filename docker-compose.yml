@@ -1,0 +1,29 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: finance-mssql-dev
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD} # strong password required. Otherwise, it keep restarting
+      - MSSQL_PID=Developer
+    ports:
+      - 1433:1433
+    volumes:
+      - mssql-data:/var/opt/mssql
+    restart: unless-stopped
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: finance-azurite-dev
+    hostname: finance-azurite-dev
+    restart: "unless-stopped"
+    ports:
+      - 10003:10000
+      - 10001:10001
+      - 10002:10002
+    volumes:
+      - azurite-data:/data
+
+volumes:
+  mssql-data:
+  azurite-data:
