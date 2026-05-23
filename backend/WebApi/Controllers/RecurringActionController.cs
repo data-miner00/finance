@@ -6,7 +6,7 @@ using WebApi.Models;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/recurring")]
     public class RecurringActionController : ControllerBase
     {
         private readonly IRepository<RecurringAction> _repository;
@@ -45,7 +45,7 @@ namespace WebApi.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 IsActive = request.IsActive,
-                RecurringAt = request.ExecutedAt,
+                RecurringAt = request.RecurringAt,
                 Type = request.Type,
             };
 

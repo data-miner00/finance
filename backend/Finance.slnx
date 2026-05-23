@@ -1,4 +1,8 @@
 <Solution>
   <Project Path="Core/Core.csproj" Id="dec46928-9575-4fd7-874e-f6f2601213f1" />
+  <Project Path="Database/Database.sqlproj" Id="c95c37eb-2d0d-478a-af69-b4fe7edfdf95">
+    <Build />
+    <Deploy />
+  </Project>
   <Project Path="WebApi/WebApi.csproj" Id="cf7ba626-4a24-468b-86cb-750054148d27" />
 </Solution>

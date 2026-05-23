@@ -12,6 +12,6 @@ namespace WebApi.Models
 
         public RecurringType Type { get; set; }
 
-        public DateTime ExecutedAt { get; set; }
+        public DateTime RecurringAt { get; set; }
     }
 }
