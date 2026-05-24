@@ -13,7 +13,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-    INSERT INTO [dbo].[PiggyBank]
+    INSERT INTO [dbo].[PiggyBanks]
 	(
 		[Name],
 		[Amount],

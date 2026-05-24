@@ -45,6 +45,7 @@ namespace WebApi.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 IsActive = request.IsActive,
+                Amount = request.Amount,
                 RecurringAt = request.RecurringAt,
                 Type = request.Type,
             };
@@ -62,6 +63,7 @@ namespace WebApi.Controllers
                 var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
                 recurringAction.Name = request.Name;
                 recurringAction.Description = request.Description;
+                recurringAction.Amount = request.Amount;
                 recurringAction.IsActive = request.IsActive;
                 recurringAction.RecurringAt = request.RecurringAt;
 

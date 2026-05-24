@@ -2,7 +2,7 @@
 {
     public class CreateExpenseRequest
     {
-        public string Category { get; set; }
+        public Guid? CategoryId { get; set; }
 
         public string Name { get; set; }
 

@@ -10,6 +10,8 @@ namespace WebApi.Models
 
         public bool IsActive { get; set; }
 
+        public decimal Amount { get; set; }
+
         public RecurringType Type { get; set; }
 
         public DateTime RecurringAt { get; set; }

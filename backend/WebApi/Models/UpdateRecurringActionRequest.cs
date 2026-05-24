@@ -6,6 +6,8 @@ namespace WebApi.Models
 
         public string? Description { get; set; }
 
+        public decimal Amount { get; set; }
+
         public bool IsActive { get; set; }
 
         public DateTime RecurringAt { get; set; }

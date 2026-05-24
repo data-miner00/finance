@@ -1,5 +1,8 @@
 
+using Core.Models;
 using Core.Repositories;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using WebApi.Options;
 
 namespace WebApi
@@ -12,12 +15,18 @@ namespace WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.ConfigureCors();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            builder.Services.AddSingleton(typeof(IRepository<>), typeof(MemoryRepository<>));
+            var connection = new SqlConnection(builder.Configuration.GetConnectionString("SQLServer"));
+
+            builder.Services.AddSingleton<IDbConnection>(connection);
+            builder.Services.AddSingleton<IRepository<Account>, AccountRepository>();
+            builder.Services.AddSingleton<IRepository<Expense>, ExpenseRepository>();
+            builder.Services.AddSingleton<IRepository<Income>, IncomeRepository>();
+            builder.Services.AddSingleton<IRepository<PiggyBank>, PiggyBankRepository>();
+            builder.Services.AddSingleton<IRepository<RecurringAction>, RecurringActionRepository>();
 
             var app = builder.Build();
 

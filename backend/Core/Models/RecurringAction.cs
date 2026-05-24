@@ -14,6 +14,8 @@ namespace Core.Models
 
         public RecurringType Type { get; set; }
 
+        public decimal Amount { get; set; }
+
         public DateTime RecurringAt { get; set; }
     }
 }

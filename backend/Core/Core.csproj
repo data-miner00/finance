@@ -8,6 +8,16 @@
 
   <ItemGroup>
     <Folder Include="Handlers\" />
+    <Folder Include="Dtos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Core.StoredProcedureNames" Alias="SpNames" />
   </ItemGroup>
 
 </Project>

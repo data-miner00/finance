@@ -6,7 +6,7 @@ namespace Core.Models
 {
     public class Expense : Entity
     {
-        public string Category { get; set; }
+        public Guid? CategoryId { get; set; }
 
         public string Name { get; set; }
 

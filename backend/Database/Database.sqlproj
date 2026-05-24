@@ -67,7 +67,7 @@
     <Build Include="dbo\Tables\Expenses.sql" />
     <Build Include="dbo\Tables\Categories.sql" />
     <Build Include="dbo\Tables\Accounts.sql" />
-    <Build Include="dbo\Stored Procedures\usp_AddRecurrings.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddRecurringAction.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddPiggyBank.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddIncome.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddExpense.sql" />

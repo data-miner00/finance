@@ -3,7 +3,7 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[usp_AddRecurrings]
+CREATE PROCEDURE [dbo].[usp_AddRecurringAction]
 	@Name NVARCHAR(50),
 	@Amount MONEY,
 	@Type NVARCHAR(50),
