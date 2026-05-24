@@ -9,8 +9,8 @@ export interface EntityBase {
 export interface Account extends EntityBase {
 	name: string;
 	description?: string | null;
-	accountType: AccountType;
-	amount: number;
+	type: AccountType;
+	balance: number;
 	currency?: string | null;
 }
 
@@ -25,7 +25,7 @@ export interface CreateAccountRequest {
 export interface UpdateAccountRequest extends CreateAccountRequest {}
 
 export interface Expense extends EntityBase {
-	category: string;
+	categoryId?: string;
 	name: string;
 	description?: string | null;
 	amount: number;
@@ -36,7 +36,7 @@ export interface Expense extends EntityBase {
 }
 
 export interface CreateExpenseRequest {
-	category: string;
+	categoryId?: string;
 	name: string;
 	description?: string | null;
 	amount: number;
@@ -86,6 +86,7 @@ export interface RecurringAction extends EntityBase {
 	name: string;
 	description?: string | null;
 	isActive: boolean;
+	amount: number;
 	recurringAt: string;
 	type: number;
 }
@@ -94,6 +95,7 @@ export interface CreateRecurringActionRequest {
 	name: string;
 	description?: string | null;
 	isActive: boolean;
+	amount: number;
 	recurringAt: string;
 	type: number;
 }
