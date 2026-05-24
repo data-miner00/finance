@@ -10,19 +10,10 @@ namespace Core.Models
 
         public string? Description { get; set; }
 
-        public AccountType AccountType { get; set; }
+        public AccountType Type { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal Balance { get; set; }
 
         public string? Currency { get; set; }
-    }
-
-    public enum AccountType
-    {
-        Bank,
-        EWallet,
-        Cash,
-        App,
-        Card,
     }
 }

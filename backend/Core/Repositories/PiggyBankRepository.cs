@@ -16,7 +16,7 @@ namespace Core.Repositories
             this.connection = connection;
         }
 
-        public Task CreateAsync(PiggyBank entity, CancellationToken cancellationToken)
+        public async Task<PiggyBank> CreateAsync(PiggyBank entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,10 +27,12 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("Deadline", entity.Deadline);
 
-            return this.connection.ExecuteAsync(
+            var createdPiggyBank = await this.connection.QuerySingleOrDefaultAsync<PiggyBank>(
                 SpNames.AddPiggyBank,
                 parameters,
                 commandType: CommandType.StoredProcedure);
+
+            return createdPiggyBank;
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)

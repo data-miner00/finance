@@ -16,7 +16,7 @@ namespace Core.Repositories
             this.connection = connection;
         }
 
-        public Task CreateAsync(RecurringAction entity, CancellationToken cancellationToken)
+        public async Task<RecurringAction> CreateAsync(RecurringAction entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,10 +27,12 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("RecurringAt", entity.RecurringAt);
 
-            return this.connection.ExecuteAsync(
+            var createdRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringAction>(
                 SpNames.AddRecurring,
                 parameters,
                 commandType: CommandType.StoredProcedure);
+
+            return createdRecurringAction;
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)

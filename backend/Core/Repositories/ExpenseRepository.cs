@@ -16,7 +16,7 @@ namespace Core.Repositories
             this.connection = connection;
         }
 
-        public Task CreateAsync(Expense entity, CancellationToken cancellationToken)
+        public async Task<Expense> CreateAsync(Expense entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,10 +27,12 @@ namespace Core.Repositories
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
 
-            return this.connection.ExecuteAsync(
+            var createdExpense = await this.connection.QuerySingleOrDefaultAsync<Expense>(
                 SpNames.AddExpense,
                 parameters,
                 commandType: CommandType.StoredProcedure);
+
+            return createdExpense;
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
@@ -50,7 +52,10 @@ namespace Core.Repositories
 
         public Task<Expense> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            var query = "SELECT * FROM [dbo].[Expenses] WHERE [Id] = @Id;";
+
+            return this.connection.QueryFirstAsync<Expense>(query, new { Id = id });
         }
 
         public Task UpdateAsync(Expense entity, CancellationToken cancellationToken)

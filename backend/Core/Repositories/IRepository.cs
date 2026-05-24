@@ -29,8 +29,8 @@ public interface IRepository<T>
     /// </summary>
     /// <param name="entity">The <typeparamref name="T"/> to be created.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The asynchronous task.</returns>
-    Task CreateAsync(T entity, CancellationToken cancellationToken);
+    /// <returns>The created <typeparamref name="T"/>.</returns>
+    Task<T> CreateAsync(T entity, CancellationToken cancellationToken);
 
     /// <summary>
     /// Updates an existing <typeparamref name="T"/> entity.

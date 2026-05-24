@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -16,19 +17,21 @@ namespace Core.Repositories
             this.connection = connection;
         }
 
-        public Task CreateAsync(Account entity, CancellationToken cancellationToken)
+        public async Task<Account> CreateAsync(Account entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
-            parameters.Add("Type", entity.AccountType.ToString());
+            parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Description", entity.Description);
 
-            return this.connection.ExecuteAsync(
+            var createdAccount = await this.connection.QuerySingleOrDefaultAsync<AccountDto>(
                 SpNames.AddAccount,
                 parameters,
                 commandType: CommandType.StoredProcedure);
+
+            return createdAccount.ToModel();
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
@@ -36,19 +39,25 @@ namespace Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Account>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Account>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
                 "SELECT * FROM Accounts;");
 
-            return this.connection.QueryAsync<Account>(command);
+            var accounts = await this.connection.QueryAsync<AccountDto>(command);
+
+            return accounts.Select(x => x.ToModel());
         }
 
-        public Task<Account> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Account> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            var query = "SELECT * FROM [dbo].[Accounts] WHERE [Id] = @Id;";
+            var accountDto = await this.connection.QueryFirstAsync<AccountDto>(query, new { Id = Guid.Parse(id) });
+
+            return accountDto.ToModel();
         }
 
         public Task UpdateAsync(Account entity, CancellationToken cancellationToken)

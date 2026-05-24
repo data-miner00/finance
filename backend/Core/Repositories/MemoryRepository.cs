@@ -10,10 +10,10 @@ namespace Core.Repositories
     {
         private List<T> values = [];
 
-        public Task CreateAsync(T entity, CancellationToken cancellationToken)
+        public Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
         {
             values.Add(entity);
-            return Task.CompletedTask;
+            return Task.FromResult(entity);
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)

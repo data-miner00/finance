@@ -42,16 +42,15 @@ namespace WebApi.Controllers
         {
             var account = new Account
             {
-                Id = Guid.NewGuid().ToString(),
                 Name = request.Name,
                 Description = request.Description,
-                AccountType = (AccountType)request.AccountType,
-                Amount = request.Amount,
+                Type = (AccountType)request.AccountType,
+                Balance = request.Amount,
                 Currency = request.Currency,
             };
 
-            await _repository.CreateAsync(account, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { id = account.Id }, account);
+            var createdAccount = await _repository.CreateAsync(account, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = createdAccount.Id }, createdAccount);
         }
 
         [HttpPut("{id}")]
@@ -62,8 +61,8 @@ namespace WebApi.Controllers
                 var account = await _repository.GetByIdAsync(id, cancellationToken);
                 account.Name = request.Name;
                 account.Description = request.Description;
-                account.AccountType = (AccountType)request.AccountType;
-                account.Amount = request.Amount;
+                account.Type = (AccountType)request.AccountType;
+                account.Balance = request.Amount;
                 account.Currency = request.Currency;
                 account.UpdatedAt = DateTime.UtcNow;
 

@@ -16,7 +16,7 @@ namespace Core.Repositories
             this.connection = connection;
         }
 
-        public Task CreateAsync(Income entity, CancellationToken cancellationToken)
+        public async Task<Income> CreateAsync(Income entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -25,10 +25,12 @@ namespace Core.Repositories
             parameters.Add("Amount", entity.Amount);
             parameters.Add("Description", entity.Description);
 
-            return this.connection.ExecuteAsync(
+            var createdIncome = await this.connection.QuerySingleOrDefaultAsync<Income>(
                 SpNames.AddIncome,
                 parameters,
                 commandType: CommandType.StoredProcedure);
+
+            return createdIncome;
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
