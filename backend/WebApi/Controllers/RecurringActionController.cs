@@ -50,9 +50,8 @@ namespace WebApi.Controllers
                 Type = request.Type,
             };
 
-            await _repository.CreateAsync(recurringAction, cancellationToken);
-            // Get Id from database
-            return CreatedAtAction(nameof(GetById), new { id = recurringAction.Id }, recurringAction);
+            var createdRecurringAction = await _repository.CreateAsync(recurringAction, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = createdRecurringAction.Id }, createdRecurringAction);
         }
 
         [HttpPut("{id}")]

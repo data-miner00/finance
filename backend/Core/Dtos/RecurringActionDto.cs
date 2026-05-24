@@ -5,25 +5,31 @@ using System.Text;
 
 namespace Core.Dtos
 {
-    internal class AccountDto : Dto<Account>
+    internal class RecurringActionDto : Dto<RecurringAction>
     {
         public string Name { get; set; }
 
         public string? Description { get; set; }
 
+        public bool IsActive { get; set; }
+
         public string Type { get; set; }
 
-        public decimal Balance { get; set; }
+        public decimal Amount { get; set; }
 
-        public override Account ToModel()
+        public DateTime RecurringAt { get; set; }
+
+        public override RecurringAction ToModel()
         {
-            return new Account
+            return new RecurringAction
             {
                 Id = Id.ToString(),
                 Name = Name,
                 Description = Description,
-                Type = Enum.Parse<AccountType>(Type),
-                Balance = Balance,
+                IsActive = IsActive,
+                Type = Enum.Parse<RecurringType>(Type),
+                Amount = Amount,
+                RecurringAt = RecurringAt,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

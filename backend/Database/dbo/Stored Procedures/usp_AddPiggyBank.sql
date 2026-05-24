@@ -11,6 +11,7 @@ CREATE PROCEDURE [dbo].[usp_AddPiggyBank]
 	@Deadline DATETIME2(7) = NULL
 AS
 BEGIN
+	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
 	SET NOCOUNT ON;
 
     INSERT INTO [dbo].[PiggyBanks]
@@ -21,6 +22,7 @@ BEGIN
 		[Description],
 		[Deadline]
 	)
+	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
@@ -29,4 +31,17 @@ BEGIN
 		@Description,
 		@Deadline
 	);
+
+	SELECT
+		l.[Id],
+		[Name],
+		[Description],
+		[Target],
+		[Amount],
+		[Deadline],
+		[CreatedAt],
+		[UpdatedAt]
+	FROM [dbo].[PiggyBanks] l
+	JOIN @OutputTable r
+	ON l.Id = r.Id;
 END

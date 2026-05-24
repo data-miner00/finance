@@ -50,9 +50,8 @@ namespace WebApi.Controllers
                 Deadline = request.Deadline,
             };
 
-            await _repository.CreateAsync(piggyBank, cancellationToken);
-            // Get Id from database
-            return CreatedAtAction(nameof(GetById), new { id = piggyBank.Id }, piggyBank);
+            var createdPiggyBank = await _repository.CreateAsync(piggyBank, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = createdPiggyBank.Id }, createdPiggyBank);
         }
 
         [HttpPut("{id}")]

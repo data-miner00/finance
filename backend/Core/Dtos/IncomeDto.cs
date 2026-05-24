@@ -5,25 +5,22 @@ using System.Text;
 
 namespace Core.Dtos
 {
-    internal class AccountDto : Dto<Account>
+    internal class IncomeDto : Dto<Income>
     {
         public string Name { get; set; }
 
         public string? Description { get; set; }
 
-        public string Type { get; set; }
+        public decimal Amount { get; set; }
 
-        public decimal Balance { get; set; }
-
-        public override Account ToModel()
+        public override Income ToModel()
         {
-            return new Account
+            return new Income
             {
                 Id = Id.ToString(),
                 Name = Name,
                 Description = Description,
-                Type = Enum.Parse<AccountType>(Type),
-                Balance = Balance,
+                Amount = Amount,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

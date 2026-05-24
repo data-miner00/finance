@@ -5,25 +5,28 @@ using System.Text;
 
 namespace Core.Dtos
 {
-    internal class AccountDto : Dto<Account>
+    internal class PiggyBankDto : Dto<PiggyBank>
     {
         public string Name { get; set; }
 
         public string? Description { get; set; }
 
-        public string Type { get; set; }
+        public decimal Amount { get; set; }
 
-        public decimal Balance { get; set; }
+        public decimal Target { get; set; }
 
-        public override Account ToModel()
+        public DateTime? Deadline { get; set; }
+
+        public override PiggyBank ToModel()
         {
-            return new Account
+            return new PiggyBank
             {
                 Id = Id.ToString(),
                 Name = Name,
                 Description = Description,
-                Type = Enum.Parse<AccountType>(Type),
-                Balance = Balance,
+                Amount = Amount,
+                Target = Target,
+                Deadline = Deadline,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

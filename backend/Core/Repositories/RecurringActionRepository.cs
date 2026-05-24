@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,12 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("RecurringAt", entity.RecurringAt);
 
-            var createdRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringAction>(
+            var createdRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
                 SpNames.AddRecurring,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-            return createdRecurringAction;
+            return createdRecurringAction.ToModel();
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
@@ -40,19 +41,24 @@ namespace Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<RecurringAction>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<RecurringAction>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
                 "SELECT * FROM Recurrings;");
 
-            return this.connection.QueryAsync<RecurringAction>(command);
+            var dtos = await this.connection.QueryAsync<RecurringActionDto>(command);
+            return dtos.Select(d => d.ToModel());
         }
 
-        public Task<RecurringAction> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<RecurringAction> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            var query = "SELECT * FROM [dbo].[Recurrings] WHERE [Id] = @Id;";
+            var dto = await this.connection.QueryFirstAsync<RecurringActionDto>(query, new { Id = Guid.Parse(id) });
+
+            return dto.ToModel();
         }
 
         public Task UpdateAsync(RecurringAction entity, CancellationToken cancellationToken)

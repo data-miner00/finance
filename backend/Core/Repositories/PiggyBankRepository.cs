@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,12 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("Deadline", entity.Deadline);
 
-            var createdPiggyBank = await this.connection.QuerySingleOrDefaultAsync<PiggyBank>(
+            var createdPiggyBank = await this.connection.QuerySingleOrDefaultAsync<PiggyBankDto>(
                 SpNames.AddPiggyBank,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-            return createdPiggyBank;
+            return createdPiggyBank.ToModel();
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
@@ -40,19 +41,24 @@ namespace Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<PiggyBank>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<PiggyBank>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
                 "SELECT * FROM PiggyBanks;");
 
-            return this.connection.QueryAsync<PiggyBank>(command);
+            var dtos = await this.connection.QueryAsync<PiggyBankDto>(command);
+            return dtos.Select(x => x.ToModel());
         }
 
-        public Task<PiggyBank> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<PiggyBank> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            var query = "SELECT * FROM [dbo].[PiggyBanks] WHERE [Id] = @Id;";
+            var dto = await this.connection.QueryFirstAsync<PiggyBankDto>(query, new { Id = Guid.Parse(id) });
+
+            return dto.ToModel();
         }
 
         public Task UpdateAsync(PiggyBank entity, CancellationToken cancellationToken)

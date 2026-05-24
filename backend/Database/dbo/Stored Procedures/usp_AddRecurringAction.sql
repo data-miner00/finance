@@ -11,6 +11,7 @@ CREATE PROCEDURE [dbo].[usp_AddRecurringAction]
 	@Description NVARCHAR(255) = NULL
 AS
 BEGIN
+	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
 	SET NOCOUNT ON;
 
     INSERT INTO [dbo].[Recurrings]
@@ -21,6 +22,7 @@ BEGIN
 		[Description],
 		[RecurringAt]
 	)
+	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
@@ -29,4 +31,17 @@ BEGIN
 		@Description,
 		@RecurringAt
 	);
+
+	SELECT
+		l.[Id],
+		[Name],
+		[Description],
+		[Type],
+		[Amount],
+		[RecurringAt],
+		[CreatedAt],
+		[UpdatedAt]
+	FROM [dbo].[Recurrings] l
+	JOIN @OutputTable r
+	ON l.Id = r.Id;
 END

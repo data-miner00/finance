@@ -47,9 +47,8 @@ namespace WebApi.Controllers
                 Amount = request.Amount,
             };
 
-            await _repository.CreateAsync(income, cancellationToken);
-            // Get Id from database
-            return CreatedAtAction(nameof(GetById), new { id = income.Id }, income);
+            var createdIncome = await _repository.CreateAsync(income, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = createdIncome.Id }, createdIncome);
         }
 
         [HttpPut("{id}")]

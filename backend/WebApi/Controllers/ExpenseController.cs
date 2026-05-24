@@ -57,9 +57,8 @@ namespace WebApi.Controllers
                 expense.ActionedAt = actionedAt;
             }
 
-            await _repository.CreateAsync(expense, cancellationToken);
-            // Get ID from database
-            return CreatedAtAction(nameof(GetById), new { id = expense.Id }, expense);
+            var createdExpense = await _repository.CreateAsync(expense, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = createdExpense.Id }, createdExpense);
         }
 
         [HttpPut("{id}")]

@@ -9,6 +9,7 @@ CREATE PROCEDURE [dbo].[usp_AddIncome]
 	@Description NVARCHAR(255) = NULL
 AS
 BEGIN
+	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
 	SET NOCOUNT ON;
 
     INSERT INTO [dbo].[Incomes]
@@ -17,10 +18,22 @@ BEGIN
 		[Amount],
 		[Description]
 	)
+	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
 		@Amount,
 		@Description
 	);
+
+	SELECT
+		l.[Id],
+		[Name],
+		[Description],
+		[Amount],
+		[CreatedAt],
+		[UpdatedAt]
+	FROM [dbo].[Incomes] l
+	JOIN @OutputTable r
+	ON l.Id = r.Id;
 END

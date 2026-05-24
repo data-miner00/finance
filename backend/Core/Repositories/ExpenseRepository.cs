@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Core.Dtos;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -23,16 +24,16 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
-            parameters.Add("CategoryId", entity.CategoryId);
+            parameters.Add("CategoryId", entity.CategoryId is null ? null : Guid.Parse(entity.CategoryId));
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
 
-            var createdExpense = await this.connection.QuerySingleOrDefaultAsync<Expense>(
+            var createdExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.AddExpense,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-            return createdExpense;
+            return createdExpense.ToModel();
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
@@ -40,22 +41,24 @@ namespace Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Expense>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Expense>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
                 "SELECT * FROM Expenses;");
 
-            return this.connection.QueryAsync<Expense>(command);
+            var dtos = await this.connection.QueryAsync<ExpenseDto>(command);
+            return dtos.Select(x => x.ToModel());
         }
 
-        public Task<Expense> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Expense> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = "SELECT * FROM [dbo].[Expenses] WHERE [Id] = @Id;";
+            var dto = await this.connection.QueryFirstAsync<ExpenseDto>(query, new { Id = id });
 
-            return this.connection.QueryFirstAsync<Expense>(query, new { Id = id });
+            return dto.ToModel();
         }
 
         public Task UpdateAsync(Expense entity, CancellationToken cancellationToken)

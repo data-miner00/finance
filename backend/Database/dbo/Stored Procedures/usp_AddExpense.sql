@@ -11,6 +11,7 @@ CREATE PROCEDURE [dbo].[usp_AddExpense]
 	@Description NVARCHAR(255) = NULL
 AS
 BEGIN
+	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
 	SET NOCOUNT ON;
 
     INSERT INTO [dbo].[Expenses]
@@ -21,6 +22,7 @@ BEGIN
 		[Location],
 		[Description]
 	)
+	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
@@ -29,4 +31,18 @@ BEGIN
 		@Location,
 		@Description
 	);
+
+	SELECT
+		l.[Id],
+		[Name],
+		[Description],
+		[CategoryId],
+		[Amount],
+		[Location],
+		[Description],
+		[CreatedAt],
+		[UpdatedAt]
+	FROM [dbo].[Expenses] l
+	JOIN @OutputTable r
+	ON l.Id = r.Id;
 END

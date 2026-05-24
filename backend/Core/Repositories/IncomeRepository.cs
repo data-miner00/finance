@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,12 @@ namespace Core.Repositories
             parameters.Add("Amount", entity.Amount);
             parameters.Add("Description", entity.Description);
 
-            var createdIncome = await this.connection.QuerySingleOrDefaultAsync<Income>(
+            var createdIncome = await this.connection.QuerySingleOrDefaultAsync<IncomeDto>(
                 SpNames.AddIncome,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-            return createdIncome;
+            return createdIncome.ToModel();
         }
 
         public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
@@ -38,19 +39,24 @@ namespace Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Income>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Income>> GetAllAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
                 "SELECT * FROM Incomes;");
 
-            return this.connection.QueryAsync<Income>(command);
+            var dtos = await this.connection.QueryAsync<IncomeDto>(command);
+            return dtos.Select(x => x.ToModel());
         }
 
-        public Task<Income> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Income> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            var query = "SELECT * FROM [dbo].[Incomes] WHERE [Id] = @Id;";
+            var dto = await this.connection.QueryFirstAsync<IncomeDto>(query, new { Id = Guid.Parse(id) });
+
+            return dto.ToModel();
         }
 
         public Task UpdateAsync(Income entity, CancellationToken cancellationToken)
