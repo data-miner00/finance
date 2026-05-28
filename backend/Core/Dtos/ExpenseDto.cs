@@ -17,7 +17,7 @@ namespace Core.Dtos
 
         public string? Location { get; set; }
 
-        public DateTime ActionedAt { get; set; }
+        public DateTime? ActionedAt { get; set; }
 
         public override Expense ToModel()
         {
@@ -31,6 +31,7 @@ namespace Core.Dtos
                 Location = Location,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
+                ActionedAt = ActionedAt,
             };
         }
     }

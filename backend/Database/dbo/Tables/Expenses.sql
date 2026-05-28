@@ -5,7 +5,7 @@
     [Description] NVARCHAR (255)   NOT NULL,
     [Amount]      MONEY            NOT NULL,
     [Location]    NVARCHAR (255)   NULL,
-    [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Expenses_ActionedAt] DEFAULT (getdate()) NOT NULL,
+    [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Expenses_ActionedAt] NULL,
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_UpdatedAt] DEFAULT (getdate()) NOT NULL,
     CONSTRAINT [PK_Expenses] PRIMARY KEY CLUSTERED ([Id] ASC),
