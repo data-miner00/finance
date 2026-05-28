@@ -32,14 +32,14 @@ namespace Core.Repositories
             return Task.FromResult(this.values.First(x => x.Id == id));
         }
 
-        public Task UpdateAsync(T entity, CancellationToken cancellationToken)
+        public Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)
         {
             var index = values.FindIndex(x => x.Id == entity.Id);
             if (index >= 0)
             {
                 values[index] = entity;
             }
-            return Task.CompletedTask;
+            return Task.FromResult(entity);
         }
     }
 }

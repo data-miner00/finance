@@ -69,9 +69,25 @@ namespace Core.Repositories
             return dto.ToModel();
         }
 
-        public Task UpdateAsync(Expense entity, CancellationToken cancellationToken)
+        public async Task<Expense> UpdateAsync(Expense entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
+            parameters.Add("Name", entity.Name);
+            parameters.Add("Amount", entity.Amount);
+            parameters.Add("CategoryId", entity.CategoryId is null ? null : Guid.Parse(entity.CategoryId));
+            parameters.Add("Location", entity.Location);
+            parameters.Add("Description", entity.Description);
+            parameters.Add("ActionedAt", entity.ActionedAt);
+
+            var updatedExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
+                SpNames.UpdateExpense,
+                parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return updatedExpense.ToModel();
         }
     }
 }

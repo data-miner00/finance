@@ -69,9 +69,25 @@ namespace Core.Repositories
             return dto.ToModel();
         }
 
-        public Task UpdateAsync(RecurringAction entity, CancellationToken cancellationToken)
+        public async Task<RecurringAction> UpdateAsync(RecurringAction entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
+            parameters.Add("Name", entity.Name);
+            parameters.Add("Description", entity.Description);
+            parameters.Add("IsActive", entity.IsActive);
+            parameters.Add("RecurringAt", entity.RecurringAt);
+            parameters.Add("Type", entity.Type.ToString());
+            parameters.Add("Amount", entity.Amount);
+
+            var updatedRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
+                SpNames.UpdateRecurringAction,
+                parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return updatedRecurringAction.ToModel();
         }
     }
 }

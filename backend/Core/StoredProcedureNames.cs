@@ -26,6 +26,8 @@ namespace Core
 
         public const string DeleteRecurringAction = "usp_DeleteRecurringAction";
 
+        public const string DeleteCategory = "usp_DeleteCategory";
+
         public const string AddCategory = "usp_AddCategory";
         
         public const string UpdateAccount = "usp_UpdateAccount";

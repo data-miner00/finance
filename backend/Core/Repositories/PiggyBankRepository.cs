@@ -69,9 +69,24 @@ namespace Core.Repositories
             return dto.ToModel();
         }
 
-        public Task UpdateAsync(PiggyBank entity, CancellationToken cancellationToken)
+        public async Task<PiggyBank> UpdateAsync(PiggyBank entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
+            parameters.Add("Name", entity.Name);
+            parameters.Add("Amount", entity.Amount);
+            parameters.Add("Target", entity.Target);
+            parameters.Add("Deadline", entity.Deadline);
+            parameters.Add("Description", entity.Description);
+
+            var updatedPiggyBank = await this.connection.QuerySingleOrDefaultAsync<PiggyBankDto>(
+                SpNames.UpdatePiggyBank,
+                parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return updatedPiggyBank.ToModel();
         }
     }
 }

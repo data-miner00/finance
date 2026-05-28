@@ -67,9 +67,22 @@ namespace Core.Repositories
             return dto.ToModel();
         }
 
-        public Task UpdateAsync(Income entity, CancellationToken cancellationToken)
+        public async Task<Income> UpdateAsync(Income entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
+            parameters.Add("Name", entity.Name);
+            parameters.Add("Amount", entity.Amount);
+            parameters.Add("Description", entity.Description);
+
+            var updatedIncome = await this.connection.QuerySingleOrDefaultAsync<IncomeDto>(
+                SpNames.UpdateIncome,
+                parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return updatedIncome.ToModel();
         }
     }
 }

@@ -69,9 +69,23 @@ namespace Core.Repositories
             return accountDto.ToModel();
         }
 
-        public Task UpdateAsync(Account entity, CancellationToken cancellationToken)
+        public async Task<Account> UpdateAsync(Account entity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
+            parameters.Add("Name", entity.Name);
+            parameters.Add("Type", entity.Type.ToString());
+            parameters.Add("Balance", entity.Balance);
+            parameters.Add("Description", entity.Description);
+
+            var updatedAccount = await this.connection.QuerySingleOrDefaultAsync<AccountDto>(
+                SpNames.UpdateAccount,
+                parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return updatedAccount.ToModel();
         }
     }
 }
