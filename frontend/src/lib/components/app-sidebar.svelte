@@ -22,6 +22,7 @@
 	import { CircleDollarSignIcon } from '@lucide/svelte';
 	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
 	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
+	import Bell from '@tabler/icons-svelte/icons/bell';
 
 	const data = {
 		user: {
@@ -59,6 +60,11 @@
 				title: 'Piggy Bank',
 				url: '/piggy-bank',
 				icon: PigMoney
+			},
+			{
+				title: 'Notifications',
+				url: '/notifications',
+				icon: Bell
 			}
 		],
 		navClouds: [
