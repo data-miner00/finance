@@ -18,7 +18,7 @@ export interface CreateAccountRequest {
 	name: string;
 	description?: string | null;
 	accountType: AccountType;
-	amount: number;
+	balance: number;
 	currency?: string | null;
 }
 

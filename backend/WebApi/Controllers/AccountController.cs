@@ -45,7 +45,7 @@ namespace WebApi.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 Type = (AccountType)request.AccountType,
-                Balance = request.Amount,
+                Balance = request.Balance,
                 Currency = request.Currency,
             };
 

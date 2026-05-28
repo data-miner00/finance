@@ -6,7 +6,8 @@
 CREATE PROCEDURE [dbo].[usp_AddAccount]
 	@Name NVARCHAR(50),
 	@Type NVARCHAR(50),
-	@Description NVARCHAR(255) = NULL
+	@Description NVARCHAR(255) = NULL,
+	@Balance MONEY = 0.00
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -16,14 +17,16 @@ BEGIN
 	(
 		[Name],
 		[Type],
-		[Description]
+		[Description],
+		[Balance]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
 		@Type,
-		@Description
+		@Description,
+		@Balance
 	);
 
 	SELECT

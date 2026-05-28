@@ -25,6 +25,7 @@ namespace Core.Repositories
             parameters.Add("Name", entity.Name);
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Description", entity.Description);
+            parameters.Add("Balance", entity.Balance);
 
             var createdAccount = await this.connection.QuerySingleOrDefaultAsync<AccountDto>(
                 SpNames.AddAccount,
