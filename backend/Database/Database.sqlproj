@@ -73,5 +73,11 @@
     <Build Include="dbo\Stored Procedures\usp_AddExpense.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddCategory.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddAccount.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeleteRecurringAction.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeletePiggyBank.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeleteIncome.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeleteExpense.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeleteCategory.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeleteAccount.sql" />
   </ItemGroup>
 </Project>

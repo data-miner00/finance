@@ -16,6 +16,16 @@ namespace Core
 
         public const string AddRecurring = "usp_AddRecurringAction";
 
+        public const string DeleteAccount = "usp_DeleteAccount";
+
+        public const string DeleteExpense = "usp_DeleteExpense";
+
+        public const string DeleteIncome = "usp_DeleteIncome";
+
+        public const string DeletePiggyBank = "usp_DeletePiggyBank";
+
+        public const string DeleteRecurringAction = "usp_DeleteRecurringAction";
+
         public const string AddCategory = "usp_AddCategory";
     }
 }

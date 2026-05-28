@@ -36,9 +36,17 @@ namespace Core.Repositories
             return createdPiggyBank.ToModel();
         }
 
-        public Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task DeleteByIdAsync(string id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", Guid.Parse(id), DbType.Guid);
+
+            await this.connection.ExecuteAsync(
+                SpNames.DeletePiggyBank,
+                parameters,
+                commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<PiggyBank>> GetAllAsync(CancellationToken cancellationToken)
