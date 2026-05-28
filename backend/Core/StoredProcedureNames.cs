@@ -27,5 +27,17 @@ namespace Core
         public const string DeleteRecurringAction = "usp_DeleteRecurringAction";
 
         public const string AddCategory = "usp_AddCategory";
+        
+        public const string UpdateAccount = "usp_UpdateAccount";
+
+        public const string UpdateExpense = "usp_UpdateExpense";
+
+        public const string UpdateIncome = "usp_UpdateIncome";
+
+        public const string UpdatePiggyBank = "usp_UpdatePiggyBank";
+
+        public const string UpdateRecurringAction = "usp_UpdateRecurringAction";
+
+        public const string UpdateCategory = "usp_UpdateCategory";
     }
 }
