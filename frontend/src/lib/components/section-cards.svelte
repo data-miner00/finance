@@ -1,18 +1,59 @@
 <script lang="ts">
-	import TrendingDownIcon from "@tabler/icons-svelte/icons/trending-down";
-	import TrendingUpIcon from "@tabler/icons-svelte/icons/trending-up";
-	import { Badge } from "$lib/components/ui/badge/index.js";
-	import * as Card from "$lib/components/ui/card/index.js";
+	import TrendingDownIcon from '@tabler/icons-svelte/icons/trending-down';
+	import TrendingUpIcon from '@tabler/icons-svelte/icons/trending-up';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { appState } from '$lib/states.svelte';
+
+	// Helper function to get current month and year
+	function isCurrentMonth(dateString: string): boolean {
+		const date = new Date(dateString);
+		const now = new Date();
+		return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+	}
+
+	// Derived: Total income for this month
+	let totalIncomeThisMonth = $derived(
+		appState.incomes
+			.filter((income) => isCurrentMonth(income.createdAt))
+			.reduce((sum, income) => sum + income.amount, 0)
+	);
+
+	// Derived: Total expense for this month
+	let totalExpenseThisMonth = $derived(
+		appState.expenses
+			.filter((expense) => isCurrentMonth(expense.actionedAt))
+			.reduce((sum, expense) => sum + expense.amount, 0)
+	);
+
+	// Derived: Total accumulated savings (sum of all account balances)
+	let totalAccumulatedSavings = $derived(
+		appState.accounts.reduce((sum, account) => sum + account.balance, 0)
+	);
+
+	// Derived: Total piggy bank amounts
+	let totalPiggyBankAmount = $derived(appState.piggyBanks.reduce((sum, pb) => sum + pb.amount, 0));
+
+	// Derived: Left to spend (income - expense - piggy bank)
+	let leftToSpend = $derived(totalIncomeThisMonth - totalExpenseThisMonth - totalPiggyBankAmount);
+
+	// Helper function to format currency
+	function formatCurrency(amount: number): string {
+		return new Intl.NumberFormat('en-MY', {
+			style: 'currency',
+			currency: 'MYR'
+		}).format(amount);
+	}
 </script>
 
 <div
-	class="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4"
+	class="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card"
 >
 	<Card.Root class="@container/card">
 		<Card.Header>
-			<Card.Description>Total Revenue</Card.Description>
+			<Card.Description>Income</Card.Description>
 			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				$1,250.00
+				{formatCurrency(totalIncomeThisMonth)}
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
@@ -25,14 +66,14 @@
 			<div class="line-clamp-1 flex gap-2 font-medium">
 				Trending up this month <TrendingUpIcon class="size-4" />
 			</div>
-			<div class="text-muted-foreground">Visitors for the last 6 months</div>
+			<div class="text-muted-foreground">Income for this month</div>
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root class="@container/card">
 		<Card.Header>
-			<Card.Description>New Customers</Card.Description>
+			<Card.Description>Spending</Card.Description>
 			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				1,234
+				{formatCurrency(totalExpenseThisMonth)}
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
@@ -45,14 +86,14 @@
 			<div class="line-clamp-1 flex gap-2 font-medium">
 				Down 20% this period <TrendingDownIcon class="size-4" />
 			</div>
-			<div class="text-muted-foreground">Acquisition needs attention</div>
+			<div class="text-muted-foreground">Spending for this period</div>
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root class="@container/card">
 		<Card.Header>
-			<Card.Description>Active Accounts</Card.Description>
+			<Card.Description>Savings</Card.Description>
 			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				45,678
+				{formatCurrency(totalAccumulatedSavings)}
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
@@ -63,16 +104,16 @@
 		</Card.Header>
 		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
 			<div class="line-clamp-1 flex gap-2 font-medium">
-				Strong user retention <TrendingUpIcon class="size-4" />
+				Slowly accumulating <TrendingUpIcon class="size-4" />
 			</div>
-			<div class="text-muted-foreground">Engagement exceed targets</div>
+			<div class="text-muted-foreground">Total savings accumulated</div>
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root class="@container/card">
 		<Card.Header>
-			<Card.Description>Growth Rate</Card.Description>
+			<Card.Description>Left to Spend</Card.Description>
 			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				4.5%
+				{formatCurrency(leftToSpend)}
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
@@ -85,7 +126,7 @@
 			<div class="line-clamp-1 flex gap-2 font-medium">
 				Steady performance increase <TrendingUpIcon class="size-4" />
 			</div>
-			<div class="text-muted-foreground">Meets growth projections</div>
+			<div class="text-muted-foreground">Total amount left to spend this month</div>
 		</Card.Footer>
 	</Card.Root>
 </div>
