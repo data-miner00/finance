@@ -2,6 +2,9 @@ import { renderComponent } from '$lib/components/ui/data-table';
 import type { RecurringAction } from '$lib/services/types';
 import type { ColumnDef } from '@tanstack/table-core';
 import DataTableActions from './data-table-actions.svelte';
+
+const recurringTypeLabels = ['Expense', 'Income'] as const;
+
 export const columns: ColumnDef<RecurringAction>[] = [
 	{
 		header: 'No.',
@@ -21,7 +24,11 @@ export const columns: ColumnDef<RecurringAction>[] = [
 	},
 	{
 		accessorKey: 'type',
-		header: 'Type'
+		header: 'Type',
+		cell: ({ getValue }) => {
+			const typeValue = getValue<number>();
+			return recurringTypeLabels[typeValue] ?? 'Unknown';
+		}
 	},
 	{
 		accessorKey: 'recurringAt',

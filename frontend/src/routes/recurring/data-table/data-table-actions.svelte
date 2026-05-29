@@ -26,7 +26,7 @@
 
 	async function saveRecurring(event: Event) {
 		event.preventDefault();
-		await updateRecurringAction(id, { name, amount, isActive: true, recurringAt: '', type: 0 });
+		await updateRecurringAction(id, { name, amount, isActive: true, recurringAt: '' });
 		appState.recurringActions = appState.recurringActions.map((r) =>
 			r.id === id ? { ...r, name, amount, updatedAt: new Date().toISOString() } : r
 		);

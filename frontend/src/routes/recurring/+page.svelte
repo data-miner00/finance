@@ -6,16 +6,16 @@
 
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { createRecurringAction } from '$lib/services';
 
 	let isDialogOpen = $state(false);
-
 	let name = $state('');
 	let amount = $state(0);
 	let recurringAt = $state('');
-	let type = $state(0);
+	let type = $state('0');
 	let description = $state('');
 	let isActive = $state(true);
 
@@ -24,7 +24,7 @@
 			name,
 			amount,
 			recurringAt,
-			type,
+			type: Number(type),
 			description: description || undefined,
 			isActive
 		});
@@ -33,7 +33,7 @@
 			name,
 			amount,
 			recurringAt,
-			type,
+			type: Number(type),
 			description: description || undefined,
 			isActive,
 			id: crypto.randomUUID(),
@@ -44,7 +44,7 @@
 		name = '';
 		amount = 0;
 		recurringAt = '';
-		type = 0;
+		type = '0';
 		description = '';
 		isActive = true;
 	}
@@ -112,7 +112,15 @@
 				</div>
 				<div class="grid gap-3">
 					<Label for="type-1">Type</Label>
-					<Input id="type-1" name="type" type="number" placeholder="0" bind:value={type} />
+					<Select.Root type="single" name="type" bind:value={type}>
+						<Select.Trigger id="type-1" class="w-full">
+							{type === '1' ? 'Income' : 'Expense'}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="0" label="Expense">Expense</Select.Item>
+							<Select.Item value="1" label="Income">Income</Select.Item>
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="description-1">Description</Label>
