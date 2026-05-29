@@ -12,6 +12,22 @@
 		return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
 	}
 
+	// Helper function to get last month
+	function isLastMonth(dateString: string): boolean {
+		const date = new Date(dateString);
+		const now = new Date();
+		const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
+		return (
+			date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear()
+		);
+	}
+
+	// Helper function to calculate percentage change
+	function calculatePercentageChange(current: number, previous: number): number {
+		if (previous === 0) return 0;
+		return ((current - previous) / previous) * 100;
+	}
+
 	// Derived: Total income for this month
 	let totalIncomeThisMonth = $derived(
 		appState.incomes
@@ -19,10 +35,24 @@
 			.reduce((sum, income) => sum + income.amount, 0)
 	);
 
+	// Derived: Total income for last month
+	let totalIncomeLastMonth = $derived(
+		appState.incomes
+			.filter((income) => isLastMonth(income.createdAt))
+			.reduce((sum, income) => sum + income.amount, 0)
+	);
+
 	// Derived: Total expense for this month
 	let totalExpenseThisMonth = $derived(
 		appState.expenses
 			.filter((expense) => isCurrentMonth(expense.actionedAt))
+			.reduce((sum, expense) => sum + expense.amount, 0)
+	);
+
+	// Derived: Total expense for last month
+	let totalExpenseLastMonth = $derived(
+		appState.expenses
+			.filter((expense) => isLastMonth(expense.actionedAt))
 			.reduce((sum, expense) => sum + expense.amount, 0)
 	);
 
@@ -36,6 +66,32 @@
 
 	// Derived: Left to spend (income - expense - piggy bank)
 	let leftToSpend = $derived(totalIncomeThisMonth - totalExpenseThisMonth - totalPiggyBankAmount);
+
+	// Derived: Left to spend last month
+	let leftToSpendLastMonth = $derived(
+		totalIncomeLastMonth - totalExpenseLastMonth - totalPiggyBankAmount
+	);
+
+	// Derived: Calculate percentage changes
+	let incomeChangePercent = $derived(
+		calculatePercentageChange(totalIncomeThisMonth, totalIncomeLastMonth)
+	);
+	let expenseChangePercent = $derived(
+		calculatePercentageChange(totalExpenseThisMonth, totalExpenseLastMonth)
+	);
+	let leftToSpendChangePercent = $derived(
+		calculatePercentageChange(leftToSpend, leftToSpendLastMonth)
+	);
+
+	// Helper function to get trend description
+	function getTrendDescription(percentChange: number): { icon: 'up' | 'down'; text: string } {
+		if (percentChange > 0) {
+			return { icon: 'up', text: `Up ${Math.abs(percentChange).toFixed(1)}% this month` };
+		} else if (percentChange < 0) {
+			return { icon: 'down', text: `Down ${Math.abs(percentChange).toFixed(1)}% this month` };
+		}
+		return { icon: 'up', text: 'No change this month' };
+	}
 
 	// Helper function to format currency
 	function formatCurrency(amount: number): string {
@@ -57,16 +113,25 @@
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
-					<TrendingUpIcon />
-					+12.5%
+					{#if getTrendDescription(incomeChangePercent).icon === 'up'}
+						<TrendingUpIcon />
+					{:else}
+						<TrendingDownIcon />
+					{/if}
+					{incomeChangePercent > 0 ? '+' : ''}{incomeChangePercent.toFixed(1)}%
 				</Badge>
 			</Card.Action>
 		</Card.Header>
 		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
 			<div class="line-clamp-1 flex gap-2 font-medium">
-				Trending up this month <TrendingUpIcon class="size-4" />
+				{getTrendDescription(incomeChangePercent).text}
+				{#if getTrendDescription(incomeChangePercent).icon === 'up'}
+					<TrendingUpIcon class="size-4" />
+				{:else}
+					<TrendingDownIcon class="size-4" />
+				{/if}
 			</div>
-			<div class="text-muted-foreground">Income for this month</div>
+			<div class="text-muted-foreground">vs {formatCurrency(totalIncomeLastMonth)} last month</div>
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root class="@container/card">
@@ -77,16 +142,25 @@
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
-					<TrendingDownIcon />
-					-20%
+					{#if getTrendDescription(expenseChangePercent).icon === 'up'}
+						<TrendingUpIcon />
+					{:else}
+						<TrendingDownIcon />
+					{/if}
+					{expenseChangePercent > 0 ? '+' : ''}{expenseChangePercent.toFixed(1)}%
 				</Badge>
 			</Card.Action>
 		</Card.Header>
 		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
 			<div class="line-clamp-1 flex gap-2 font-medium">
-				Down 20% this period <TrendingDownIcon class="size-4" />
+				{getTrendDescription(expenseChangePercent).text}
+				{#if getTrendDescription(expenseChangePercent).icon === 'up'}
+					<TrendingUpIcon class="size-4" />
+				{:else}
+					<TrendingDownIcon class="size-4" />
+				{/if}
 			</div>
-			<div class="text-muted-foreground">Spending for this period</div>
+			<div class="text-muted-foreground">vs {formatCurrency(totalExpenseLastMonth)} last month</div>
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root class="@container/card">
@@ -98,15 +172,15 @@
 			<Card.Action>
 				<Badge variant="outline">
 					<TrendingUpIcon />
-					+12.5%
+					Current Total
 				</Badge>
 			</Card.Action>
 		</Card.Header>
 		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
 			<div class="line-clamp-1 flex gap-2 font-medium">
-				Slowly accumulating <TrendingUpIcon class="size-4" />
+				Accumulated over time <TrendingUpIcon class="size-4" />
 			</div>
-			<div class="text-muted-foreground">Total savings accumulated</div>
+			<div class="text-muted-foreground">Across all accounts</div>
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root class="@container/card">
@@ -117,16 +191,25 @@
 			</Card.Title>
 			<Card.Action>
 				<Badge variant="outline">
-					<TrendingUpIcon />
-					+4.5%
+					{#if getTrendDescription(leftToSpendChangePercent).icon === 'up'}
+						<TrendingUpIcon />
+					{:else}
+						<TrendingDownIcon />
+					{/if}
+					{leftToSpendChangePercent > 0 ? '+' : ''}{leftToSpendChangePercent.toFixed(1)}%
 				</Badge>
 			</Card.Action>
 		</Card.Header>
 		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
 			<div class="line-clamp-1 flex gap-2 font-medium">
-				Steady performance increase <TrendingUpIcon class="size-4" />
+				{getTrendDescription(leftToSpendChangePercent).text}
+				{#if getTrendDescription(leftToSpendChangePercent).icon === 'up'}
+					<TrendingUpIcon class="size-4" />
+				{:else}
+					<TrendingDownIcon class="size-4" />
+				{/if}
 			</div>
-			<div class="text-muted-foreground">Total amount left to spend this month</div>
+			<div class="text-muted-foreground">vs {formatCurrency(leftToSpendLastMonth)} last month</div>
 		</Card.Footer>
 	</Card.Root>
 </div>
