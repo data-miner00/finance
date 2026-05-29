@@ -4,6 +4,7 @@ import type { ColumnDef } from '@tanstack/table-core';
 import DataTableActions from './data-table-actions.svelte';
 
 const recurringTypeLabels = ['Expense', 'Income'] as const;
+const recurrenceTypeLabels = ['Daily', 'Weekly', 'Monthly', 'Yearly'] as const;
 
 export const columns: ColumnDef<RecurringAction>[] = [
 	{
@@ -31,12 +32,24 @@ export const columns: ColumnDef<RecurringAction>[] = [
 		}
 	},
 	{
-		accessorKey: 'recurringAt',
-		header: 'Recurring At'
+		accessorKey: 'intervalValue',
+		header: 'Interval Value',
+		cell: ({ getValue }) => {
+			const intervalValue = getValue<number>();
+			return intervalValue === 1 ? 'Every' : `Every ${intervalValue}`;
+		}
 	},
 	{
-		accessorKey: 'createdAt',
-		header: 'Date'
+		accessorKey: 'recurrenceType',
+		header: 'Recurrence',
+		cell: ({ getValue }) => {
+			const recurrenceTypeValue = getValue<number>();
+			return recurrenceTypeLabels[recurrenceTypeValue] ?? 'Unknown';
+		}
+	},
+	{
+		accessorKey: 'recurringAt',
+		header: 'Next Action Date'
 	},
 	{
 		id: 'actions',

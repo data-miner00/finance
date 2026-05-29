@@ -14,36 +14,35 @@
 	let isDialogOpen = $state(false);
 	let name = $state('');
 	let amount = $state(0);
-	let recurringAt = $state('');
+	let startAt = $state('');
+	let recurrenceType = $state('Monthly');
+	let intervalValue = $state(1);
+	let dayOfMonth = $state<number | null>(null);
 	let type = $state('0');
 	let description = $state('');
 	let isActive = $state(true);
 
 	async function addRecurringAction() {
-		await createRecurringAction({
+		const response = await createRecurringAction({
 			name,
 			amount,
-			recurringAt,
+			startAt,
+			recurrenceType,
+			intervalValue,
+			dayOfMonth: dayOfMonth || undefined,
 			type: Number(type),
 			description: description || undefined,
 			isActive
 		});
 
-		appState.recurringActions.push({
-			name,
-			amount,
-			recurringAt,
-			type: Number(type),
-			description: description || undefined,
-			isActive,
-			id: crypto.randomUUID(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString()
-		});
+		appState.recurringActions.push(response);
 		isDialogOpen = false;
 		name = '';
 		amount = 0;
-		recurringAt = '';
+		startAt = '';
+		recurrenceType = 'Monthly';
+		intervalValue = 1;
+		dayOfMonth = null;
 		type = '0';
 		description = '';
 		isActive = true;
@@ -102,8 +101,44 @@
 					/>
 				</div>
 				<div class="grid gap-3">
-					<Label for="recurringAt-1">Recurring Date</Label>
-					<Input id="recurringAt-1" name="recurringAt" type="date" bind:value={recurringAt} />
+					<Label for="startAt-1">Start Date</Label>
+					<Input id="startAt-1" name="startAt" type="date" bind:value={startAt} required />
+				</div>
+				<div class="grid gap-3">
+					<Label for="recurrenceType-1">Recurrence Type</Label>
+					<Select.Root type="single" name="recurrenceType" bind:value={recurrenceType}>
+						<Select.Trigger id="recurrenceType-1" class="w-full">
+							{recurrenceType}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="Daily" label="Daily">Daily</Select.Item>
+							<Select.Item value="Weekly" label="Weekly">Weekly</Select.Item>
+							<Select.Item value="Monthly" label="Monthly">Monthly</Select.Item>
+							<Select.Item value="Yearly" label="Yearly">Yearly</Select.Item>
+						</Select.Content>
+					</Select.Root>
+				</div>
+				<div class="grid gap-3">
+					<Label for="intervalValue-1">Interval</Label>
+					<Input
+						id="intervalValue-1"
+						name="intervalValue"
+						type="number"
+						min="1"
+						bind:value={intervalValue}
+					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="dayOfMonth-1">Day of Month (optional)</Label>
+					<Input
+						id="dayOfMonth-1"
+						name="dayOfMonth"
+						type="number"
+						min="1"
+						max="31"
+						placeholder="Leave empty to use start date's day"
+						bind:value={dayOfMonth}
+					/>
 				</div>
 				<div class="grid gap-3">
 					<Label for="type-1">Type</Label>
