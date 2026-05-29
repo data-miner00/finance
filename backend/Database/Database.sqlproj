@@ -85,5 +85,11 @@
     <Build Include="dbo\Stored Procedures\usp_UpdatePiggyBank.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpdateRecurringAction.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpdateCategory.sql" />
+    <Build Include="dbo\Stored Procedures\usp_PatchAccount.sql" />
+    <Build Include="dbo\Stored Procedures\usp_PatchCategory.sql" />
+    <Build Include="dbo\Stored Procedures\usp_PatchExpense.sql" />
+    <Build Include="dbo\Stored Procedures\usp_PatchIncome.sql" />
+    <Build Include="dbo\Stored Procedures\usp_PatchPiggyBank.sql" />
+    <Build Include="dbo\Stored Procedures\usp_PatchRecurringAction.sql" />
   </ItemGroup>
 </Project>
