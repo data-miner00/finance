@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 	import DataTable from './table/index.svelte';
 	import { columns } from './table/column';
@@ -11,11 +12,22 @@
 	import { createExpense } from '$lib/services';
 
 	let isDialogOpen = $state(false);
+	let showCurrentMonthOnly = $state(true);
 
 	let name = $state('');
 	let amount = $state(0);
 	let categoryId = $state<string | undefined>(undefined);
 	let description = $state('');
+
+	const isCurrentMonthExpense = (expense: Expense) => {
+		const created = new Date(expense.createdAt);
+		const today = new Date();
+		return created.getFullYear() === today.getFullYear() && created.getMonth() === today.getMonth();
+	};
+
+	let filteredExpenses = $derived(
+		showCurrentMonthOnly ? appState.expenses.filter(isCurrentMonthExpense) : appState.expenses
+	);
 
 	async function addExpense() {
 		await createExpense({
@@ -56,11 +68,26 @@
 			</p>
 		</div>
 
-		<Button onclick={() => (isDialogOpen = true)}>Create Expense</Button>
+		<div class="mt-4 flex flex-wrap items-center gap-2">
+			<Button
+				variant={showCurrentMonthOnly ? 'default' : 'outline'}
+				size="sm"
+				onclick={() => (showCurrentMonthOnly = true)}
+			>
+				Current month
+			</Button>
+			<Button
+				variant={!showCurrentMonthOnly ? 'default' : 'outline'}
+				size="sm"
+				onclick={() => (showCurrentMonthOnly = false)}
+			>
+				Show older expenses
+			</Button>
+		</div>
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.expenses} {columns} />
+		<DataTable data={filteredExpenses} {columns} />
 	</div>
 </div>
 
