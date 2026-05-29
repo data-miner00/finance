@@ -12,8 +12,6 @@ namespace WebApi.Models
 
         public bool IsActive { get; set; }
 
-        public DateTime RecurringAt { get; set; }
-
         public DateTime StartAt { get; set; }
 
         public RecurrenceType RecurrenceType { get; set; } = RecurrenceType.Monthly;
