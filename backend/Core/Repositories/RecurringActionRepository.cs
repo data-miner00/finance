@@ -27,6 +27,10 @@ namespace Core.Repositories
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Description", entity.Description);
             parameters.Add("RecurringAt", entity.RecurringAt);
+            parameters.Add("StartAt", entity.StartAt);
+            parameters.Add("RecurrenceType", entity.RecurrenceType.ToString());
+            parameters.Add("IntervalValue", entity.IntervalValue);
+            parameters.Add("DayOfMonth", entity.DayOfMonth);
 
             var createdRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
                 SpNames.AddRecurring,
@@ -81,6 +85,10 @@ namespace Core.Repositories
             parameters.Add("RecurringAt", entity.RecurringAt);
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("StartAt", entity.StartAt);
+            parameters.Add("RecurrenceType", entity.RecurrenceType.ToString());
+            parameters.Add("IntervalValue", entity.IntervalValue);
+            parameters.Add("DayOfMonth", entity.DayOfMonth);
 
             var updatedRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
                 SpNames.UpdateRecurringAction,

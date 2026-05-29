@@ -15,5 +15,13 @@ namespace WebApi.Models
         public RecurringType Type { get; set; }
 
         public DateTime RecurringAt { get; set; }
+
+        public DateTime StartAt { get; set; }
+
+        public RecurrenceType RecurrenceType { get; set; } = RecurrenceType.Monthly;
+
+        public int IntervalValue { get; set; } = 1;
+
+        public int? DayOfMonth { get; set; }
     }
 }

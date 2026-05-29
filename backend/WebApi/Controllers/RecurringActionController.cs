@@ -48,6 +48,10 @@ namespace WebApi.Controllers
                 Amount = request.Amount,
                 RecurringAt = request.RecurringAt,
                 Type = request.Type,
+                StartAt = request.StartAt,
+                RecurrenceType = request.RecurrenceType,
+                IntervalValue = request.IntervalValue,
+                DayOfMonth = request.DayOfMonth,
             };
 
             var createdRecurringAction = await _repository.CreateAsync(recurringAction, cancellationToken);
@@ -65,6 +69,10 @@ namespace WebApi.Controllers
                 recurringAction.Amount = request.Amount;
                 recurringAction.IsActive = request.IsActive;
                 recurringAction.RecurringAt = request.RecurringAt;
+                recurringAction.StartAt = request.StartAt;
+                recurringAction.RecurrenceType = request.RecurrenceType;
+                recurringAction.IntervalValue = request.IntervalValue;
+                recurringAction.DayOfMonth = request.DayOfMonth;
 
                 await _repository.UpdateAsync(recurringAction, cancellationToken);
                 return NoContent();

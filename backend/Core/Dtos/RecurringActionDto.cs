@@ -19,6 +19,14 @@ namespace Core.Dtos
 
         public DateTime RecurringAt { get; set; }
 
+        public DateTime StartAt { get; set; }
+
+        public string RecurrenceType { get; set; }
+
+        public int IntervalValue { get; set; }
+
+        public int? DayOfMonth { get; set; }
+
         public override RecurringAction ToModel()
         {
             return new RecurringAction
@@ -30,6 +38,10 @@ namespace Core.Dtos
                 Type = Enum.Parse<RecurringType>(Type),
                 Amount = Amount,
                 RecurringAt = RecurringAt,
+                StartAt = StartAt,
+                RecurrenceType = Enum.Parse<Core.Models.RecurrenceType>(RecurrenceType),
+                IntervalValue = IntervalValue,
+                DayOfMonth = DayOfMonth,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

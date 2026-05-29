@@ -10,7 +10,11 @@ CREATE PROCEDURE [dbo].[usp_UpdateRecurringAction]
     @IsActive BIT,
     @RecurringAt DATETIME2(7),
     @Type NVARCHAR(50),
-    @Amount MONEY
+    @Amount MONEY,
+    @StartAt DATETIME2(7),
+    @RecurrenceType NVARCHAR(50) = 'Monthly',
+    @IntervalValue INT = 1,
+    @DayOfMonth INT = NULL
 AS
 BEGIN
     DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -23,7 +27,11 @@ BEGIN
         [IsActive] = @IsActive,
         [RecurringAt] = @RecurringAt,
         [Type] = @Type,
-        [Amount] = @Amount
+        [Amount] = @Amount,
+        [StartAt] = @StartAt,
+        [RecurrenceType] = @RecurrenceType,
+        [IntervalValue] = @IntervalValue,
+        [DayOfMonth] = @DayOfMonth
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
 
@@ -35,6 +43,10 @@ BEGIN
         r.[RecurringAt],
         r.[Type],
         r.[Amount],
+        r.[StartAt],
+        r.[RecurrenceType],
+        r.[IntervalValue],
+        r.[DayOfMonth],
         r.[CreatedAt],
         r.[UpdatedAt]
     FROM [dbo].[Recurrings] r
