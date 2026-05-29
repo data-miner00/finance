@@ -102,13 +102,8 @@
 					/>
 				</div>
 				<div class="grid gap-3">
-					<Label for="recurringAt-1">Recurring At (e.g. 15th)</Label>
-					<Input
-						id="recurringAt-1"
-						name="recurringAt"
-						placeholder="e.g. 15"
-						bind:value={recurringAt}
-					/>
+					<Label for="recurringAt-1">Recurring Date</Label>
+					<Input id="recurringAt-1" name="recurringAt" type="date" bind:value={recurringAt} />
 				</div>
 				<div class="grid gap-3">
 					<Label for="type-1">Type</Label>
