@@ -8,12 +8,17 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { createAccount, type AccountType } from '$lib/services';
+	import { onMount } from 'svelte';
 
 	let isDialogOpen = $state(false);
 
 	let name = $state('');
 	let balance = $state(0);
 	let accountType = $state<AccountType>(0);
+
+	onMount(() => {
+		appState.pageTitle = 'Accounts';
+	});
 
 	async function addAccount() {
 		await createAccount({ name, accountType, balance });
