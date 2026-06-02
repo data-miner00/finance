@@ -55,15 +55,15 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit piggy bank</DropdownMenu.Item>
-			<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)}>
-				Delete piggy bank
-			</DropdownMenu.Item>
+
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
 				Copy piggy bank ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item>View piggy bank details</DropdownMenu.Item>
+		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
+			Delete piggy bank
+		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 

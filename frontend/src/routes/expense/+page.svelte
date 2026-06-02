@@ -16,7 +16,7 @@
 
 	let name = $state('');
 	let amount = $state(0);
-	let categoryId = $state<string | undefined>(undefined);
+	let categoryName = $state<string | undefined>(undefined);
 	let description = $state('');
 
 	const isCurrentMonthExpense = (expense: Expense) => {
@@ -30,27 +30,18 @@
 	);
 
 	async function addExpense() {
-		await createExpense({
+		const expense = await createExpense({
 			name,
 			amount,
-			categoryId: categoryId || undefined,
+			categoryName,
 			description: description || undefined
 		});
 
-		appState.expenses.push({
-			name,
-			amount,
-			categoryId,
-			description: description || undefined,
-			id: crypto.randomUUID(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-			actionedAt: new Date().toISOString()
-		});
+		appState.expenses.push(expense);
 		isDialogOpen = false;
 		name = '';
 		amount = 0;
-		categoryId = undefined;
+		categoryName = undefined;
 		description = '';
 	}
 

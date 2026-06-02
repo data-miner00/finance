@@ -58,15 +58,15 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit account</DropdownMenu.Item>
-			<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)}>
-				Delete account
-			</DropdownMenu.Item>
+
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
 				Copy account ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item>View account details</DropdownMenu.Item>
+		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
+			Delete account
+		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 

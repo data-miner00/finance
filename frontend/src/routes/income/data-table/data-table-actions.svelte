@@ -53,15 +53,15 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit income</DropdownMenu.Item>
-			<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)}>
-				Delete income
-			</DropdownMenu.Item>
+
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
 				Copy income ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item>View income details</DropdownMenu.Item>
+		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
+			Delete income
+		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 

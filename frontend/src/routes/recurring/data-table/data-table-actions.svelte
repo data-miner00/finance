@@ -88,15 +88,15 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit recurring</DropdownMenu.Item>
-			<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)}>
-				Delete recurring
-			</DropdownMenu.Item>
+
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
 				Copy recurring ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
-		<DropdownMenu.Item>View recurring details</DropdownMenu.Item>
+		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
+			Delete recurring
+		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
 
