@@ -4,5 +4,6 @@
     <Build />
     <Deploy />
   </Project>
+  <Project Path="Provisioning/Provisioning.csproj" Id="ec243f87-d577-4510-aec8-54369d97ad26" />
   <Project Path="WebApi/WebApi.csproj" Id="cf7ba626-4a24-468b-86cb-750054148d27" />
 </Solution>
