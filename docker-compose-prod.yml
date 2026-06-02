@@ -1,0 +1,67 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: finance-mssql-prod
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD} # strong password required. Otherwise, it keep restarting
+      - MSSQL_PID=Developer
+    ports:
+      - 1434:1433
+    volumes:
+      - mssql-data-prod:/var/opt/mssql
+    restart: unless-stopped
+    networks:
+      - finance-prod
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: finance-azurite-prod
+    restart: "unless-stopped"
+    ports:
+      - 10003:10000
+      - 10001:10001
+      - 10002:10002
+    volumes:
+      - azurite-data-prod:/data
+    networks:
+      - finance-prod
+
+  webapi:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: finance-api
+    restart: unless-stopped
+    ports:
+      - "5002:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5001
+      - ConnectionStrings__SQLServer=Data Source=mssql,1433;Database=Finance;Persist Security Info=True;User ID=sa;Password=${MSSQL_SA_PASSWORD};Pooling=False;MultipleActiveResultSets=False;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;Packet Size=4096;Command Timeout=0
+    depends_on:
+      - mssql
+      - azurite
+    networks:
+      - finance-prod
+
+  webapp:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - PUBLIC_API_BASE_URL=http://localhost:5002
+    container_name: finance-webapp
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    depends_on:
+      - webapi
+
+volumes:
+  mssql-data-prod:
+  azurite-data-prod:
+
+networks:
+  finance-prod:
+    driver: bridge
