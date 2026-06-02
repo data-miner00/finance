@@ -68,7 +68,7 @@
 </DropdownMenu.Root>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
-	<form onsubmit={savePiggy}>
+	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Piggy Bank</Dialog.Title>
@@ -92,7 +92,7 @@
 				<Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
 					Cancel
 				</Dialog.Close>
-				<Button type="submit">Update Piggy Bank</Button>
+				<Button type="submit" onclick={savePiggy}>Update Piggy Bank</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</form>

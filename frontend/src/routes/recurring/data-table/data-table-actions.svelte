@@ -101,7 +101,7 @@
 </DropdownMenu.Root>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
-	<form onsubmit={saveRecurring}>
+	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Recurring</Dialog.Title>
@@ -170,7 +170,7 @@
 				<Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
 					Cancel
 				</Dialog.Close>
-				<Button type="submit">Update Recurring</Button>
+				<Button type="submit" onclick={saveRecurring}>Update Recurring</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</form>

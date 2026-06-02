@@ -66,7 +66,7 @@
 </DropdownMenu.Root>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
-	<form onsubmit={saveIncome}>
+	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Income</Dialog.Title>
@@ -86,7 +86,7 @@
 				<Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
 					Cancel
 				</Dialog.Close>
-				<Button type="submit">Update Income</Button>
+				<Button type="submit" onclick={saveIncome}>Update Income</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</form>

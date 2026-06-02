@@ -71,7 +71,7 @@
 </DropdownMenu.Root>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
-	<form onsubmit={saveAccount}>
+	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Account</Dialog.Title>
@@ -98,7 +98,7 @@
 				<Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
 					Cancel
 				</Dialog.Close>
-				<Button type="submit">Update Account</Button>
+				<Button type="submit" onclick={saveAccount}>Update Account</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</form>
