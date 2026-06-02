@@ -24,12 +24,12 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
-            parameters.Add("CategoryId", entity.CategoryId is null ? null : Guid.Parse(entity.CategoryId));
+            parameters.Add("CategoryName", entity.CategoryName);
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
 
             var createdExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
-                SpNames.AddExpense,
+                SpNames.AddExpenseWithCategoryName,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
@@ -54,7 +54,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM Expenses;");
+                $"SELECT * FROM {VwNames.GetAllExpenses};");
 
             var dtos = await this.connection.QueryAsync<ExpenseDto>(command);
             return dtos.Select(x => x.ToModel());
@@ -63,7 +63,7 @@ namespace Core.Repositories
         public async Task<Expense> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Expenses] WHERE [Id] = @Id;";
+            var query = $"SELECT * FROM [dbo].[{VwNames.GetAllExpenses}] WHERE [Id] = @Id;";
             var dto = await this.connection.QueryFirstAsync<ExpenseDto>(query, new { Id = id });
 
             return dto.ToModel();
@@ -77,13 +77,13 @@ namespace Core.Repositories
             parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
-            parameters.Add("CategoryId", entity.CategoryId is null ? null : Guid.Parse(entity.CategoryId));
+            parameters.Add("CategoryName", entity.CategoryName);
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
             parameters.Add("ActionedAt", entity.ActionedAt);
 
             var updatedExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
-                SpNames.UpdateExpense,
+                SpNames.UpdateExpenseWithCategoryName,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 

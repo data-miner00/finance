@@ -59,6 +59,7 @@
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="dbo\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Recurrings.sql" />
@@ -91,5 +92,8 @@
     <Build Include="dbo\Stored Procedures\usp_PatchIncome.sql" />
     <Build Include="dbo\Stored Procedures\usp_PatchPiggyBank.sql" />
     <Build Include="dbo\Stored Procedures\usp_PatchRecurringAction.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddExpenseWithCategoryName.sql" />
+    <Build Include="dbo\Stored Procedures\usp_UpdateExpenseWithCategoryName.sql" />
+    <Build Include="dbo\Views\vw_GetAllExpenses.sql" />
   </ItemGroup>
 </Project>

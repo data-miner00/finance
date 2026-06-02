@@ -22,7 +22,7 @@
 	let isCalendarPopoverOpen = $state(false);
 	let name = $state('');
 	let description = $state('');
-	let category = $state(''); // Todo, make this select from existing categories or allow creating new ones
+	let categoryName = $state(''); // Todo, make this select from existing categories or allow creating new ones
 	let amount = $state(0);
 	let location = $state('');
 	let actionedAt = $state<CalendarDate>();
@@ -37,18 +37,29 @@
 				amount
 			});
 
+			name = '';
+			description = '';
+			amount = 0;
+
 			appState.incomes = [...appState.incomes, income];
 		} else {
 			const expense = await createExpense({
 				name,
 				description,
-				category,
+				categoryName,
 				amount,
 				location,
 				actionedAt: actionedAt ? actionedAt.toString() : null
 			});
 
-			appState.expenses = [...appState.expenses, expense];
+			name = '';
+			description = '';
+			categoryName = '';
+			amount = 0;
+			location = '';
+			actionedAt = undefined;
+
+			appState.expenses.push(expense);
 		}
 
 		open = false;
@@ -86,7 +97,12 @@
 					</div>
 					<div class="grid gap-3">
 						<Label for="category-1">Category</Label>
-						<Input id="category-1" name="category" bind:value={category} placeholder="e.g. Food" />
+						<Input
+							id="category-1"
+							name="category"
+							bind:value={categoryName}
+							placeholder="e.g. Food"
+						/>
 					</div>
 					<div class="grid gap-3">
 						<Label for="description-1">Description</Label>

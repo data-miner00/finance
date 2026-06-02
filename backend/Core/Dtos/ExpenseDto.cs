@@ -7,7 +7,7 @@ namespace Core.Dtos
 {
     internal class ExpenseDto : Dto<Expense>
     {
-        public Guid? CategoryId { get; set; }
+        public string? CategoryName { get; set; }
 
         public string Name { get; set; }
 
@@ -26,7 +26,7 @@ namespace Core.Dtos
                 Id = Id.ToString(),
                 Name = Name,
                 Description = Description,
-                CategoryId = CategoryId.ToString(),
+                CategoryName = CategoryName,
                 Amount = Amount,
                 Location = Location,
                 CreatedAt = CreatedAt,

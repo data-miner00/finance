@@ -25,7 +25,7 @@ export interface CreateAccountRequest {
 export interface UpdateAccountRequest extends CreateAccountRequest {}
 
 export interface Expense extends EntityBase {
-	categoryId?: string;
+	categoryName?: string;
 	name: string;
 	description?: string | null;
 	amount: number;
@@ -36,7 +36,7 @@ export interface Expense extends EntityBase {
 }
 
 export interface CreateExpenseRequest {
-	categoryId?: string;
+	categoryName?: string;
 	name: string;
 	description?: string | null;
 	amount: number;

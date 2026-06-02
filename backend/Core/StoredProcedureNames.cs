@@ -8,7 +8,7 @@ namespace Core
     {
         public const string AddAccount = "usp_AddAccount";
 
-        public const string AddExpense = "usp_AddExpense";
+        public const string AddExpenseWithCategoryName = "usp_AddExpenseWithCategoryName";
 
         public const string AddIncome = "usp_AddIncome";
 
@@ -32,7 +32,7 @@ namespace Core
         
         public const string UpdateAccount = "usp_UpdateAccount";
 
-        public const string UpdateExpense = "usp_UpdateExpense";
+        public const string UpdateExpenseWithCategoryName = "usp_UpdateExpenseWithCategoryName";
 
         public const string UpdateIncome = "usp_UpdateIncome";
 

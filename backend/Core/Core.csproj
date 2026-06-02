@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Using Include="Core.StoredProcedureNames" Alias="SpNames" />
+    <Using Include="Core.ViewNames" Alias="VwNames" />
   </ItemGroup>
 
 </Project>

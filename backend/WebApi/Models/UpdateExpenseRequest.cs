@@ -2,7 +2,7 @@ namespace WebApi.Models
 {
     public class UpdateExpenseRequest
     {
-        public string? CategoryId { get; set; }
+        public string? CategoryName { get; set; }
 
         public string Name { get; set; }
 

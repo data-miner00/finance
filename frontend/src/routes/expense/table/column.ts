@@ -16,7 +16,7 @@ export const columns: ColumnDef<Expense>[] = [
 		header: 'Name'
 	},
 	{
-		accessorKey: 'category',
+		accessorKey: 'categoryName',
 		header: 'Category'
 	},
 	{

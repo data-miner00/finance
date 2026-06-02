@@ -42,7 +42,7 @@ namespace WebApi.Controllers
         {
             var expense = new Expense
             {
-                CategoryId = request.CategoryId,
+                CategoryName = request.CategoryName,
                 Name = request.Name,
                 Description = request.Description,
                 Amount = request.Amount,
@@ -67,7 +67,7 @@ namespace WebApi.Controllers
             try
             {
                 var expense = await _repository.GetByIdAsync(id, cancellationToken);
-                expense.CategoryId = request.CategoryId;
+                expense.CategoryName = request.CategoryName;
                 expense.Name = request.Name;
                 expense.Description = request.Description;
                 expense.Amount = request.Amount;
