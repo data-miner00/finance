@@ -10,6 +10,7 @@
 	import { getLocalTimeZone, today, type CalendarDate } from '@internationalized/date';
 	import { createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
+	import { CheckIcon, ChevronsUpDownIcon } from '@lucide/svelte';
 	const id = $props.id();
 
 	type Props = {
@@ -60,9 +61,28 @@
 			actionedAt = undefined;
 
 			appState.expenses.push(expense);
+			if (expense.categoryName && !appState.categories.includes(expense.categoryName)) {
+				appState.categories.push(expense.categoryName);
+			}
 		}
 
 		open = false;
+	}
+
+	import * as Command from '$lib/components/ui/command/index.js';
+	import { cn } from '$lib/utils';
+	import { tick } from 'svelte';
+	let comboOpen = $state(false);
+	let triggerRef = $state<HTMLButtonElement>(null!);
+
+	// We want to refocus the trigger button when the user selects
+	// an item from the list so users can continue navigating the
+	// rest of the form with the keyboard.
+	function closeAndFocusTrigger() {
+		comboOpen = false;
+		tick().then(() => {
+			triggerRef.focus();
+		});
 	}
 </script>
 
@@ -97,12 +117,44 @@
 					</div>
 					<div class="grid gap-3">
 						<Label for="category-1">Category</Label>
-						<Input
-							id="category-1"
-							name="category"
-							bind:value={categoryName}
-							placeholder="e.g. Food"
-						/>
+						<Popover.Root bind:open={comboOpen}>
+							<Popover.Trigger bind:ref={triggerRef}>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										variant="outline"
+										class="w-[200px] justify-between"
+										role="combobox"
+										aria-expanded={open}
+									>
+										{categoryName || 'Select a category...'}
+										<ChevronsUpDownIcon class="opacity-50" />
+									</Button>
+								{/snippet}
+							</Popover.Trigger>
+							<Popover.Content class="w-[200px] p-0">
+								<Command.Root>
+									<Command.Input placeholder="Category..." bind:value={categoryName} />
+									<Command.List>
+										<Command.Empty>{categoryName}</Command.Empty>
+										<Command.Group value="frameworks">
+											{#each appState.categories as category (category)}
+												<Command.Item
+													value={category}
+													onSelect={() => {
+														categoryName = category;
+														closeAndFocusTrigger();
+													}}
+												>
+													<CheckIcon class={cn(categoryName !== category && 'text-transparent')} />
+													{category}
+												</Command.Item>
+											{/each}
+										</Command.Group>
+									</Command.List>
+								</Command.Root>
+							</Popover.Content>
+						</Popover.Root>
 					</div>
 					<div class="grid gap-3">
 						<Label for="description-1">Description</Label>

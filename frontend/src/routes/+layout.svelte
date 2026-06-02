@@ -23,6 +23,9 @@
 		appState.incomes = await getIncomes();
 		appState.recurringActions = await getRecurringActions();
 		appState.piggyBanks = await getPiggyBanks();
+		appState.categories = Array.from(
+			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))
+		);
 	});
 </script>
 
