@@ -23,11 +23,12 @@ export const columns: ColumnDef<PiggyBank>[] = [
 			row.target.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
 	},
 	{
-		accessorKey: 'deadline',
+		accessorFn: (row) =>
+			row.deadline ? Intl.DateTimeFormat('en-MY').format(new Date(row.deadline)) : 'N/A',
 		header: 'Deadline'
 	},
 	{
-		accessorKey: 'createdAt',
+		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
 		header: 'Date'
 	},
 	{

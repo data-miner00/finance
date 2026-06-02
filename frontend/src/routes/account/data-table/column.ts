@@ -24,7 +24,7 @@ export const columns: ColumnDef<Account>[] = [
 		accessorFn: (row) => row.balance.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
 	},
 	{
-		accessorKey: 'createdAt',
+		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
 		header: 'Date'
 	},
 	{

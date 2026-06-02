@@ -20,7 +20,7 @@ export const columns: ColumnDef<Income>[] = [
 		accessorFn: (row) => row.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
 	},
 	{
-		accessorKey: 'createdAt',
+		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
 		header: 'Date'
 	},
 	{

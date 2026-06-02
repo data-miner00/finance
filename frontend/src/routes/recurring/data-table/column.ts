@@ -48,7 +48,7 @@ export const columns: ColumnDef<RecurringAction>[] = [
 		}
 	},
 	{
-		accessorKey: 'recurringAt',
+		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.recurringAt)),
 		header: 'Next Action Date'
 	},
 	{
