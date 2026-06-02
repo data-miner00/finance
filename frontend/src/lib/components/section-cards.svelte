@@ -45,14 +45,14 @@
 	// Derived: Total expense for this month
 	let totalExpenseThisMonth = $derived(
 		appState.expenses
-			.filter((expense) => isCurrentMonth(expense.actionedAt))
+			.filter((expense) => isCurrentMonth(expense.actionedAt ?? expense.createdAt))
 			.reduce((sum, expense) => sum + expense.amount, 0)
 	);
 
 	// Derived: Total expense for last month
 	let totalExpenseLastMonth = $derived(
 		appState.expenses
-			.filter((expense) => isLastMonth(expense.actionedAt))
+			.filter((expense) => isLastMonth(expense.actionedAt ?? expense.createdAt))
 			.reduce((sum, expense) => sum + expense.amount, 0)
 	);
 
@@ -65,12 +65,10 @@
 	let totalPiggyBankAmount = $derived(appState.piggyBanks.reduce((sum, pb) => sum + pb.amount, 0));
 
 	// Derived: Left to spend (income - expense - piggy bank)
-	let leftToSpend = $derived(totalIncomeThisMonth - totalExpenseThisMonth - totalPiggyBankAmount);
+	let leftToSpend = $derived(totalIncomeThisMonth - totalExpenseThisMonth);
 
 	// Derived: Left to spend last month
-	let leftToSpendLastMonth = $derived(
-		totalIncomeLastMonth - totalExpenseLastMonth - totalPiggyBankAmount
-	);
+	let leftToSpendLastMonth = $derived(totalIncomeLastMonth - totalExpenseLastMonth);
 
 	// Derived: Calculate percentage changes
 	let incomeChangePercent = $derived(
