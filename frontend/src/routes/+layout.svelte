@@ -26,7 +26,10 @@
 	});
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<link rel="icon" href={favicon} />
+	<title>{appState.pageTitle}</title>
+</svelte:head>
 
 <Sidebar.Provider
 	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
