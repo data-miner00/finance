@@ -15,7 +15,7 @@
 	let name = $state('');
 	let amount = $state(0);
 	let startAt = $state('');
-	let recurrenceType = $state('Monthly');
+	let recurrenceType = $state('2');
 	let intervalValue = $state(1);
 	let dayOfMonth = $state<number | null>(null);
 	let type = $state('0');
@@ -27,7 +27,7 @@
 			name,
 			amount,
 			startAt,
-			recurrenceType,
+			recurrenceType: Number(recurrenceType),
 			intervalValue,
 			dayOfMonth: dayOfMonth || undefined,
 			type: Number(type),
@@ -35,12 +35,12 @@
 			isActive
 		});
 
-		appState.recurringActions.push(response);
+		appState.recurringActions = [...appState.recurringActions, response];
 		isDialogOpen = false;
 		name = '';
 		amount = 0;
 		startAt = '';
-		recurrenceType = 'Monthly';
+		recurrenceType = '2';
 		intervalValue = 1;
 		dayOfMonth = null;
 		type = '0';
@@ -108,13 +108,21 @@
 					<Label for="recurrenceType-1">Recurrence Type</Label>
 					<Select.Root type="single" name="recurrenceType" bind:value={recurrenceType}>
 						<Select.Trigger id="recurrenceType-1" class="w-full">
-							{recurrenceType}
+							{#if recurrenceType === '0'}
+								Daily
+							{:else if recurrenceType === '1'}
+								Weekly
+							{:else if recurrenceType === '2'}
+								Monthly
+							{:else if recurrenceType === '3'}
+								Yearly
+							{/if}
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="Daily" label="Daily">Daily</Select.Item>
-							<Select.Item value="Weekly" label="Weekly">Weekly</Select.Item>
-							<Select.Item value="Monthly" label="Monthly">Monthly</Select.Item>
-							<Select.Item value="Yearly" label="Yearly">Yearly</Select.Item>
+							<Select.Item value="0" label="Daily">Daily</Select.Item>
+							<Select.Item value="1" label="Weekly">Weekly</Select.Item>
+							<Select.Item value="2" label="Monthly">Monthly</Select.Item>
+							<Select.Item value="3" label="Yearly">Yearly</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>

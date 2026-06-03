@@ -21,16 +21,12 @@
 	});
 
 	async function addAccount() {
-		await createAccount({ name, accountType, balance });
+		const account = await createAccount({ name, accountType, balance });
 
-		appState.accounts.push({
-			name,
-			type: accountType,
-			balance,
-			id: crypto.randomUUID(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString()
-		});
+		appState.accounts = [...appState.accounts, account];
+		name = '';
+		balance = 0;
+		accountType = 0;
 		isDialogOpen = false;
 	}
 </script>

@@ -19,7 +19,7 @@
 	let deadline = $state('');
 
 	async function addPiggyBank() {
-		await createPiggyBank({
+		const piggyBank = await createPiggyBank({
 			name,
 			amount,
 			target,
@@ -27,16 +27,7 @@
 			deadline: deadline || undefined
 		});
 
-		appState.piggyBanks.push({
-			name,
-			amount,
-			target,
-			description: description || undefined,
-			deadline: deadline || undefined,
-			id: crypto.randomUUID(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString()
-		});
+		appState.piggyBanks = [...appState.piggyBanks, piggyBank];
 		isDialogOpen = false;
 		name = '';
 		amount = 0;

@@ -17,20 +17,13 @@
 	let description = $state('');
 
 	async function addIncome() {
-		await createIncome({
+		const income = await createIncome({
 			name,
 			amount,
 			description: description || undefined
 		});
 
-		appState.incomes.push({
-			name,
-			amount,
-			description: description || undefined,
-			id: crypto.randomUUID(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString()
-		});
+		appState.incomes = [...appState.incomes, income];
 		isDialogOpen = false;
 		name = '';
 		amount = 0;
