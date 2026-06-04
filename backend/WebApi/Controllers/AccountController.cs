@@ -62,7 +62,7 @@ namespace WebApi.Controllers
                 account.Name = request.Name;
                 account.Description = request.Description;
                 account.Type = (AccountType)request.AccountType;
-                account.Balance = request.Amount;
+                account.Balance = request.Balance;
                 account.Currency = request.Currency;
 
                 var updated = await _repository.UpdateAsync(account, cancellationToken);

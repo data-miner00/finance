@@ -8,7 +8,7 @@ namespace WebApi.Models
 
         public int AccountType { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal Balance { get; set; }
 
         public string? Currency { get; set; }
     }
