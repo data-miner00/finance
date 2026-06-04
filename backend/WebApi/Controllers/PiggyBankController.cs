@@ -55,7 +55,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, UpdatePiggyBankRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<PiggyBank>> Update(string id, UpdatePiggyBankRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -67,12 +67,12 @@ namespace WebApi.Controllers
                 piggyBank.Currency = request.Currency;
                 piggyBank.Deadline = request.Deadline;
 
-                await _repository.UpdateAsync(piggyBank, cancellationToken);
-                return NoContent();
+                var updated = await _repository.UpdateAsync(piggyBank, cancellationToken);
+                return this.Ok(updated);
             }
             catch
             {
-                return NotFound();
+                return this.NotFound();
             }
         }
 

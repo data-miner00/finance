@@ -22,8 +22,8 @@ export async function updateExpense(
 	id: string,
 	request: UpdateExpenseRequest,
 	signal?: AbortSignal
-): Promise<void> {
-	return apiPut<UpdateExpenseRequest>(`${path}/${id}`, request, signal);
+): Promise<Expense> {
+	return apiPut<UpdateExpenseRequest, Expense>(`${path}/${id}`, request, signal);
 }
 
 export async function deleteExpense(id: string, signal?: AbortSignal): Promise<void> {

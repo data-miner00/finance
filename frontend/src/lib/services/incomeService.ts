@@ -22,8 +22,8 @@ export async function updateIncome(
 	id: string,
 	request: UpdateIncomeRequest,
 	signal?: AbortSignal
-): Promise<void> {
-	return apiPut<UpdateIncomeRequest>(`${path}/${id}`, request, signal);
+): Promise<Income> {
+	return apiPut<UpdateIncomeRequest, Income>(`${path}/${id}`, request, signal);
 }
 
 export async function deleteIncome(id: string, signal?: AbortSignal): Promise<void> {

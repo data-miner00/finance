@@ -22,8 +22,8 @@ export async function updatePiggyBank(
 	id: string,
 	request: UpdatePiggyBankRequest,
 	signal?: AbortSignal
-): Promise<void> {
-	return apiPut<UpdatePiggyBankRequest>(`${path}/${id}`, request, signal);
+): Promise<PiggyBank> {
+	return apiPut<UpdatePiggyBankRequest, PiggyBank>(`${path}/${id}`, request, signal);
 }
 
 export async function deletePiggyBank(id: string, signal?: AbortSignal): Promise<void> {

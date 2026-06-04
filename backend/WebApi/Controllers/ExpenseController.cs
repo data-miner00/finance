@@ -62,7 +62,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, UpdateExpenseRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Expense>> Update(string id, UpdateExpenseRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -76,8 +76,8 @@ namespace WebApi.Controllers
                 expense.ReceiptImage = request.ReceiptImage;
                 expense.ActionedAt = request.ActionedAt;
 
-                await _repository.UpdateAsync(expense, cancellationToken);
-                return NoContent();
+                var updated = await _repository.UpdateAsync(expense, cancellationToken);
+                return this.Ok(updated);
             }
             catch
             {

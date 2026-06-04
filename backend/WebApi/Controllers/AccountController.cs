@@ -54,7 +54,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, UpdateAccountRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Account>> Update(string id, UpdateAccountRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -64,14 +64,13 @@ namespace WebApi.Controllers
                 account.Type = (AccountType)request.AccountType;
                 account.Balance = request.Amount;
                 account.Currency = request.Currency;
-                account.UpdatedAt = DateTime.UtcNow;
 
-                await _repository.UpdateAsync(account, cancellationToken);
-                return NoContent();
+                var updated = await _repository.UpdateAsync(account, cancellationToken);
+                return this.Ok(updated);
             }
             catch
             {
-                return NotFound();
+                return this.NotFound();
             }
         }
 

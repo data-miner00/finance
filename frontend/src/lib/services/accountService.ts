@@ -22,8 +22,8 @@ export async function updateAccount(
 	id: string,
 	request: UpdateAccountRequest,
 	signal?: AbortSignal
-): Promise<void> {
-	return apiPut<UpdateAccountRequest>(`${path}/${id}`, request, signal);
+): Promise<Account> {
+	return apiPut<UpdateAccountRequest, Account>(`${path}/${id}`, request, signal);
 }
 
 export async function deleteAccount(id: string, signal?: AbortSignal): Promise<void> {

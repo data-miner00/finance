@@ -52,11 +52,11 @@ export async function apiPost<TRequest, TResponse>(
 	return handleResponse<TResponse>(response);
 }
 
-export async function apiPut<TRequest>(
+export async function apiPut<TRequest, TResponse>(
 	path: string,
 	body: TRequest,
 	signal?: AbortSignal
-): Promise<void> {
+): Promise<TResponse> {
 	const response = await fetch(`${apiBase}${path}`, {
 		method: 'PUT',
 		headers: {
@@ -66,7 +66,7 @@ export async function apiPut<TRequest>(
 		signal
 	});
 
-	await handleResponse<void>(response);
+	return handleResponse<TResponse>(response);
 }
 
 export async function apiDelete(path: string, signal?: AbortSignal): Promise<void> {

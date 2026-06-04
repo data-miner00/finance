@@ -153,7 +153,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, UpdateRecurringActionRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<RecurringAction>> Update(string id, UpdateRecurringActionRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -170,12 +170,12 @@ namespace WebApi.Controllers
                 // Recalculate next execution date based on updated properties
                 recurringAction.RecurringAt = CalculateNextExecutionDate(request.StartAt, request.RecurrenceType, request.IntervalValue, request.DayOfMonth);
 
-                await _repository.UpdateAsync(recurringAction, cancellationToken);
-                return NoContent();
+                var updated = await _repository.UpdateAsync(recurringAction, cancellationToken);
+                return this.Ok(updated);
             }
             catch
             {
-                return NotFound();
+                return this.NotFound();
             }
         }
 

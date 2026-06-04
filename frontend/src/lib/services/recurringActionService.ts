@@ -29,8 +29,8 @@ export async function updateRecurringAction(
 	id: string,
 	request: UpdateRecurringActionRequest,
 	signal?: AbortSignal
-): Promise<void> {
-	return apiPut<UpdateRecurringActionRequest>(`${path}/${id}`, request, signal);
+): Promise<RecurringAction> {
+	return apiPut<UpdateRecurringActionRequest, RecurringAction>(`${path}/${id}`, request, signal);
 }
 
 export async function deleteRecurringAction(id: string, signal?: AbortSignal): Promise<void> {

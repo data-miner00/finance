@@ -52,7 +52,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, UpdateIncomeRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Income>> Update(string id, UpdateIncomeRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -61,12 +61,12 @@ namespace WebApi.Controllers
                 income.Description = request.Description;
                 income.Amount = request.Amount;
 
-                await _repository.UpdateAsync(income, cancellationToken);
-                return NoContent();
+                var updated = await _repository.UpdateAsync(income, cancellationToken);
+                return this.Ok(updated);
             }
             catch
             {
-                return NotFound();
+                return this.NotFound();
             }
         }
 
