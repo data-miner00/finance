@@ -32,7 +32,7 @@
 		await updateAccount(id, { name, accountType, balance });
 		appState.accounts = appState.accounts.map((account) =>
 			account.id === id
-				? { ...account, name, balance, updatedAt: new Date().toISOString() }
+				? { ...account, name, balance, type: accountType, updatedAt: new Date().toISOString() }
 				: account
 		);
 		isEditDialogOpen = false;
@@ -43,6 +43,8 @@
 		appState.accounts = appState.accounts.filter((account) => account.id !== id);
 		isDeleteDialogOpen = false;
 	}
+
+	import * as Select from '$lib/components/ui/select/index.js';
 </script>
 
 <DropdownMenu.Root>
@@ -81,6 +83,39 @@
 				<div class="grid gap-3">
 					<Label for="edit-name">Name</Label>
 					<Input id="edit-name" name="name" placeholder="e.g. Public Bank" bind:value={name} />
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-type">Type</Label>
+					<Select.Root
+						type="single"
+						value={accountType.toString()}
+						onValueChange={(value) => (accountType = parseInt(value))}
+					>
+						<Select.Trigger
+							size="sm"
+							class="flex w-40 w-full **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
+							aria-label="Select a value"
+						>
+							<span data-slot="select-value">
+								{accountType === 0
+									? 'Bank'
+									: accountType === 1
+										? 'E-Wallet'
+										: accountType === 2
+											? 'Cash'
+											: accountType === 3
+												? 'App'
+												: 'Card'}
+							</span>
+						</Select.Trigger>
+						<Select.Content class="rounded-xl">
+							<Select.Item value="0" class="rounded-lg">Bank</Select.Item>
+							<Select.Item value="1" class="rounded-lg">E-Wallet</Select.Item>
+							<Select.Item value="2" class="rounded-lg">Cash</Select.Item>
+							<Select.Item value="3" class="rounded-lg">App</Select.Item>
+							<Select.Item value="4" class="rounded-lg">Card</Select.Item>
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="edit-balance">Balance</Label>
