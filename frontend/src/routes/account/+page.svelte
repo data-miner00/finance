@@ -52,7 +52,7 @@
 
 <Dialog.Root bind:open={isDialogOpen}>
 	<form>
-		<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>
 				<Dialog.Title>Add Account</Dialog.Title>
 				<Dialog.Description>Fill in the details to create a new account.</Dialog.Description>

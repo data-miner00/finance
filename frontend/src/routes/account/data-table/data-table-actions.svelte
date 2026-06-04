@@ -93,7 +93,7 @@
 					>
 						<Select.Trigger
 							size="sm"
-							class="flex w-40 w-full **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
+							class="flex w-full **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
 							aria-label="Select a value"
 						>
 							<span data-slot="select-value">

@@ -16,6 +16,7 @@
 		get data() {
 			return data;
 		},
+		// svelte-ignore state_referenced_locally
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		state: {
