@@ -10,6 +10,8 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { createExpense } from '$lib/services';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import { PlusIcon } from '@lucide/svelte';
 
 	let isDialogOpen = $state(false);
 	let showCurrentMonthOnly = $state(true);
@@ -19,6 +21,16 @@
 	let categoryName = $state<string | undefined>(undefined);
 	let description = $state('');
 
+	const timeRanges = [
+		{ value: 'day', label: 'Day' },
+		{ value: 'month', label: 'Month' },
+		{ value: 'year', label: 'Year' },
+		{ value: 'all', label: 'All' }
+	];
+	let timeRange = $state<'day' | 'month' | 'year' | 'all'>('day');
+	const timeRangeLabel = $derived(
+		timeRanges.find((tr) => tr.value === timeRange)?.label ?? 'Select a time range'
+	);
 	const isCurrentMonthExpense = (expense: Expense) => {
 		const created = new Date(expense.createdAt);
 		const today = new Date();
@@ -50,6 +62,45 @@
 	});
 </script>
 
+<!-- <Select.Root type="single" name="timeRange" bind:value={timeRange}>
+		<Select.Trigger class="w-[180px]">
+			{timeRangeLabel}
+		</Select.Trigger>
+		<Select.Content>
+			<Select.Group>
+				{#each timeRanges as range (range.value)}
+					<Select.Item value={range.value} label={range.label}>
+						{range.label}
+					</Select.Item>
+				{/each}
+			</Select.Group>
+		</Select.Content>
+	</Select.Root> -->
+
+{#snippet dataTableControls()}
+	<div class="flex items-center justify-between gap-2">
+		<Button size="sm" onclick={() => (isDialogOpen = true)}>
+			<PlusIcon />
+			<span class="hidden lg:inline">Add Expense</span>
+		</Button>
+
+		<Button
+			variant={showCurrentMonthOnly ? 'default' : 'outline'}
+			size="sm"
+			onclick={() => (showCurrentMonthOnly = true)}
+		>
+			Current month
+		</Button>
+		<Button
+			variant={!showCurrentMonthOnly ? 'default' : 'outline'}
+			size="sm"
+			onclick={() => (showCurrentMonthOnly = false)}
+		>
+			Show older expenses
+		</Button>
+	</div>
+{/snippet}
+
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -58,27 +109,10 @@
 				Track your spending with a sortable expense table, category filters, and summary totals.
 			</p>
 		</div>
-
-		<div class="mt-4 flex flex-wrap items-center gap-2">
-			<Button
-				variant={showCurrentMonthOnly ? 'default' : 'outline'}
-				size="sm"
-				onclick={() => (showCurrentMonthOnly = true)}
-			>
-				Current month
-			</Button>
-			<Button
-				variant={!showCurrentMonthOnly ? 'default' : 'outline'}
-				size="sm"
-				onclick={() => (showCurrentMonthOnly = false)}
-			>
-				Show older expenses
-			</Button>
-		</div>
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={filteredExpenses} {columns} />
+		<DataTable data={filteredExpenses} {columns} controls={dataTableControls} />
 	</div>
 </div>
 

@@ -2,13 +2,15 @@
 	import { type ColumnDef, getCoreRowModel, type VisibilityState } from '@tanstack/table-core';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import type { Snippet } from 'svelte';
 
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
 		data: TData[];
+		controls?: Snippet;
 	};
 
-	let { data, columns }: DataTableProps<TData, TValue> = $props();
+	let { data, columns, controls: Controls }: DataTableProps<TData, TValue> = $props();
 
 	const table = createSvelteTable({
 		get data() {
@@ -30,23 +32,11 @@
 		}
 	});
 
-	const timeRanges = [
-		{ value: 'day', label: 'Day' },
-		{ value: 'month', label: 'Month' },
-		{ value: 'year', label: 'Year' },
-		{ value: 'all', label: 'All' }
-	];
-	let timeRange = $state<'day' | 'month' | 'year' | 'all'>('day');
-	const timeRangeLabel = $derived(
-		timeRanges.find((tr) => tr.value === timeRange)?.label ?? 'Select a time range'
-	);
-
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import LayoutColumnsIcon from '@tabler/icons-svelte/icons/layout-columns';
 	import ChevronDownIcon from '@tabler/icons-svelte/icons/chevron-down';
 	import PlusIcon from '@tabler/icons-svelte/icons/plus';
-	import * as Select from '$lib/components/ui/select/index.js';
 
 	let columnVisibility = $state<VisibilityState>({});
 </script>
@@ -78,20 +68,9 @@
 		<PlusIcon />
 		<span class="hidden lg:inline">Add Section</span>
 	</Button>
-	<Select.Root type="single" name="timeRange" bind:value={timeRange}>
-		<Select.Trigger class="w-[180px]">
-			{timeRangeLabel}
-		</Select.Trigger>
-		<Select.Content>
-			<Select.Group>
-				{#each timeRanges as range (range.value)}
-					<Select.Item value={range.value} label={range.label}>
-						{range.label}
-					</Select.Item>
-				{/each}
-			</Select.Group>
-		</Select.Content>
-	</Select.Root>
+	{#if Controls}
+		{@render Controls()}
+	{/if}
 </div>
 <div class="rounded-md border">
 	<Table.Root>

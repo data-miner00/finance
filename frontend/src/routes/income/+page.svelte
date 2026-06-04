@@ -9,6 +9,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { createIncome } from '$lib/services';
+	import { PlusIcon } from '@lucide/svelte';
 
 	let isDialogOpen = $state(false);
 
@@ -35,6 +36,13 @@
 	});
 </script>
 
+{#snippet dataTableControls()}
+	<Button size="sm" onclick={() => (isDialogOpen = true)}>
+		<PlusIcon />
+		Create Income
+	</Button>
+{/snippet}
+
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -43,12 +51,10 @@
 				Track your income with a sortable income table, category filters, and summary totals.
 			</p>
 		</div>
-
-		<Button onclick={() => (isDialogOpen = true)}>Create Income</Button>
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.incomes} {columns} />
+		<DataTable data={appState.incomes} {columns} controls={dataTableControls} />
 	</div>
 </div>
 

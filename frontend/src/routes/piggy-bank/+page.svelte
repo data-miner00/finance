@@ -9,6 +9,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { createPiggyBank } from '$lib/services';
+	import { PlusIcon } from '@lucide/svelte';
 
 	let isDialogOpen = $state(false);
 
@@ -41,6 +42,13 @@
 	});
 </script>
 
+{#snippet dataTableControls()}
+	<Button size="sm" onclick={() => (isDialogOpen = true)}>
+		<PlusIcon />
+		Create Piggy Bank
+	</Button>
+{/snippet}
+
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -49,12 +57,10 @@
 				Track your piggy banks with a sortable table, category filters, and summary totals.
 			</p>
 		</div>
-
-		<Button onclick={() => (isDialogOpen = true)}>Create Piggy Bank</Button>
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.piggyBanks} {columns} />
+		<DataTable data={appState.piggyBanks} {columns} controls={dataTableControls} />
 	</div>
 </div>
 

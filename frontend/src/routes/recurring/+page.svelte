@@ -10,6 +10,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { createRecurringAction } from '$lib/services';
+	import { PlusIcon } from '@lucide/svelte';
 
 	let isDialogOpen = $state(false);
 	let name = $state('');
@@ -53,6 +54,13 @@
 	});
 </script>
 
+{#snippet dataTableControls()}
+	<Button size="sm" onclick={() => (isDialogOpen = true)}>
+		<PlusIcon />
+		Create Recurring Action
+	</Button>
+{/snippet}
+
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -61,12 +69,10 @@
 				Manage your recurring actions and view their details.
 			</p>
 		</div>
-
-		<Button onclick={() => (isDialogOpen = true)}>Create Recurring Action</Button>
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.recurringActions} {columns} />
+		<DataTable data={appState.recurringActions} {columns} controls={dataTableControls} />
 	</div>
 </div>
 

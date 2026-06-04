@@ -31,6 +31,10 @@
 	}
 </script>
 
+{#snippet dataTableControls()}
+	<Button size="sm" onclick={() => (isDialogOpen = true)}>Create Account</Button>
+{/snippet}
+
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -39,12 +43,10 @@
 				Manage your financial accounts and view their balances.
 			</p>
 		</div>
-
-		<Button onclick={() => (isDialogOpen = true)}>Create Account</Button>
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.accounts} {columns} />
+		<DataTable data={appState.accounts} {columns} controls={dataTableControls} />
 	</div>
 </div>
 
