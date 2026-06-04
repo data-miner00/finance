@@ -25,14 +25,6 @@
 					<CirclePlusFilledIcon />
 					<span>Quick Create</span>
 				</Sidebar.MenuButton>
-				<Button
-					size="icon"
-					class="size-8 group-data-[collapsible=icon]:opacity-0"
-					variant="outline"
-				>
-					<MailIcon />
-					<span class="sr-only">Inbox</span>
-				</Button>
 			</Sidebar.MenuItem>
 		</Sidebar.Menu>
 		<Sidebar.Menu>

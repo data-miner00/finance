@@ -23,6 +23,9 @@
 	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
 	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
 	import Bell from '@tabler/icons-svelte/icons/bell';
+	import HandCoinsIcon from '@lucide/svelte/icons/hand-coins';
+	import Tax from '@tabler/icons-svelte/icons/tax';
+	import UserScan from '@tabler/icons-svelte/icons/user-scan';
 
 	const data = {
 		user: {
@@ -60,6 +63,26 @@
 				title: 'Piggy Bank',
 				url: '/piggy-bank',
 				icon: PigMoney
+			},
+			{
+				title: 'Debts',
+				url: '/debts',
+				icon: HandCoinsIcon
+			},
+			{
+				title: 'Taxes',
+				url: '/taxes',
+				icon: Tax
+			},
+			{
+				title: 'People',
+				url: '/people',
+				icon: UserScan
+			},
+			{
+				title: 'Analytics',
+				url: '/analytics',
+				icon: ReportIcon
 			},
 			{
 				title: 'Notifications',
