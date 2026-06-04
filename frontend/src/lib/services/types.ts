@@ -1,4 +1,10 @@
-export type AccountType = 0 | 1 | 2 | 3 | 4;
+export enum AccountType {
+	Bank,
+	EWallet,
+	Cash,
+	App,
+	Card
+}
 
 export interface EntityBase {
 	id: string;

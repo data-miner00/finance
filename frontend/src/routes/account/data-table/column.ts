@@ -1,5 +1,5 @@
 import { renderComponent } from '$lib/components/ui/data-table';
-import type { Account } from '$lib/services/types';
+import { AccountType, type Account } from '$lib/services/types';
 import type { ColumnDef } from '@tanstack/table-core';
 import DataTableActions from './data-table-actions.svelte';
 export const columns: ColumnDef<Account>[] = [
@@ -16,7 +16,20 @@ export const columns: ColumnDef<Account>[] = [
 		header: 'Name'
 	},
 	{
-		accessorFn: (row) => row.type,
+		accessorFn: (row) => {
+			switch (row.type) {
+				case AccountType.Bank:
+					return 'Bank';
+				case AccountType.EWallet:
+					return 'E-Wallet';
+				case AccountType.Cash:
+					return 'Cash';
+				case AccountType.App:
+					return 'App';
+				case AccountType.Card:
+					return 'Card';
+			}
+		},
 		header: 'Type'
 	},
 	{
