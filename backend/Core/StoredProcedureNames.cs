@@ -41,5 +41,7 @@ namespace Core
         public const string UpdateRecurringAction = "usp_UpdateRecurringAction";
 
         public const string UpdateCategory = "usp_UpdateCategory";
+
+        public const string IncrementOrDecrementAccountBalance = "usp_IncrementOrDecrementAccountBalance";
     }
 }

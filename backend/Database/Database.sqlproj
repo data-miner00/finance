@@ -95,5 +95,6 @@
     <Build Include="dbo\Stored Procedures\usp_AddExpenseWithCategoryName.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpdateExpenseWithCategoryName.sql" />
     <Build Include="dbo\Views\vw_GetAllExpenses.sql" />
+    <Build Include="dbo\Stored Procedures\usp_IncrementOrDecrementAccountBalance.sql" />
   </ItemGroup>
 </Project>
