@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import ChartAreaInteractive from '$lib/components/chart-area-interactive.svelte';
+	import data from '$lib/components/data';
 	import DataTable from '$lib/components/data-table.svelte';
 	import SectionCards from '$lib/components/section-cards.svelte';
-	import data from '$lib/components/data';
-	import { onMount } from 'svelte';
 	import { appState } from '$lib/states.svelte';
 
 	onMount(() => {
