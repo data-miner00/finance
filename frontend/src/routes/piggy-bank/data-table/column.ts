@@ -2,6 +2,7 @@ import { renderComponent } from '$lib/components/ui/data-table';
 import type { PiggyBank } from '$lib/services/types';
 import type { ColumnDef } from '@tanstack/table-core';
 import DataTableActions from './data-table-actions.svelte';
+import DataTableStatus from './data-table-status.svelte';
 export const columns: ColumnDef<PiggyBank>[] = [
 	{
 		header: 'No.',
@@ -21,6 +22,14 @@ export const columns: ColumnDef<PiggyBank>[] = [
 			row.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' }) +
 			' / ' +
 			row.target.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
+	},
+	{
+		header: 'Status',
+		cell: ({ row }) => {
+			const piggyBank = row.original;
+			const progress = (piggyBank.amount / piggyBank.target) * 100;
+			return renderComponent(DataTableStatus, { progress });
+		}
 	},
 	{
 		header: 'Progress',
