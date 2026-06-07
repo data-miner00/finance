@@ -1,14 +1,16 @@
 <script lang="ts">
-	import DataTable from './data-table/index.svelte';
-	import { appState } from '$lib/states.svelte';
-	import { columns } from './data-table/column';
+	import { onMount } from 'svelte';
 
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { createAccount, type AccountType } from '$lib/services';
-	import { onMount } from 'svelte';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import { type AccountType, createAccount } from '$lib/services';
+	import { appState } from '$lib/states.svelte';
+
+	import { columns } from './data-table/column';
+	import DataTable from './data-table/index.svelte';
 
 	let isDialogOpen = $state(false);
 
@@ -61,6 +63,35 @@
 				<div class="grid gap-3">
 					<Label for="name-1">Name</Label>
 					<Input id="name-1" name="name" placeholder="e.g. Public Bank" bind:value={name} />
+				</div>
+				<div class="grid gap-3">
+					<Label for="type-1">Type</Label>
+					<Select.Root
+						name="type-1"
+						type="single"
+						onValueChange={(value: string) => (accountType = parseInt(value) as AccountType)}
+					>
+						<Select.Trigger size="sm" class={'w-full' + buttonVariants({ variant: 'outline' })}>
+							<span data-slot="select-value">
+								{accountType === 0
+									? 'Bank'
+									: accountType === 1
+										? 'E-Wallet'
+										: accountType === 2
+											? 'Cash'
+											: accountType === 3
+												? 'App'
+												: 'Credit Card'}
+							</span>
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="0">Bank</Select.Item>
+							<Select.Item value="1">E-Wallet</Select.Item>
+							<Select.Item value="2">Cash</Select.Item>
+							<Select.Item value="3">App</Select.Item>
+							<Select.Item value="4">Credit Card</Select.Item>
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="balance-1">Balance</Label>
