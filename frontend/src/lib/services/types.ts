@@ -114,3 +114,17 @@ export interface CreateRecurringActionRequest {
 }
 
 export interface UpdateRecurringActionRequest extends Omit<CreateRecurringActionRequest, 'type'> {}
+
+export interface Person extends EntityBase {
+	name: string;
+	alias?: string;
+	description?: string;
+}
+
+export interface CreatePersonRequest {
+	name: string;
+	alias?: string;
+	description?: string;
+}
+
+export interface UpdatePersonRequest extends CreatePersonRequest {}

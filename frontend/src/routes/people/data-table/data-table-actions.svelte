@@ -7,7 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { deletePiggyBank, updatePiggyBank } from '$lib/services';
+	import { deletePerson, updatePerson } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	let { id }: { id: string } = $props();
@@ -15,30 +15,30 @@
 	let isEditDialogOpen = $state(false);
 	let isDeleteDialogOpen = $state(false);
 	let name = $state('');
-	let amount = $state(0);
-	let target = $state(0);
+	let alias = $state('');
+	let description = $state('');
 
 	function openEditDialog() {
-		const item = appState.piggyBanks.find((p) => p.id === id);
+		const item = appState.people.find((i) => i.id === id);
 		if (!item) return;
 		name = item.name;
-		amount = item.amount;
-		target = item.target;
+		alias = item.alias || '';
+		description = item.description || '';
 		isEditDialogOpen = true;
 	}
 
-	async function savePiggy(event: Event) {
+	async function saveUpdate(event: Event) {
 		event.preventDefault();
-		await updatePiggyBank(id, { name, amount, target });
-		appState.piggyBanks = appState.piggyBanks.map((p) =>
-			p.id === id ? { ...p, name, amount, target, updatedAt: new Date().toISOString() } : p
+		await updatePerson(id, { name, alias, description });
+		appState.people = appState.people.map((i) =>
+			i.id === id ? { ...i, name, alias, description, updatedAt: new Date().toISOString() } : i
 		);
 		isEditDialogOpen = false;
 	}
 
 	async function confirmDelete() {
-		await deletePiggyBank(id);
-		appState.piggyBanks = appState.piggyBanks.filter((p) => p.id !== id);
+		await deletePerson(id);
+		appState.people = appState.people.filter((i) => i.id !== id);
 		isDeleteDialogOpen = false;
 	}
 </script>
@@ -55,15 +55,15 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit piggy bank</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
 
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
-				Copy piggy bank ID
+				Copy ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
-			Delete piggy bank
+			Delete
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
@@ -72,8 +72,8 @@
 	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
-				<Dialog.Title>Edit Piggy Bank</Dialog.Title>
-				<Dialog.Description>Update name, amount, and target.</Dialog.Description>
+				<Dialog.Title>Edit Person</Dialog.Title>
+				<Dialog.Description>Update person details.</Dialog.Description>
 			</Dialog.Header>
 			<div class="grid gap-4">
 				<div class="grid gap-3">
@@ -81,19 +81,19 @@
 					<Input id="edit-name" name="name" bind:value={name} />
 				</div>
 				<div class="grid gap-3">
-					<Label for="edit-amount">Amount</Label>
-					<Input id="edit-amount" name="amount" type="number" step="0.01" bind:value={amount} />
+					<Label for="edit-alias">Alias</Label>
+					<Input id="edit-alias" name="alias" bind:value={alias} />
 				</div>
 				<div class="grid gap-3">
-					<Label for="edit-target">Target</Label>
-					<Input id="edit-target" name="target" type="number" step="0.01" bind:value={target} />
+					<Label for="edit-description">Description</Label>
+					<Input id="edit-description" name="description" bind:value={description} />
 				</div>
 			</div>
 			<Dialog.Footer>
 				<Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
 					Cancel
 				</Dialog.Close>
-				<Button type="submit" onclick={savePiggy}>Update Piggy Bank</Button>
+				<Button type="submit" onclick={saveUpdate}>Update Person</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</form>
@@ -102,7 +102,7 @@
 <AlertDialog.Root bind:open={isDeleteDialogOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>Delete piggy bank?</AlertDialog.Title>
+			<AlertDialog.Title>Delete person?</AlertDialog.Title>
 			<AlertDialog.Description>This action cannot be undone.</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

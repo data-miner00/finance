@@ -1,19 +1,22 @@
 <script lang="ts">
-	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import AppSidebar from '$lib/components/app-sidebar.svelte';
-	import SiteHeader from '$lib/components/site-header.svelte';
-	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
-	import { appState } from '$lib/states.svelte';
 	import { onMount } from 'svelte';
+
+	import favicon from '$lib/assets/favicon.svg';
+	import AppSidebar from '$lib/components/app-sidebar.svelte';
+	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
+	import SiteHeader from '$lib/components/site-header.svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import {
 		getAccounts,
 		getExpenses,
 		getIncomes,
+		getPeople,
 		getPiggyBanks,
 		getRecurringActions
 	} from '$lib/services';
+	import { appState } from '$lib/states.svelte';
+
+	import './layout.css';
 
 	let { children } = $props();
 
@@ -23,6 +26,7 @@
 		appState.incomes = await getIncomes();
 		appState.recurringActions = await getRecurringActions();
 		appState.piggyBanks = await getPiggyBanks();
+		appState.people = await getPeople();
 		appState.categories = Array.from(
 			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))
 		);

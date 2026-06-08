@@ -1,75 +1,79 @@
 <script lang="ts" module>
 	export const columns: ColumnDef<Schema>[] = [
 		{
-			id: "drag",
+			id: 'drag',
 			header: () => null,
-			cell: () => renderComponent(DataTableDragHandle, {}),
+			cell: () => renderComponent(DataTableDragHandle, {})
 		},
 		{
-			id: "select",
+			id: 'select',
 			header: ({ table }) =>
 				renderComponent(DataTableCheckbox, {
 					checked: table.getIsAllPageRowsSelected(),
-					indeterminate:
-						table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
+					indeterminate: table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
 					onCheckedChange: (value) => table.toggleAllPageRowsSelected(!!value),
-					"aria-label": "Select all",
+					'aria-label': 'Select all'
 				}),
 			cell: ({ row }) =>
 				renderComponent(DataTableCheckbox, {
 					checked: row.getIsSelected(),
 					onCheckedChange: (value) => row.toggleSelected(!!value),
-					"aria-label": "Select row",
+					'aria-label': 'Select row'
 				}),
 			enableSorting: false,
-			enableHiding: false,
+			enableHiding: false
 		},
 		{
-			accessorKey: "header",
-			header: "Header",
+			accessorKey: 'header',
+			header: 'Header',
 			cell: ({ row }) => renderComponent(DataTableCellViewer, { item: row.original }),
-			enableHiding: false,
+			enableHiding: false
 		},
 		{
-			accessorKey: "type",
-			header: "Section Type",
-			cell: ({ row }) => renderComponent(DataTableType, { row }),
+			accessorKey: 'type',
+			header: 'Section Type',
+			cell: ({ row }) => renderComponent(DataTableType, { row })
 		},
 		{
-			accessorKey: "status",
-			header: "Status",
-			cell: ({ row }) => renderComponent(DataTableStatus, { row }),
+			accessorKey: 'status',
+			header: 'Status',
+			cell: ({ row }) => renderComponent(DataTableStatus, { row })
 		},
 		{
-			accessorKey: "target",
+			accessorKey: 'target',
 			header: () => renderComponent(DataTableHeaderTarget, {}),
-			cell: ({ row }) => renderComponent(DataTableTarget, { row }),
+			cell: ({ row }) => renderComponent(DataTableTarget, { row })
 		},
 		{
-			accessorKey: "limit",
+			accessorKey: 'limit',
 			header: () => renderComponent(DataTableHeaderLimit, {}),
-			cell: ({ row }) => renderComponent(DataTableLimit, { row }),
+			cell: ({ row }) => renderComponent(DataTableLimit, { row })
 		},
 		{
-			accessorKey: "reviewer",
-			header: "Reviewer",
-			cell: ({ row }) => renderComponent(DataTableReviewer, { row }),
+			accessorKey: 'reviewer',
+			header: 'Reviewer',
+			cell: ({ row }) => renderComponent(DataTableReviewer, { row })
 		},
 		{
-			id: "actions",
-			cell: () => renderComponent(DataTableActions, {}),
-		},
+			id: 'actions',
+			cell: () => renderComponent(DataTableActions, {})
+		}
 	];
 </script>
 
 <script lang="ts">
+	import { DragDropProvider } from '@dnd-kit-svelte/svelte';
+	import { useSortable } from '@dnd-kit-svelte/svelte/sortable';
+	import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
+	import { move } from '@dnd-kit/helpers';
+	import ChevronDownIcon from '@tabler/icons-svelte/icons/chevron-down';
+	import ChevronLeftIcon from '@tabler/icons-svelte/icons/chevron-left';
+	import ChevronRightIcon from '@tabler/icons-svelte/icons/chevron-right';
+	import ChevronsLeftIcon from '@tabler/icons-svelte/icons/chevrons-left';
+	import ChevronsRightIcon from '@tabler/icons-svelte/icons/chevrons-right';
+	import LayoutColumnsIcon from '@tabler/icons-svelte/icons/layout-columns';
+	import PlusIcon from '@tabler/icons-svelte/icons/plus';
 	import {
-		getCoreRowModel,
-		getFacetedRowModel,
-		getFacetedUniqueValues,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel,
 		type ColumnDef,
 		type ColumnFiltersState,
 		type PaginationState,
@@ -77,39 +81,36 @@
 		type RowSelectionState,
 		type SortingState,
 		type VisibilityState,
-	} from "@tanstack/table-core";
-	import type { Schema } from "./schemas.js";
-	import { RestrictToVerticalAxis } from "@dnd-kit/abstract/modifiers";
-	import { createSvelteTable } from "$lib/components/ui/data-table/data-table.svelte.js";
-	import * as Tabs from "$lib/components/ui/tabs/index.js";
-	import * as Table from "$lib/components/ui/table/index.js";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Select from "$lib/components/ui/select/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
-	import { FlexRender, renderComponent } from "$lib/components/ui/data-table/index.js";
-	import LayoutColumnsIcon from "@tabler/icons-svelte/icons/layout-columns";
-	import ChevronDownIcon from "@tabler/icons-svelte/icons/chevron-down";
-	import PlusIcon from "@tabler/icons-svelte/icons/plus";
-	import ChevronsLeftIcon from "@tabler/icons-svelte/icons/chevrons-left";
-	import ChevronLeftIcon from "@tabler/icons-svelte/icons/chevron-left";
-	import ChevronRightIcon from "@tabler/icons-svelte/icons/chevron-right";
-	import ChevronsRightIcon from "@tabler/icons-svelte/icons/chevrons-right";
-	import DataTableCheckbox from "./data-table-checkbox.svelte";
-	import DataTableCellViewer from "./data-table-cell-viewer.svelte";
-	import DataTableReviewer from "./data-table-reviewer.svelte";
-	import DataTableActions from "./data-table-actions.svelte";
-	import DataTableDragHandle from "./data-table-drag-handle.svelte";
-	import DataTableType from "./data-table-type.svelte";
-	import DataTableStatus from "./data-table-status.svelte";
-	import DataTableTarget from "./data-table-target.svelte";
-	import DataTableLimit from "./data-table-limit.svelte";
-	import DataTableHeaderTarget from "./data-table-header-target.svelte";
-	import DataTableHeaderLimit from "./data-table-header-limit.svelte";
-	import { DragDropProvider } from "@dnd-kit-svelte/svelte";
-	import { move } from "@dnd-kit/helpers";
-	import { useSortable } from "@dnd-kit-svelte/svelte/sortable";
-	import { Badge } from "$lib/components/ui/badge/index.js";
+		getCoreRowModel,
+		getFacetedRowModel,
+		getFacetedUniqueValues,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel
+	} from '@tanstack/table-core';
+
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { createSvelteTable } from '$lib/components/ui/data-table/data-table.svelte.js';
+	import { FlexRender, renderComponent } from '$lib/components/ui/data-table/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
+
+	import DataTableActions from './data-table-actions.svelte';
+	import DataTableCellViewer from './data-table-cell-viewer.svelte';
+	import DataTableCheckbox from './data-table-checkbox.svelte';
+	import DataTableDragHandle from './data-table-drag-handle.svelte';
+	import DataTableHeaderLimit from './data-table-header-limit.svelte';
+	import DataTableHeaderTarget from './data-table-header-target.svelte';
+	import DataTableLimit from './data-table-limit.svelte';
+	import DataTableReviewer from './data-table-reviewer.svelte';
+	import DataTableStatus from './data-table-status.svelte';
+	import DataTableTarget from './data-table-target.svelte';
+	import DataTableType from './data-table-type.svelte';
+	import type { Schema } from './schemas.js';
 
 	let { data }: { data: Schema[] } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -138,7 +139,7 @@
 			},
 			get columnFilters() {
 				return columnFilters;
-			},
+			}
 		},
 		getRowId: (row) => row.id.toString(),
 		enableRowSelection: true,
@@ -150,67 +151,67 @@
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 		getFilteredRowModel: getFilteredRowModel(),
 		onPaginationChange: (updater) => {
-			if (typeof updater === "function") {
+			if (typeof updater === 'function') {
 				pagination = updater(pagination);
 			} else {
 				pagination = updater;
 			}
 		},
 		onSortingChange: (updater) => {
-			if (typeof updater === "function") {
+			if (typeof updater === 'function') {
 				sorting = updater(sorting);
 			} else {
 				sorting = updater;
 			}
 		},
 		onColumnFiltersChange: (updater) => {
-			if (typeof updater === "function") {
+			if (typeof updater === 'function') {
 				columnFilters = updater(columnFilters);
 			} else {
 				columnFilters = updater;
 			}
 		},
 		onColumnVisibilityChange: (updater) => {
-			if (typeof updater === "function") {
+			if (typeof updater === 'function') {
 				columnVisibility = updater(columnVisibility);
 			} else {
 				columnVisibility = updater;
 			}
 		},
 		onRowSelectionChange: (updater) => {
-			if (typeof updater === "function") {
+			if (typeof updater === 'function') {
 				rowSelection = updater(rowSelection);
 			} else {
 				rowSelection = updater;
 			}
-		},
+		}
 	});
 
 	let views = [
 		{
-			id: "outline",
-			label: "Outline",
-			badge: 0,
+			id: 'outline',
+			label: 'Outline',
+			badge: 0
 		},
 		{
-			id: "past-performance",
-			label: "Past Performance",
-			badge: 3,
+			id: 'past-performance',
+			label: 'Past Performance',
+			badge: 3
 		},
 		{
-			id: "key-personnel",
-			label: "Key Personnel",
-			badge: 2,
+			id: 'key-personnel',
+			label: 'Key Personnel',
+			badge: 2
 		},
 		{
-			id: "focus-documents",
-			label: "Focus Documents",
-			badge: 0,
-		},
+			id: 'focus-documents',
+			label: 'Focus Documents',
+			badge: 0
+		}
 	];
 
-	let view = $state("outline");
-	let viewLabel = $derived(views.find((v) => view === v.id)?.label ?? "Select a view");
+	let view = $state('outline');
+	let viewLabel = $derived(views.find((v) => view === v.id)?.label ?? 'Select a view');
 </script>
 
 <Tabs.Root value="outline" class="w-full flex-col justify-start gap-6">
@@ -227,7 +228,7 @@
 			</Select.Content>
 		</Select.Root>
 		<Tabs.List
-			class="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex"
+			class="hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:px-1 @4xl/main:flex"
 		>
 			{#each views as view (view.id)}
 				<Tabs.Trigger value={view.id}>
@@ -253,7 +254,7 @@
 				<DropdownMenu.Content align="end" class="w-56">
 					{#each table
 						.getAllColumns()
-						.filter((col) => typeof col.accessorFn !== "undefined" && col.getCanHide()) as column (column.id)}
+						.filter((col) => typeof col.accessorFn !== 'undefined' && col.getCanHide()) as column (column.id)}
 						<DropdownMenu.CheckboxItem
 							class="capitalize"
 							checked={column.getIsVisible()}
@@ -275,12 +276,12 @@
 			<DragDropProvider
 				modifiers={[
 					// @ts-expect-error @dnd-kit/abstract types are botched atm
-					RestrictToVerticalAxis,
+					RestrictToVerticalAxis
 				]}
 				onDragEnd={(e) => (data = move(data, e))}
 			>
 				<Table.Root>
-					<Table.Header class="bg-muted sticky top-0 z-10">
+					<Table.Header class="sticky top-0 z-10 bg-muted">
 						{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 							<Table.Row>
 								{#each headerGroup.headers as header (header.id)}
@@ -313,7 +314,7 @@
 			</DragDropProvider>
 		</div>
 		<div class="flex items-center justify-between px-4">
-			<div class="text-muted-foreground hidden flex-1 text-sm lg:flex">
+			<div class="hidden flex-1 text-sm text-muted-foreground lg:flex">
 				{table.getFilteredSelectedRowModel().rows.length} of
 				{table.getFilteredRowModel().rows.length} row(s) selected.
 			</div>
@@ -323,8 +324,7 @@
 					<Select.Root
 						type="single"
 						bind:value={
-							() => `${table.getState().pagination.pageSize}`,
-							(v) => table.setPageSize(Number(v))
+							() => `${table.getState().pagination.pageSize}`, (v) => table.setPageSize(Number(v))
 						}
 					>
 						<Select.Trigger size="sm" class="w-20" id="rows-per-page">
@@ -401,11 +401,11 @@
 {#snippet DraggableRow({ row }: { row: Row<Schema> })}
 	{@const { ref, isDragging, handleRef } = useSortable({
 		id: row.original.id,
-		index: () => row.index,
+		index: () => row.index
 	})}
 
 	<Table.Row
-		data-state={row.getIsSelected() && "selected"}
+		data-state={row.getIsSelected() && 'selected'}
 		data-dragging={isDragging.current}
 		class="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
 		{@attach ref}
