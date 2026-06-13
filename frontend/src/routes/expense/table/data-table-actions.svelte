@@ -1,13 +1,14 @@
 <script lang="ts">
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { appState } from '$lib/states.svelte';
 	import { deleteExpense, updateExpense } from '$lib/services';
+	import { appState } from '$lib/states.svelte';
 
 	let { id }: { id: string } = $props();
 
@@ -65,7 +66,7 @@
 </DropdownMenu.Root>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
-	<form onsubmit={saveExpense}>
+	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Expense</Dialog.Title>
@@ -85,7 +86,7 @@
 				<Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
 					Cancel
 				</Dialog.Close>
-				<Button type="submit">Update Expense</Button>
+				<Button type="submit" onclick={saveExpense}>Update Expense</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</form>
