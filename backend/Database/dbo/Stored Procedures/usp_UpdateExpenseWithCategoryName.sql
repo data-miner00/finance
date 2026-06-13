@@ -17,19 +17,16 @@ BEGIN
     DECLARE @CategoryId UNIQUEIDENTIFIER = NULL;
     SET NOCOUNT ON;
 
-    IF @CategoryName IS NOT NULL
-    BEGIN
-        SELECT @CategoryId = [Id]
-        FROM [dbo].[Categories]
-        WHERE [Name] = @CategoryName;
+	SELECT @CategoryId = [Id]
+	FROM [dbo].[Categories]
+	WHERE [Name] = @CategoryName;
 
-        IF @CategoryId IS NULL
-        BEGIN
-            SET @CategoryId = NEWID();
-            INSERT INTO [dbo].[Categories] ([Id], [Name], [IsSystemDefault])
-            VALUES (@CategoryId, @CategoryName, 0);
-        END
-    END
+	IF @CategoryName IS NOT NULL AND @CategoryId IS NULL
+	BEGIN
+		SET @CategoryId = NEWID();
+		INSERT INTO [dbo].[Categories] ([Id], [Name], [IsSystemDefault])
+		VALUES (@CategoryId, @CategoryName, 0);
+	END
 
     UPDATE [dbo].[Expenses]
     SET

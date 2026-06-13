@@ -15,6 +15,7 @@
 	let isEditDialogOpen = $state(false);
 	let isDeleteDialogOpen = $state(false);
 	let name = $state('');
+	let categoryName = $state<string>();
 	let amount = $state(0);
 
 	function openEditDialog() {
@@ -22,14 +23,15 @@
 		if (!item) return;
 		name = item.name;
 		amount = item.amount;
+		categoryName = item.categoryName;
 		isEditDialogOpen = true;
 	}
 
 	async function saveExpense(event: Event) {
 		event.preventDefault();
-		await updateExpense(id, { name, amount });
+		await updateExpense(id, { name, amount, categoryName });
 		appState.expenses = appState.expenses.map((e) =>
-			e.id === id ? { ...e, name, amount, updatedAt: new Date().toISOString() } : e
+			e.id === id ? { ...e, name, amount, categoryName, updatedAt: new Date().toISOString() } : e
 		);
 		isEditDialogOpen = false;
 	}
@@ -53,14 +55,14 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit expense</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
-				Copy expense ID
+				Copy ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
-			Delete expense
+			Delete
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
@@ -70,16 +72,32 @@
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Expense</Dialog.Title>
-				<Dialog.Description>Update expense name and amount.</Dialog.Description>
+				<Dialog.Description>Update expense details.</Dialog.Description>
 			</Dialog.Header>
 			<div class="grid gap-4">
 				<div class="grid gap-3">
 					<Label for="edit-name">Name</Label>
-					<Input id="edit-name" name="name" bind:value={name} />
+					<Input id="edit-name" name="name" placeholder="e.g., Texas Chicken" bind:value={name} />
 				</div>
 				<div class="grid gap-3">
 					<Label for="edit-amount">Amount</Label>
-					<Input id="edit-amount" name="amount" type="number" step="0.01" bind:value={amount} />
+					<Input
+						id="edit-amount"
+						name="amount"
+						type="number"
+						placeholder="e.g., 10.00"
+						step="0.01"
+						bind:value={amount}
+					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-category">Category</Label>
+					<Input
+						id="edit-category"
+						name="categoryName"
+						placeholder="e.g., Food, Transport"
+						bind:value={categoryName}
+					/>
 				</div>
 			</div>
 			<Dialog.Footer>
