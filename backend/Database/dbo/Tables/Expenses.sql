@@ -2,7 +2,7 @@
     [Id]          UNIQUEIDENTIFIER CONSTRAINT [DF_Expenses_Id] DEFAULT (newid()) ROWGUIDCOL NOT NULL,
     [CategoryId]  UNIQUEIDENTIFIER NULL,
     [Name]        NVARCHAR (255)   NOT NULL,
-    [Description] NVARCHAR (255)   NOT NULL,
+    [Description] NVARCHAR (255)   NULL,
     [Amount]      MONEY            NOT NULL,
     [Location]    NVARCHAR (255)   NULL,
     [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Expenses_ActionedAt] NULL,
