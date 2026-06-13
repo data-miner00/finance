@@ -1,16 +1,21 @@
 <script lang="ts">
+	import { type CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
+	import { CheckIcon, ChevronsUpDownIcon } from '@lucide/svelte';
+	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
+	import { tick } from 'svelte';
+
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
+	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
-	import { getLocalTimeZone, today, type CalendarDate } from '@internationalized/date';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
-	import { CheckIcon, ChevronsUpDownIcon } from '@lucide/svelte';
+	import { cn } from '$lib/utils';
+
 	const id = $props.id();
 
 	type Props = {
@@ -69,9 +74,6 @@
 		open = false;
 	}
 
-	import * as Command from '$lib/components/ui/command/index.js';
-	import { cn } from '$lib/utils';
-	import { tick } from 'svelte';
 	let comboOpen = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
@@ -123,7 +125,7 @@
 									<Button
 										{...props}
 										variant="outline"
-										class="w-[200px] justify-between"
+										class="justify-between"
 										role="combobox"
 										aria-expanded={open}
 									>
@@ -132,7 +134,7 @@
 									</Button>
 								{/snippet}
 							</Popover.Trigger>
-							<Popover.Content class="w-[200px] p-0">
+							<Popover.Content class="p-0">
 								<Command.Root>
 									<Command.Input placeholder="Category..." bind:value={categoryName} />
 									<Command.List>
@@ -191,7 +193,7 @@
 						<Popover.Root bind:open={isCalendarPopoverOpen}>
 							<Popover.Trigger id={`${id}-date`}>
 								{#snippet child({ props })}
-									<Button {...props} variant="outline" class="w-48 justify-between font-normal">
+									<Button {...props} variant="outline" class="justify-between font-normal">
 										{actionedAt
 											? actionedAt.toDate(getLocalTimeZone()).toLocaleDateString()
 											: 'Select date'}

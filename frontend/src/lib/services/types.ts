@@ -38,7 +38,7 @@ export interface Expense extends EntityBase {
 	currency?: string | null;
 	location?: string | null;
 	receiptImage?: string | null;
-	actionedAt: string;
+	actionedAt?: string;
 }
 
 export interface CreateExpenseRequest {

@@ -27,6 +27,7 @@ namespace Core.Repositories
             parameters.Add("CategoryName", entity.CategoryName);
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
+            parameters.Add("ActionedAt", entity.ActionedAt);
 
             var createdExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.AddExpenseWithCategoryName,
