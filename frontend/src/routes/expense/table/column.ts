@@ -4,7 +4,7 @@ import { renderComponent } from '$lib/components/ui/data-table';
 import type { Expense } from '$lib/services/types';
 
 import DataTableActions from './data-table-actions.svelte';
-import DataTableAmountButton from './data-table-amount-button.svelte';
+import DataTableSortButton from './data-table-sort-button.svelte';
 
 export const columns: ColumnDef<Expense>[] = [
 	{
@@ -17,7 +17,11 @@ export const columns: ColumnDef<Expense>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Name'
+			})
 	},
 	{
 		accessorKey: 'categoryName',
@@ -30,16 +34,22 @@ export const columns: ColumnDef<Expense>[] = [
 	{
 		accessorKey: 'amount',
 		header: ({ column }) =>
-			renderComponent(DataTableAmountButton, {
-				onclick: column.getToggleSortingHandler()
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Amount'
 			}),
 		cell: ({ row }) => {
 			return row.original.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
 		}
 	},
 	{
-		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
-		header: 'Date'
+		accessorKey: 'createdAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Date'
+			}),
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.createdAt))
 	},
 	{
 		id: 'actions',
