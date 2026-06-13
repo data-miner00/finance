@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -10,7 +11,6 @@
 	import { appState } from '$lib/states.svelte';
 
 	import { columns } from './data-table/column';
-	import DataTable from './data-table/index.svelte';
 
 	let isDialogOpen = $state(false);
 
