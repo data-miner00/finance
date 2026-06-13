@@ -2,7 +2,13 @@
 	import ChevronDownIcon from '@tabler/icons-svelte/icons/chevron-down';
 	import LayoutColumnsIcon from '@tabler/icons-svelte/icons/layout-columns';
 	import PlusIcon from '@tabler/icons-svelte/icons/plus';
-	import { type ColumnDef, type VisibilityState, getCoreRowModel } from '@tanstack/table-core';
+	import {
+		type ColumnDef,
+		type PaginationState,
+		type VisibilityState,
+		getCoreRowModel,
+		getPaginationRowModel
+	} from '@tanstack/table-core';
 	import type { Snippet } from 'svelte';
 
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -18,6 +24,8 @@
 
 	let { data, columns, controls: Controls }: DataTableProps<TData, TValue> = $props();
 
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+
 	const table = createSvelteTable({
 		get data() {
 			return data;
@@ -25,9 +33,20 @@
 		// svelte-ignore state_referenced_locally
 		columns,
 		getCoreRowModel: getCoreRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
 		state: {
 			get columnVisibility() {
 				return columnVisibility;
+			},
+			get pagination() {
+				return pagination;
+			}
+		},
+		onPaginationChange: (updater) => {
+			if (typeof updater === 'function') {
+				pagination = updater(pagination);
+			} else {
+				pagination = updater;
 			}
 		},
 		onColumnVisibilityChange: (updater) => {
@@ -108,4 +127,23 @@
 			{/each}
 		</Table.Body>
 	</Table.Root>
+</div>
+
+<div class="flex items-center justify-end space-x-2 py-4">
+	<Button
+		variant="outline"
+		size="sm"
+		onclick={() => table.previousPage()}
+		disabled={!table.getCanPreviousPage()}
+	>
+		Previous
+	</Button>
+	<Button
+		variant="outline"
+		size="sm"
+		onclick={() => table.nextPage()}
+		disabled={!table.getCanNextPage()}
+	>
+		Next
+	</Button>
 </div>

@@ -1,6 +1,19 @@
 <script lang="ts" generics="TData, TValue">
-	import { type ColumnDef, getCoreRowModel, type VisibilityState } from '@tanstack/table-core';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import ChevronDownIcon from '@tabler/icons-svelte/icons/chevron-down';
+	import LayoutColumnsIcon from '@tabler/icons-svelte/icons/layout-columns';
+	import PlusIcon from '@tabler/icons-svelte/icons/plus';
+	import {
+		type ColumnDef,
+		type PaginationState,
+		type VisibilityState,
+		getCoreRowModel,
+		getPaginationRowModel
+	} from '@tanstack/table-core';
+	import type { Snippet } from 'svelte';
+
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { FlexRender, createSvelteTable } from '$lib/components/ui/data-table/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	type DataTableProps<TData, TValue> = {
@@ -11,6 +24,8 @@
 
 	let { data, columns, controls: Controls }: DataTableProps<TData, TValue> = $props();
 
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+
 	const table = createSvelteTable({
 		get data() {
 			return data;
@@ -18,9 +33,20 @@
 		// svelte-ignore state_referenced_locally
 		columns,
 		getCoreRowModel: getCoreRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
 		state: {
 			get columnVisibility() {
 				return columnVisibility;
+			},
+			get pagination() {
+				return pagination;
+			}
+		},
+		onPaginationChange: (updater) => {
+			if (typeof updater === 'function') {
+				pagination = updater(pagination);
+			} else {
+				pagination = updater;
 			}
 		},
 		onColumnVisibilityChange: (updater) => {
@@ -31,13 +57,6 @@
 			}
 		}
 	});
-
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import LayoutColumnsIcon from '@tabler/icons-svelte/icons/layout-columns';
-	import ChevronDownIcon from '@tabler/icons-svelte/icons/chevron-down';
-	import PlusIcon from '@tabler/icons-svelte/icons/plus';
-	import type { Snippet } from 'svelte';
 
 	let columnVisibility = $state<VisibilityState>({});
 </script>
@@ -108,4 +127,23 @@
 			{/each}
 		</Table.Body>
 	</Table.Root>
+</div>
+
+<div class="flex items-center justify-end space-x-2 py-4">
+	<Button
+		variant="outline"
+		size="sm"
+		onclick={() => table.previousPage()}
+		disabled={!table.getCanPreviousPage()}
+	>
+		Previous
+	</Button>
+	<Button
+		variant="outline"
+		size="sm"
+		onclick={() => table.nextPage()}
+		disabled={!table.getCanNextPage()}
+	>
+		Next
+	</Button>
 </div>
