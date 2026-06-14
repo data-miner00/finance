@@ -91,51 +91,50 @@
 </script>
 
 <div>
-	<div class="flex items-center py-4">
-		<Input
-			placeholder="Filter names..."
-			value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-			onchange={(e) => {
-				table.getColumn('name')?.setFilterValue(e.currentTarget.value);
-			}}
-			oninput={(e) => {
-				table.getColumn('name')?.setFilterValue(e.currentTarget.value);
-			}}
-			class="max-w-sm"
-		/>
-	</div>
-	<div class="mb-6 flex items-center gap-2">
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger>
-				{#snippet child({ props })}
-					<Button variant="outline" size="sm" {...props}>
-						<LayoutColumnsIcon />
-						<span class="hidden lg:inline">Customize Columns</span>
-						<span class="lg:hidden">Columns</span>
-						<ChevronDownIcon />
-					</Button>
-				{/snippet}
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end">
-				{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column)}
-					<DropdownMenu.CheckboxItem
-						class="capitalize"
-						bind:checked={() => column.getIsVisible(), (v) => column.toggleVisibility(!!v)}
-					>
-						{column.id}
-					</DropdownMenu.CheckboxItem>
-				{/each}
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
-		<Button variant="outline" size="sm">
-			<PlusIcon />
-			<span class="hidden lg:inline">Add Section</span>
-		</Button>
+	<div class="flex items-center justify-between py-4">
+		<div>
+			<Input
+				placeholder="Filter names..."
+				value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+				onchange={(e) => {
+					table.getColumn('name')?.setFilterValue(e.currentTarget.value);
+				}}
+				oninput={(e) => {
+					table.getColumn('name')?.setFilterValue(e.currentTarget.value);
+				}}
+				class="max-w-sm"
+			/>
+		</div>
+		<div class="flex items-center gap-2">
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					{#snippet child({ props })}
+						<Button variant="outline" size="sm" {...props}>
+							<LayoutColumnsIcon />
+							<span class="hidden lg:inline">Customize Columns</span>
+							<span class="lg:hidden">Columns</span>
+							<ChevronDownIcon />
+						</Button>
+					{/snippet}
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column)}
+						<DropdownMenu.CheckboxItem
+							class="capitalize"
+							bind:checked={() => column.getIsVisible(), (v) => column.toggleVisibility(!!v)}
+						>
+							{column.id}
+						</DropdownMenu.CheckboxItem>
+					{/each}
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 
-		{#if Controls}
-			{@render Controls()}
-		{/if}
+			{#if Controls}
+				{@render Controls()}
+			{/if}
+		</div>
 	</div>
+
 	<div class="rounded-md border">
 		<Table.Root>
 			<Table.Header>
