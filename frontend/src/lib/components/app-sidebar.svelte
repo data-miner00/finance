@@ -1,31 +1,33 @@
 <script lang="ts">
+	import { CircleDollarSignIcon } from '@lucide/svelte';
+	import HandCoinsIcon from '@lucide/svelte/icons/hand-coins';
+	import Bell from '@tabler/icons-svelte/icons/bell';
+	import Braces from '@tabler/icons-svelte/icons/braces';
 	import CameraIcon from '@tabler/icons-svelte/icons/camera';
 	import DashboardIcon from '@tabler/icons-svelte/icons/dashboard';
 	import DatabaseIcon from '@tabler/icons-svelte/icons/database';
 	import FileAiIcon from '@tabler/icons-svelte/icons/file-ai';
 	import FileDescriptionIcon from '@tabler/icons-svelte/icons/file-description';
 	import FileWordIcon from '@tabler/icons-svelte/icons/file-word';
-	import Braces from '@tabler/icons-svelte/icons/braces';
-	import PigMoney from '@tabler/icons-svelte/icons/pig-money';
+	import InfinityIcon from '@tabler/icons-svelte/icons/infinity';
 	import ListDetailsIcon from '@tabler/icons-svelte/icons/list-details';
+	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
+	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
+	import PigMoney from '@tabler/icons-svelte/icons/pig-money';
 	import ReportIcon from '@tabler/icons-svelte/icons/report';
 	import SearchIcon from '@tabler/icons-svelte/icons/search';
 	import SettingsIcon from '@tabler/icons-svelte/icons/settings';
-	import InfinityIcon from '@tabler/icons-svelte/icons/infinity';
+	import Tax from '@tabler/icons-svelte/icons/tax';
+	import UserScan from '@tabler/icons-svelte/icons/user-scan';
+	import type { ComponentProps } from 'svelte';
+
+	import { PUBLIC_API_BASE_URL } from '$env/static/public';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+
 	import NavDocuments from './nav-documents.svelte';
 	import NavMain from './nav-main.svelte';
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import type { ComponentProps } from 'svelte';
-	import { PUBLIC_API_BASE_URL } from '$env/static/public';
-	import { CircleDollarSignIcon } from '@lucide/svelte';
-	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
-	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
-	import Bell from '@tabler/icons-svelte/icons/bell';
-	import HandCoinsIcon from '@lucide/svelte/icons/hand-coins';
-	import Tax from '@tabler/icons-svelte/icons/tax';
-	import UserScan from '@tabler/icons-svelte/icons/user-scan';
 
 	const data = {
 		user: {
@@ -70,8 +72,8 @@
 				icon: HandCoinsIcon
 			},
 			{
-				title: 'Taxes',
-				url: '/taxes',
+				title: 'Tax',
+				url: '/tax',
 				icon: Tax
 			},
 			{

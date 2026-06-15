@@ -101,5 +101,9 @@
     <Build Include="dbo\Stored Procedures\usp_UpdatePerson.sql" />
     <Build Include="dbo\Stored Procedures\usp_PatchPerson.sql" />
     <Build Include="dbo\Stored Procedures\usp_DeletePerson.sql" />
+    <Build Include="dbo\Tables\Taxes.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddTax.sql" />
+    <Build Include="dbo\Stored Procedures\usp_DeleteTax.sql" />
+    <Build Include="dbo\Stored Procedures\usp_UpdateTax.sql" />
   </ItemGroup>
 </Project>

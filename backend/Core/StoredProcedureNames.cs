@@ -18,6 +18,8 @@ namespace Core
 
         public const string AddPerson = "usp_AddPerson";
 
+        public const string AddTax = "usp_AddTax";
+
         public const string DeleteAccount = "usp_DeleteAccount";
 
         public const string DeleteExpense = "usp_DeleteExpense";
@@ -31,6 +33,8 @@ namespace Core
         public const string DeleteCategory = "usp_DeleteCategory";
 
         public const string DeletePerson = "usp_DeletePerson";
+
+        public const string DeleteTax = "usp_DeleteTax";
 
         public const string AddCategory = "usp_AddCategory";
         
@@ -47,6 +51,8 @@ namespace Core
         public const string UpdateCategory = "usp_UpdateCategory";
 
         public const string UpdatePerson = "usp_UpdatePerson";
+
+        public const string UpdateTax = "usp_UpdateTax";
 
         public const string IncrementOrDecrementAccountBalance = "usp_IncrementOrDecrementAccountBalance";
     }

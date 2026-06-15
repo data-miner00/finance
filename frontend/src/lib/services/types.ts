@@ -128,3 +128,17 @@ export interface CreatePersonRequest {
 }
 
 export interface UpdatePersonRequest extends CreatePersonRequest {}
+
+export interface Tax extends EntityBase {
+	name: string;
+	description?: string | null;
+	amount: number;
+}
+
+export interface CreateTaxRequest {
+	name: string;
+	description?: string | null;
+	amount: number;
+}
+
+export interface UpdateTaxRequest extends CreateTaxRequest {}
