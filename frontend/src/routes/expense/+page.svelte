@@ -12,6 +12,7 @@
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 
+	import CategoryCount from './charts/category-count.svelte';
 	import { columns } from './table/column';
 
 	let isDialogOpen = $state(false);
@@ -62,6 +63,14 @@
 		appState.pageTitle = 'Expenses';
 	});
 </script>
+
+<CategoryCount
+	chartData={appState.categories.map((category, index) => {
+		const count = appState.expenses.filter((expense) => expense.categoryName === category).length;
+		const color = `var(--chart-${index + 1})`;
+		return { category, count, color };
+	})}
+/>
 
 <!-- <Select.Root type="single" name="timeRange" bind:value={timeRange}>
 		<Select.Trigger class="w-[180px]">
