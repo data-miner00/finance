@@ -12,7 +12,9 @@
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 
+	import CategoryCost from './charts/category-cost.svelte';
 	import CategoryCount from './charts/category-count.svelte';
+	import TotalByMonth from './charts/total-month.svelte';
 	import { columns } from './table/column';
 
 	let isDialogOpen = $state(false);
@@ -62,30 +64,52 @@
 	onMount(() => {
 		appState.pageTitle = 'Expenses';
 	});
+
+	interface MonthlyTotal {
+		month: string;
+		total: number;
+	}
+
+	function groupExpensesByMonth(expenses: Expense[]): MonthlyTotal[] {
+		const monthMap = new Map<string, number>();
+
+		for (const expense of expenses) {
+			if (!expense.actionedAt) continue;
+
+			const date = new Date(expense.actionedAt);
+			const month = date.toLocaleString('default', { month: 'long' }); // e.g. "January"
+
+			monthMap.set(month, (monthMap.get(month) ?? 0) + expense.amount);
+		}
+
+		return Array.from(monthMap.entries()).map(([month, total]) => ({
+			month,
+			total: Math.round(total * 100) / 100 // avoid floating point drift
+		}));
+	}
+
+	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
 </script>
 
-<CategoryCount
-	chartData={appState.categories.map((category, index) => {
-		const count = appState.expenses.filter((expense) => expense.categoryName === category).length;
-		const color = `var(--chart-${index + 1})`;
-		return { category, count, color };
-	})}
-/>
-
-<!-- <Select.Root type="single" name="timeRange" bind:value={timeRange}>
-		<Select.Trigger class="w-[180px]">
-			{timeRangeLabel}
-		</Select.Trigger>
-		<Select.Content>
-			<Select.Group>
-				{#each timeRanges as range (range.value)}
-					<Select.Item value={range.value} label={range.label}>
-						{range.label}
-					</Select.Item>
-				{/each}
-			</Select.Group>
-		</Select.Content>
-	</Select.Root> -->
+<div class="flex gap-4 p-6">
+	<CategoryCount
+		chartData={appState.categories.map((category, index) => {
+			const count = appState.expenses.filter((expense) => expense.categoryName === category).length;
+			const color = `var(--chart-${index + 1})`;
+			return { category, count, color };
+		})}
+	/>
+	<CategoryCost
+		chartData={appState.categories.map((category, index) => {
+			const cost = appState.expenses
+				.filter((expense) => expense.categoryName === category)
+				.reduce((prev, curr) => prev + curr.amount, 0);
+			const color = `var(--chart-${index + 1})`;
+			return { category, cost, color };
+		})}
+	/>
+	<TotalByMonth chartData={monthlyExpense} />
+</div>
 
 {#snippet dataTableControls()}
 	<div class="flex items-center justify-between gap-2">
