@@ -2,8 +2,11 @@
 	import { PlusIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
+	import { formatCurrency, getDaysInMonth } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
@@ -88,6 +91,40 @@
 		}));
 	}
 
+	const now = new Date();
+	let averageSpendingPerDay = $derived(
+		getAverageForMonth(appState.expenses, now.getFullYear(), now.getMonth() + 1)
+	);
+	let averageSpendingPerMonth = $derived(
+		getMonthlyAverageForYear(appState.expenses, now.getFullYear())
+	);
+
+	function getAverageForMonth(expenses: Expense[], year: number, month: number): number {
+		const filtered = expenses.filter((expense) => {
+			const date = new Date(expense.actionedAt || expense.createdAt);
+			return date.getFullYear() === year && date.getMonth() === month - 1; // month is 1-based
+		});
+
+		if (filtered.length === 0) return 0;
+
+		const target = new Date(year, month - 1, 0);
+		const total = filtered.reduce((sum, expense) => sum + expense.amount, 0);
+
+		return Math.round((total / target.getDate()) * 100) / 100;
+	}
+
+	function getMonthlyAverageForYear(expenses: Expense[], year: number): number {
+		const filtered = expenses.filter((expense) => {
+			const date = new Date(expense.actionedAt || expense.createdAt);
+			return date.getFullYear() === year;
+		});
+
+		if (filtered.length === 0) return 0;
+
+		const total = filtered.reduce((sum, expense) => sum + expense.amount, 0);
+
+		return Math.round((total / 12) * 100) / 100;
+	}
 	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
 </script>
 
@@ -109,6 +146,26 @@
 		})}
 	/>
 	<TotalByMonth chartData={monthlyExpense} />
+</div>
+
+<div class="flex gap-4 p-6">
+	<Card.Root class="w-[200px]">
+		<Card.Header>
+			<Card.Description>Average daily spendings</Card.Description>
+			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+				{formatCurrency(averageSpendingPerDay)}
+			</Card.Title>
+		</Card.Header>
+	</Card.Root>
+
+	<Card.Root class="w-[200px]">
+		<Card.Header>
+			<Card.Description>Average monthly spendings</Card.Description>
+			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+				{formatCurrency(averageSpendingPerMonth)}
+			</Card.Title>
+		</Card.Header>
+	</Card.Root>
 </div>
 
 {#snippet dataTableControls()}
