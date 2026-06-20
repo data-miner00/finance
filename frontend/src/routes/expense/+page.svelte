@@ -166,6 +166,24 @@
 			</Card.Title>
 		</Card.Header>
 	</Card.Root>
+
+	<Card.Root class="w-[200px]">
+		<Card.Header>
+			<Card.Description>Total expenses recorded</Card.Description>
+			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+				{appState.expenses.length}
+			</Card.Title>
+		</Card.Header>
+	</Card.Root>
+
+	<Card.Root class="w-[200px]">
+		<Card.Header>
+			<Card.Description>Expenses logged this month</Card.Description>
+			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+				{appState.expenses.filter(isCurrentMonthExpense).length}
+			</Card.Title>
+		</Card.Header>
+	</Card.Root>
 </div>
 
 {#snippet dataTableControls()}
