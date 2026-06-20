@@ -74,7 +74,7 @@
 						<Select.Trigger size="sm" class={'w-full' + buttonVariants({ variant: 'outline' })}>
 							<span data-slot="select-value">
 								{accountType === 0
-									? 'Bank'
+									? 'Savings'
 									: accountType === 1
 										? 'E-Wallet'
 										: accountType === 2
@@ -85,7 +85,7 @@
 							</span>
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="0">Bank</Select.Item>
+							<Select.Item value="0">Savings</Select.Item>
 							<Select.Item value="1">E-Wallet</Select.Item>
 							<Select.Item value="2">Cash</Select.Item>
 							<Select.Item value="3">App</Select.Item>

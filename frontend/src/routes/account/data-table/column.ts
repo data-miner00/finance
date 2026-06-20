@@ -1,7 +1,10 @@
-import { renderComponent } from '$lib/components/ui/data-table';
-import { AccountType, type Account } from '$lib/services/types';
 import type { ColumnDef } from '@tanstack/table-core';
+
+import { renderComponent } from '$lib/components/ui/data-table';
+import { type Account, AccountType } from '$lib/services/types';
+
 import DataTableActions from './data-table-actions.svelte';
+
 export const columns: ColumnDef<Account>[] = [
 	{
 		header: 'No.',
@@ -18,16 +21,16 @@ export const columns: ColumnDef<Account>[] = [
 	{
 		accessorFn: (row) => {
 			switch (row.type) {
-				case AccountType.Bank:
-					return 'Bank';
+				case AccountType.Savings:
+					return 'Savings';
 				case AccountType.EWallet:
 					return 'E-Wallet';
 				case AccountType.Cash:
 					return 'Cash';
 				case AccountType.App:
 					return 'App';
-				case AccountType.Card:
-					return 'Card';
+				case AccountType.CreditCard:
+					return 'Credit Card';
 			}
 		},
 		header: 'Type'

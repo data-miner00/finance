@@ -1,9 +1,9 @@
 export enum AccountType {
-	Bank,
+	Savings,
 	EWallet,
 	Cash,
 	App,
-	Card
+	CreditCard
 }
 
 export interface EntityBase {

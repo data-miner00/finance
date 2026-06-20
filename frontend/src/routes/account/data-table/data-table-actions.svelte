@@ -1,13 +1,15 @@
 <script lang="ts">
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import { type AccountType, deleteAccount, updateAccount } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
-	import { deleteAccount, updateAccount, type AccountType } from '$lib/services';
 
 	let { id }: { id: string } = $props();
 
@@ -43,8 +45,6 @@
 		appState.accounts = appState.accounts.filter((account) => account.id !== id);
 		isDeleteDialogOpen = false;
 	}
-
-	import * as Select from '$lib/components/ui/select/index.js';
 </script>
 
 <DropdownMenu.Root>
@@ -98,22 +98,22 @@
 						>
 							<span data-slot="select-value">
 								{accountType === 0
-									? 'Bank'
+									? 'Savings'
 									: accountType === 1
 										? 'E-Wallet'
 										: accountType === 2
 											? 'Cash'
 											: accountType === 3
 												? 'App'
-												: 'Card'}
+												: 'Credit Card'}
 							</span>
 						</Select.Trigger>
 						<Select.Content class="rounded-xl">
-							<Select.Item value="0" class="rounded-lg">Bank</Select.Item>
+							<Select.Item value="0" class="rounded-lg">Savings</Select.Item>
 							<Select.Item value="1" class="rounded-lg">E-Wallet</Select.Item>
 							<Select.Item value="2" class="rounded-lg">Cash</Select.Item>
 							<Select.Item value="3" class="rounded-lg">App</Select.Item>
-							<Select.Item value="4" class="rounded-lg">Card</Select.Item>
+							<Select.Item value="4" class="rounded-lg">Credit Card</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>

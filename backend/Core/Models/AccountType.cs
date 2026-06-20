@@ -2,10 +2,15 @@
 {
     public enum AccountType
     {
-        Bank,
+        Savings,
+
         EWallet,
+
         Cash,
+
+        [Obsolete("Use EWallet instead.")]
         App,
-        Card,
+
+        CreditCard,
     }
 }
