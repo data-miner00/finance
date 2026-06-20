@@ -32,6 +32,9 @@
 		appState.categories = Array.from(
 			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))
 		);
+		appState.knownLocations = Array.from(
+			new Set(appState.expenses.map((e) => e.location || '').filter((l) => !!l))
+		);
 	});
 </script>
 

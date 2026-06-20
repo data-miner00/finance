@@ -9,6 +9,7 @@ export type AppState = {
 	isAddTransactionDialogOpen: boolean;
 	pageTitle: string;
 	categories: string[];
+	knownLocations: string[];
 };
 
 export const appState = $state<AppState>({
@@ -21,5 +22,6 @@ export const appState = $state<AppState>({
 	people: [],
 	taxes: [],
 	isAddTransactionDialogOpen: false,
-	categories: []
+	categories: [],
+	knownLocations: []
 });

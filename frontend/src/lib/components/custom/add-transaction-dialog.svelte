@@ -77,6 +77,9 @@
 	let comboOpen = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
+	let locationComboOpen = $state(false);
+	let locationTriggerRef = $state<HTMLButtonElement>(null!);
+
 	// We want to refocus the trigger button when the user selects
 	// an item from the list so users can continue navigating the
 	// rest of the form with the keyboard.
@@ -84,6 +87,13 @@
 		comboOpen = false;
 		tick().then(() => {
 			triggerRef.focus();
+		});
+	}
+
+	function closeAndFocusLocationTrigger() {
+		locationComboOpen = false;
+		tick().then(() => {
+			locationTriggerRef.focus();
 		});
 	}
 </script>
@@ -129,7 +139,7 @@
 										role="combobox"
 										aria-expanded={open}
 									>
-										{categoryName || 'Select a category...'}
+										{categoryName || 'Select or add a new category...'}
 										<ChevronsUpDownIcon class="opacity-50" />
 									</Button>
 								{/snippet}
@@ -181,12 +191,46 @@
 					</div>
 					<div class="grid gap-3">
 						<Label for="location-1">Location</Label>
-						<Input
-							id="location-1"
-							name="location"
-							bind:value={location}
-							placeholder="e.g. Melaka Supermarket"
-						/>
+						<Popover.Root bind:open={locationComboOpen}>
+							<Popover.Trigger bind:ref={locationTriggerRef}>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										variant="outline"
+										class="justify-between"
+										role="combobox"
+										aria-expanded={locationComboOpen}
+									>
+										{location || 'Select or add a new location'}
+										<ChevronsUpDownIcon class="opacity-50" />
+									</Button>
+								{/snippet}
+							</Popover.Trigger>
+							<Popover.Content class="p-0">
+								<Command.Root>
+									<Command.Input placeholder="e.g. Melaka Supermarket" bind:value={location} />
+									<Command.List>
+										<Command.Empty>{location}</Command.Empty>
+										<Command.Group value="frameworks">
+											{#each appState.knownLocations as locationSuggestion (locationSuggestion)}
+												<Command.Item
+													value={locationSuggestion}
+													onSelect={() => {
+														location = locationSuggestion;
+														closeAndFocusLocationTrigger();
+													}}
+												>
+													<CheckIcon
+														class={cn(location !== locationSuggestion && 'text-transparent')}
+													/>
+													{locationSuggestion}
+												</Command.Item>
+											{/each}
+										</Command.Group>
+									</Command.List>
+								</Command.Root>
+							</Popover.Content>
+						</Popover.Root>
 					</div>
 					<div class="grid gap-3">
 						<Label for={`${id}-date`} class="px-1">Actioned Date</Label>
