@@ -3,18 +3,12 @@
 	import HandCoinsIcon from '@lucide/svelte/icons/hand-coins';
 	import Bell from '@tabler/icons-svelte/icons/bell';
 	import Braces from '@tabler/icons-svelte/icons/braces';
-	import CameraIcon from '@tabler/icons-svelte/icons/camera';
 	import DashboardIcon from '@tabler/icons-svelte/icons/dashboard';
-	import DatabaseIcon from '@tabler/icons-svelte/icons/database';
-	import FileAiIcon from '@tabler/icons-svelte/icons/file-ai';
-	import FileDescriptionIcon from '@tabler/icons-svelte/icons/file-description';
-	import FileWordIcon from '@tabler/icons-svelte/icons/file-word';
 	import InfinityIcon from '@tabler/icons-svelte/icons/infinity';
 	import ListDetailsIcon from '@tabler/icons-svelte/icons/list-details';
 	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
 	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
 	import PigMoney from '@tabler/icons-svelte/icons/pig-money';
-	import ReportIcon from '@tabler/icons-svelte/icons/report';
 	import SearchIcon from '@tabler/icons-svelte/icons/search';
 	import SettingsIcon from '@tabler/icons-svelte/icons/settings';
 	import Tax from '@tabler/icons-svelte/icons/tax';
@@ -65,79 +59,6 @@
 				title: 'Piggy Bank',
 				url: '/piggy-bank',
 				icon: PigMoney
-			},
-			{
-				title: 'Debts',
-				url: '/debts',
-				icon: HandCoinsIcon
-			},
-			{
-				title: 'Tax',
-				url: '/tax',
-				icon: Tax
-			},
-			{
-				title: 'People',
-				url: '/people',
-				icon: UserScan
-			},
-			{
-				title: 'Analytics',
-				url: '/analytics',
-				icon: ReportIcon
-			},
-			{
-				title: 'Notifications',
-				url: '/notifications',
-				icon: Bell
-			}
-		],
-		navClouds: [
-			{
-				title: 'Capture',
-				icon: CameraIcon,
-				isActive: true,
-				url: '#',
-				items: [
-					{
-						title: 'Active Proposals',
-						url: '#'
-					},
-					{
-						title: 'Archived',
-						url: '#'
-					}
-				]
-			},
-			{
-				title: 'Proposal',
-				icon: FileDescriptionIcon,
-				url: '#',
-				items: [
-					{
-						title: 'Active Proposals',
-						url: '#'
-					},
-					{
-						title: 'Archived',
-						url: '#'
-					}
-				]
-			},
-			{
-				title: 'Prompts',
-				icon: FileAiIcon,
-				url: '#',
-				items: [
-					{
-						title: 'Active Proposals',
-						url: '#'
-					},
-					{
-						title: 'Archived',
-						url: '#'
-					}
-				]
 			}
 		],
 		navSecondary: [
@@ -160,19 +81,24 @@
 		],
 		documents: [
 			{
-				name: 'Data Library',
-				url: '#',
-				icon: DatabaseIcon
+				title: 'Debts',
+				url: '/debts',
+				icon: HandCoinsIcon
 			},
 			{
-				name: 'Reports',
-				url: '#',
-				icon: ReportIcon
+				title: 'Tax',
+				url: '/tax',
+				icon: Tax
 			},
 			{
-				name: 'Word Assistant',
-				url: '#',
-				icon: FileWordIcon
+				title: 'People',
+				url: '/people',
+				icon: UserScan
+			},
+			{
+				title: 'Notifications',
+				url: '/notifications',
+				icon: Bell
 			}
 		]
 	};
