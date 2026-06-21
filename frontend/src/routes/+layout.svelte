@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { Toaster } from 'svelte-sonner';
 
 	import favicon from '$lib/assets/favicon.svg';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
@@ -42,6 +43,8 @@
 	<link rel="icon" href={favicon} />
 	<title>{appState.pageTitle}</title>
 </svelte:head>
+
+<Toaster position="top-center" />
 
 <Sidebar.Provider
 	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
