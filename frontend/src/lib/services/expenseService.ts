@@ -1,5 +1,5 @@
-import { apiDelete, apiGet, apiPost, apiPut } from './api';
-import type { Expense, CreateExpenseRequest, UpdateExpenseRequest } from './types';
+import { apiDelete, apiDownloadFile, apiGet, apiPost, apiPut } from './api';
+import type { CreateExpenseRequest, Expense, UpdateExpenseRequest } from './types';
 
 const path = '/expense';
 
@@ -28,4 +28,12 @@ export async function updateExpense(
 
 export async function deleteExpense(id: string, signal?: AbortSignal): Promise<void> {
 	return apiDelete(`${path}/${id}`, signal);
+}
+
+export async function exportAllExpense(signal?: AbortSignal): Promise<void> {
+	const now = new Date();
+	return apiDownloadFile(
+		`${path}/export?format=json`,
+		`export-${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}.json`
+	);
 }

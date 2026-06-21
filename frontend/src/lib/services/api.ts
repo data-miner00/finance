@@ -77,3 +77,29 @@ export async function apiDelete(path: string, signal?: AbortSignal): Promise<voi
 
 	await handleResponse<void>(response);
 }
+
+export async function apiDownloadFile(path: string, filename: string): Promise<void> {
+	try {
+		const response = await fetch(`${apiBase}${path}`);
+
+		if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+		const blob = await response.blob();
+		const downloadUrl = window.URL.createObjectURL(blob);
+
+		// Create a hidden <a> element to trigger the download
+		const link = document.createElement('a');
+		link.href = downloadUrl;
+		link.download = filename; // Sets the target file name
+
+		// Append, click, and clean up the element
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+
+		// Free up browser memory by revoking the object URL
+		window.URL.revokeObjectURL(downloadUrl);
+	} catch (error) {
+		console.error('Download failed:', error);
+	}
+}

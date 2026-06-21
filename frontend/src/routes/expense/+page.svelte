@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PlusIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import { formatCurrency, getDaysInMonth } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
@@ -11,7 +12,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { createExpense } from '$lib/services';
+	import { createExpense, exportAllExpense } from '$lib/services';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 
@@ -126,6 +127,11 @@
 		return Math.round((total / 12) * 100) / 100;
 	}
 	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
+
+	async function exportAllData() {
+		await exportAllExpense();
+		toast.success('Successfully exported expenses.');
+	}
 </script>
 
 <div class="flex gap-4 p-6">
@@ -207,6 +213,7 @@
 		>
 			Show older expenses
 		</Button>
+		<Button variant="outline" size="sm" onclick={exportAllData}>Export</Button>
 	</div>
 {/snippet}
 

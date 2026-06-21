@@ -1,6 +1,7 @@
 
 using Core.Models;
 using Core.Repositories;
+using Core.Streams;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WebApi.Options;
@@ -30,6 +31,15 @@ namespace WebApi
             builder.Services.AddSingleton<IRepository<Category>, CategoryRepository>();
             builder.Services.AddSingleton<IRepository<Person>, PersonRepository>();
             builder.Services.AddSingleton<IRepository<Tax>, TaxRepository>();
+            builder.Services.AddSingleton<IDictionary<string, IDataStreamifier>>((ctx) =>
+            {
+                return new Dictionary<string, IDataStreamifier>
+                {
+                    { "json", new JsonStreamifier() },
+                    { "xml", new XmlStreamifier() },
+                    { "csv", new CsvStreamifier() },
+                };
+            });
 
             var app = builder.Build();
 

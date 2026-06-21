@@ -2,6 +2,7 @@
 using Core.Models;
 using Core.Repositories;
 using WebApi.Models;
+using Core.Streams;
 
 namespace WebApi.Controllers
 {
@@ -9,11 +10,17 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class ExpenseController : ControllerBase
     {
-        private readonly IRepository<Expense> _repository;
+        private const string DefaultExportFormat = "json";
 
-        public ExpenseController(IRepository<Expense> repository)
+        private readonly IRepository<Expense> _repository;
+        private readonly IDictionary<string, IDataStreamifier> dataStreamifiers;
+
+        public ExpenseController(
+            IRepository<Expense> repository,
+            IDictionary<string, IDataStreamifier> dataStreamifiers)
         {
             _repository = repository;
+            this.dataStreamifiers = dataStreamifiers;
         }
 
         [HttpGet]
@@ -98,6 +105,20 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("export")]
+        public async Task<ActionResult> ExportAll([FromQuery] string? format, CancellationToken cancellationToken)
+        {
+            format ??= DefaultExportFormat;
+            var streamifier = this.dataStreamifiers[format]!;
+            var expenses = await _repository.GetAllAsync(cancellationToken);
+            var stream = await streamifier.StreamifyAsync(expenses, cancellationToken);
+            
+            const string contentType = "application/octet-stream";
+            string downloadName = $"downloaded_file.{format}";
+
+            return File(stream, contentType, downloadName);
         }
     }
 }
