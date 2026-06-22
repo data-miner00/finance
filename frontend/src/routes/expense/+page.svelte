@@ -68,6 +68,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Expenses';
+		appState.currentPage = 'expense';
 	});
 
 	interface MonthlyTotal {

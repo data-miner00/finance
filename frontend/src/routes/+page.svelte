@@ -9,6 +9,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Dashboard';
+		appState.currentPage = 'dashboard';
 	});
 </script>
 

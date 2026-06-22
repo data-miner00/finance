@@ -20,6 +20,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Accounts';
+		appState.currentPage = 'account';
 	});
 
 	async function addAccount() {

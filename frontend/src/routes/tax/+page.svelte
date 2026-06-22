@@ -34,6 +34,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Taxes';
+		appState.currentPage = 'tax';
 	});
 </script>
 

@@ -1,3 +1,15 @@
+type CurrentPage =
+	| 'dashboard'
+	| 'account'
+	| 'piggyBank'
+	| 'income'
+	| 'expense'
+	| 'settings'
+	| 'recurring'
+	| 'tax'
+	| 'people'
+	| 'debt';
+
 export type AppState = {
 	accounts: Awaited<ReturnType<typeof import('./services').getAccounts>>;
 	expenses: Awaited<ReturnType<typeof import('./services').getExpenses>>;
@@ -10,10 +22,12 @@ export type AppState = {
 	pageTitle: string;
 	categories: string[];
 	knownLocations: string[];
+	currentPage: CurrentPage;
 };
 
 export const appState = $state<AppState>({
 	pageTitle: 'Dashboard',
+	currentPage: 'dashboard',
 	accounts: [],
 	expenses: [],
 	incomes: [],

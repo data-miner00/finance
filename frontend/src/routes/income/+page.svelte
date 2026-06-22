@@ -34,6 +34,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Incomes';
+		appState.currentPage = 'income';
 	});
 </script>
 

@@ -34,6 +34,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'People';
+		appState.currentPage = 'people';
 	});
 </script>
 

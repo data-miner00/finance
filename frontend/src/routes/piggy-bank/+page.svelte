@@ -40,6 +40,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Piggy Banks';
+		appState.currentPage = 'piggyBank';
 	});
 </script>
 

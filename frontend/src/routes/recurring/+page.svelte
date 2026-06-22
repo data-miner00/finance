@@ -52,6 +52,7 @@
 
 	onMount(() => {
 		appState.pageTitle = 'Recurring Actions';
+		appState.currentPage = 'recurring';
 	});
 </script>
 
