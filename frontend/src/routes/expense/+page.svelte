@@ -18,6 +18,7 @@
 
 	import CategoryCost from './charts/category-cost.svelte';
 	import CategoryCount from './charts/category-count.svelte';
+	import DailySpending from './charts/daily-spending.svelte';
 	import TotalByMonth from './charts/total-month.svelte';
 	import { columns } from './table/column';
 
@@ -74,13 +75,16 @@
 		total: number;
 	}
 
+	interface DailyTotal {
+		day: Date;
+		total: number;
+	}
+
 	function groupExpensesByMonth(expenses: Expense[]): MonthlyTotal[] {
 		const monthMap = new Map<string, number>();
 
 		for (const expense of expenses) {
-			if (!expense.actionedAt) continue;
-
-			const date = new Date(expense.actionedAt);
+			const date = new Date(expense.actionedAt || expense.createdAt);
 			const month = date.toLocaleString('default', { month: 'long' }); // e.g. "January"
 
 			monthMap.set(month, (monthMap.get(month) ?? 0) + expense.amount);
@@ -92,6 +96,42 @@
 		}));
 	}
 
+	function groupExpensesByDay(expenses: Expense[]): DailyTotal[] {
+		const dayMap = new Map<Date, number>();
+
+		const today = new Date();
+		const dateInt = today.getDate();
+
+		const mappedExpenses = expenses.map((expense) => ({
+			effectiveDate: new Date(expense.actionedAt ?? expense.createdAt),
+			total: expense.amount
+		}));
+
+		// last 7 days
+		for (let i = dateInt; i > dateInt - 7; --i) {
+			today.setDate(today.getDate() - 1);
+			const currentMonth = today.getMonth();
+			const currentDate = today.getDate();
+			const totalAmount = mappedExpenses
+				.filter((expense) => {
+					return (
+						expense.effectiveDate.getDate() == currentDate &&
+						expense.effectiveDate.getMonth() == currentMonth
+					);
+				})
+				.reduce((prev, curr) => prev + curr.total, 0);
+
+			dayMap.set(new Date(today.getFullYear(), currentMonth, currentDate), totalAmount);
+		}
+
+		return Array.from(dayMap.entries()).map(
+			([day, total]): DailyTotal => ({
+				day,
+				total: Math.round(total * 100) / 100
+			})
+		);
+	}
+
 	const now = new Date();
 	let averageSpendingPerDay = $derived(
 		getAverageForMonth(appState.expenses, now.getFullYear(), now.getMonth() + 1)
@@ -99,6 +139,7 @@
 	let averageSpendingPerMonth = $derived(
 		getMonthlyAverageForYear(appState.expenses, now.getFullYear())
 	);
+	let dailySpending = $derived(groupExpensesByDay(appState.expenses));
 
 	function getAverageForMonth(expenses: Expense[], year: number, month: number): number {
 		const filtered = expenses.filter((expense) => {
@@ -152,6 +193,8 @@
 		})}
 	/>
 	<TotalByMonth chartData={monthlyExpense} />
+
+	<DailySpending chartData={dailySpending} />
 </div>
 
 <div class="flex gap-4 p-6">
