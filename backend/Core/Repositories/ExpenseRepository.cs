@@ -53,8 +53,13 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            /*
+             * Actually, the view itself already have the order by clause, it works in SQL Management Studio,
+             * but ordering is ignored when calling from C# due to query optimization.
+             * Hence, the fix is to use Linq in here OR put the ORDER BY clause to the final query below.
+             */
             var command = new CommandDefinition(
-                $"SELECT * FROM {VwNames.GetAllExpenses};");
+                $"SELECT * FROM {VwNames.GetAllExpenses} ORDER BY {nameof(Expense.ActionedAt)} DESC;");
 
             var dtos = await this.connection.QueryAsync<ExpenseDto>(command);
             return dtos.Select(x => x.ToModel());
