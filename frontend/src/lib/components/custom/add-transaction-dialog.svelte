@@ -11,8 +11,9 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { createExpense, createIncome } from '$lib/services';
+	import { AccountType, createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
 
@@ -95,6 +96,14 @@
 			locationTriggerRef.focus();
 		});
 	}
+
+	const paymentMethods = Object.values(AccountType).filter((v) => typeof v === 'string');
+
+	let value = $state('');
+
+	const triggerContent = $derived(
+		paymentMethods.find((f) => f === value) ?? 'Select a payment method'
+	);
 </script>
 
 <Dialog.Root bind:open>
@@ -126,6 +135,23 @@
 							autocomplete="off"
 						/>
 					</div>
+					<!-- <div class="grid gap-3">
+						<Label for="paymentMethod">Method</Label>
+						<Select.Root type="single" name="paymentMethod" bind:value>
+							<Select.Trigger class="w-full">
+								{triggerContent}
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Group>
+									{#each paymentMethods as method (method)}
+										<Select.Item value={method} label={method}>
+											{method}
+										</Select.Item>
+									{/each}
+								</Select.Group>
+							</Select.Content>
+						</Select.Root>
+					</div> -->
 					<div class="grid gap-3">
 						<Label for="category-1">Category</Label>
 						<Popover.Root bind:open={comboOpen}>
