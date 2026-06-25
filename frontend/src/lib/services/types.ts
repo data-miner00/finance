@@ -38,7 +38,7 @@ export interface Expense extends EntityBase {
 	currency?: string | null;
 	location?: string | null;
 	receiptImage?: string | null;
-	actionedAt?: string;
+	actionedAt: string;
 }
 
 export interface CreateExpenseRequest {
@@ -49,10 +49,11 @@ export interface CreateExpenseRequest {
 	currency?: string | null;
 	location?: string | null;
 	receiptImage?: string | null;
-	actionedAt?: string | null;
 }
 
-export interface UpdateExpenseRequest extends CreateExpenseRequest {}
+export interface UpdateExpenseRequest extends CreateExpenseRequest {
+	actionedAt: string;
+}
 
 export interface Income extends EntityBase {
 	name: string;

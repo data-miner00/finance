@@ -7,10 +7,10 @@ CREATE PROCEDURE [dbo].[usp_UpdateExpenseWithCategoryName]
     @Id UNIQUEIDENTIFIER,
     @Name NVARCHAR(255),
     @Amount MONEY,
+    @ActionedAt DATETIME2(7),
     @CategoryName NVARCHAR(50) = NULL,
     @Location NVARCHAR(255) = NULL,
-    @Description NVARCHAR(255) = NULL,
-    @ActionedAt DATETIME2(7) = NULL
+    @Description NVARCHAR(255) = NULL
 AS
 BEGIN
     DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);

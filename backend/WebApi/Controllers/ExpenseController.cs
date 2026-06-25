@@ -58,12 +58,6 @@ namespace WebApi.Controllers
                 ReceiptImage = request.ReceiptImage,
             };
 
-            if (!string.IsNullOrWhiteSpace(request.ActionedAt)
-                && DateTime.TryParse(request.ActionedAt, out var actionedAt))
-            {
-                expense.ActionedAt = actionedAt;
-            }
-
             var createdExpense = await _repository.CreateAsync(expense, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = createdExpense.Id }, createdExpense);
         }

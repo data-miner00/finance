@@ -43,13 +43,13 @@ export const columns: ColumnDef<Expense>[] = [
 		}
 	},
 	{
-		accessorKey: 'createdAt',
+		accessorKey: 'actionedAt',
 		header: ({ column }) =>
 			renderComponent(DataTableSortButton, {
 				onclick: column.getToggleSortingHandler(),
 				title: 'Date'
 			}),
-		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.createdAt))
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.actionedAt))
 	},
 	{
 		id: 'actions',

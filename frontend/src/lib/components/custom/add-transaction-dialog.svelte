@@ -54,8 +54,7 @@
 				description,
 				categoryName,
 				amount,
-				location,
-				actionedAt: actionedAt ? actionedAt.toString() : null
+				location
 			});
 
 			name = '';

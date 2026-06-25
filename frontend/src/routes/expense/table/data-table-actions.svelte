@@ -17,6 +17,7 @@
 	let name = $state('');
 	let categoryName = $state<string>();
 	let amount = $state(0);
+	let actionedAt = $state('');
 
 	function openEditDialog() {
 		const item = appState.expenses.find((e) => e.id === id);
@@ -24,12 +25,13 @@
 		name = item.name;
 		amount = item.amount;
 		categoryName = item.categoryName;
+		actionedAt = item.actionedAt;
 		isEditDialogOpen = true;
 	}
 
 	async function saveExpense(event: Event) {
 		event.preventDefault();
-		await updateExpense(id, { name, amount, categoryName });
+		await updateExpense(id, { name, amount, categoryName, actionedAt });
 		appState.expenses = appState.expenses.map((e) =>
 			e.id === id ? { ...e, name, amount, categoryName, updatedAt: new Date().toISOString() } : e
 		);
