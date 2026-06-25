@@ -23,6 +23,7 @@ export type AppState = {
 	categories: string[];
 	knownLocations: string[];
 	currentPage: CurrentPage;
+	isCommandPaletteOpen: boolean;
 };
 
 export const appState = $state<AppState>({
@@ -37,5 +38,6 @@ export const appState = $state<AppState>({
 	taxes: [],
 	isAddTransactionDialogOpen: false,
 	categories: [],
-	knownLocations: []
+	knownLocations: [],
+	isCommandPaletteOpen: false
 });

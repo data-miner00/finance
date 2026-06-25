@@ -5,6 +5,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
+	import CommandPalette from '$lib/components/custom/command-palette.svelte';
 	import SiteHeader from '$lib/components/site-header.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import {
@@ -37,6 +38,13 @@
 			new Set(appState.expenses.map((e) => e.location || '').filter((l) => !!l))
 		);
 	});
+
+	function handleKeydown(e: KeyboardEvent) {
+		if ((e.key === 'j' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
+			e.preventDefault();
+			appState.isCommandPaletteOpen = !appState.isCommandPaletteOpen;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -44,7 +52,10 @@
 	<title>{appState.pageTitle}</title>
 </svelte:head>
 
+<svelte:document onkeydown={handleKeydown} />
+
 <Toaster position="top-center" />
+<CommandPalette bind:isOpen={appState.isCommandPaletteOpen} />
 
 <Sidebar.Provider
 	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
