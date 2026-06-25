@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { Icon } from '@tabler/icons-svelte';
 	import CirclePlusFilledIcon from '@tabler/icons-svelte/icons/circle-plus-filled';
 	import MailIcon from '@tabler/icons-svelte/icons/mail';
+
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import type { Icon } from '@tabler/icons-svelte';
 	import { appState } from '$lib/states.svelte';
 
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
@@ -27,6 +28,7 @@
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
 		</Sidebar.Menu>
+		<Sidebar.Separator />
 		<Sidebar.Menu>
 			{#each items as item (item.title)}
 				<Sidebar.MenuItem>

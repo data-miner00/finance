@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { PlusIcon, SunIcon } from '@lucide/svelte';
+
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { appState } from '$lib/states.svelte';
-	import { SunIcon } from '@lucide/svelte';
 </script>
 
 <header
@@ -23,6 +24,11 @@
 				rel="noopener noreferrer"
 			>
 				<SunIcon />
+			</Button>
+
+			<Button>
+				<PlusIcon />
+				Create Expense
 			</Button>
 		</div>
 	</div>

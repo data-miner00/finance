@@ -3,7 +3,6 @@
 	import HandCoinsIcon from '@lucide/svelte/icons/hand-coins';
 	import Bell from '@tabler/icons-svelte/icons/bell';
 	import Braces from '@tabler/icons-svelte/icons/braces';
-	import DashboardIcon from '@tabler/icons-svelte/icons/dashboard';
 	import InfinityIcon from '@tabler/icons-svelte/icons/infinity';
 	import ListDetailsIcon from '@tabler/icons-svelte/icons/list-details';
 	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
@@ -31,16 +30,6 @@
 		},
 		navMain: [
 			{
-				title: 'Dashboard',
-				url: '/',
-				icon: DashboardIcon
-			},
-			{
-				title: 'Accounts',
-				url: '/account',
-				icon: ListDetailsIcon
-			},
-			{
 				title: 'Expenses',
 				url: '/expense',
 				icon: MoneybagMove
@@ -49,6 +38,11 @@
 				title: 'Income',
 				url: '/income',
 				icon: MoneybagMoveBack
+			},
+			{
+				title: 'Accounts',
+				url: '/account',
+				icon: ListDetailsIcon
 			},
 			{
 				title: 'Recurring',
