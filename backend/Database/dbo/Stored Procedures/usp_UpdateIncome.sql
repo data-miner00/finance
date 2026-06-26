@@ -26,6 +26,7 @@ BEGIN
         i.[Name],
         i.[Description],
         i.[Amount],
+        i.[ActionedAt],
         i.[CreatedAt],
         i.[UpdatedAt]
     FROM [dbo].[Incomes] i

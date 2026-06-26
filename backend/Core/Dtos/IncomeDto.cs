@@ -13,6 +13,8 @@ namespace Core.Dtos
 
         public decimal Amount { get; set; }
 
+        public DateTime ActionedAt { get; set; }
+
         public override Income ToModel()
         {
             return new Income
@@ -21,6 +23,7 @@ namespace Core.Dtos
                 Name = Name,
                 Description = Description,
                 Amount = Amount,
+                ActionedAt = ActionedAt,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

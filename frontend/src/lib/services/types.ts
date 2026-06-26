@@ -59,6 +59,7 @@ export interface Income extends EntityBase {
 	name: string;
 	description?: string | null;
 	amount: number;
+	actionedAt: string;
 }
 
 export interface CreateIncomeRequest {

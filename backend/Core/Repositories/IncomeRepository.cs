@@ -52,7 +52,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM Incomes;");
+                "SELECT * FROM Incomes ORDER BY [ActionedAt] DESC;");
 
             var dtos = await this.connection.QueryAsync<IncomeDto>(command);
             return dtos.Select(x => x.ToModel());

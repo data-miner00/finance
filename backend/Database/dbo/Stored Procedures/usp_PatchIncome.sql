@@ -7,7 +7,8 @@ CREATE PROCEDURE [dbo].[usp_PatchIncome]
     @Id UNIQUEIDENTIFIER,
     @Name NVARCHAR(50) = NULL,
     @Amount MONEY = NULL,
-    @Description NVARCHAR(255) = NULL
+    @Description NVARCHAR(255) = NULL,
+    @ActionedAt DATETIME2(7) = NULL
 AS
 BEGIN
     DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -17,7 +18,8 @@ BEGIN
     SET
         [Name] = COALESCE(@Name, [Name]),
         [Amount] = COALESCE(@Amount, [Amount]),
-        [Description] = COALESCE(@Description, [Description])
+        [Description] = COALESCE(@Description, [Description]),
+        [ActionedAt] = COALESCE(@ActionedAt, [ActionedAt])
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
 
@@ -26,6 +28,7 @@ BEGIN
         i.[Name],
         i.[Description],
         i.[Amount],
+        i.[ActionedAt],
         i.[CreatedAt],
         i.[UpdatedAt]
     FROM [dbo].[Incomes] i

@@ -31,6 +31,7 @@ BEGIN
 		[Name],
 		[Description],
 		[Amount],
+		[ActionedAt],
 		[CreatedAt],
 		[UpdatedAt]
 	FROM [dbo].[Incomes] l
