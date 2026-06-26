@@ -15,6 +15,7 @@
 	import { createExpense, exportAllExpense } from '$lib/services';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
+	import type { DailyTotal, MonthlyTotal } from '$lib/types';
 
 	import CategoryCost from './charts/category-cost.svelte';
 	import CategoryCount from './charts/category-count.svelte';
@@ -70,16 +71,6 @@
 		appState.pageTitle = 'Expenses';
 		appState.currentPage = 'expense';
 	});
-
-	interface MonthlyTotal {
-		month: string;
-		total: number;
-	}
-
-	interface DailyTotal {
-		day: Date;
-		total: number;
-	}
 
 	function groupExpensesByMonth(expenses: Expense[]): MonthlyTotal[] {
 		const monthMap = new Map<string, number>();

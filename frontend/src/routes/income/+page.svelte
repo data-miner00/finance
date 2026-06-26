@@ -9,6 +9,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { type Income, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
+	import type { MonthlyTotal } from '$lib/types';
 
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
 	import { columns } from './data-table/column';
@@ -38,10 +39,6 @@
 		appState.currentPage = 'income';
 	});
 
-	interface MonthlyTotal {
-		month: string;
-		total: number;
-	}
 	function groupIncomeByMonth(incomes: Income[]): MonthlyTotal[] {
 		const monthMap = new Map<string, number>();
 
