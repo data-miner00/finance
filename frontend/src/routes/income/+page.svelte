@@ -7,9 +7,10 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { createIncome } from '$lib/services';
+	import { type Income, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
+	import MonthlyDistribution from './charts/monthly-distribution.svelte';
 	import { columns } from './data-table/column';
 
 	let isDialogOpen = $state(false);
@@ -36,6 +37,30 @@
 		appState.pageTitle = 'Incomes';
 		appState.currentPage = 'income';
 	});
+
+	interface MonthlyTotal {
+		month: string;
+		total: number;
+	}
+	function groupIncomeByMonth(incomes: Income[]): MonthlyTotal[] {
+		const monthMap = new Map<string, number>();
+
+		for (const income of incomes) {
+			const date = new Date(income.actionedAt);
+			const month = date.toLocaleString('default', { month: 'long' }); // e.g. "January"
+
+			monthMap.set(month, (monthMap.get(month) ?? 0) + income.amount);
+		}
+
+		return Array.from(monthMap.entries())
+			.reverse()
+			.map(([month, total]) => ({
+				month,
+				total: Math.round(total * 100) / 100 // avoid floating point drift
+			}));
+	}
+
+	let monthlyIncome = $derived(groupIncomeByMonth(appState.incomes));
 </script>
 
 {#snippet dataTableControls()}
@@ -44,6 +69,10 @@
 		Create Income
 	</Button>
 {/snippet}
+
+<div class="flex gap-4 p-6">
+	<MonthlyDistribution chartData={monthlyIncome} />
+</div>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
