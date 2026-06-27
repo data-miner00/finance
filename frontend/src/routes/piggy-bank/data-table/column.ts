@@ -1,8 +1,12 @@
+import type { ColumnDef } from '@tanstack/table-core';
+
+import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { PiggyBank } from '$lib/services/types';
-import type { ColumnDef } from '@tanstack/table-core';
+
 import DataTableActions from './data-table-actions.svelte';
 import DataTableStatus from './data-table-status.svelte';
+
 export const columns: ColumnDef<PiggyBank>[] = [
 	{
 		header: 'No.',
@@ -14,7 +18,11 @@ export const columns: ColumnDef<PiggyBank>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Name'
+			})
 	},
 	{
 		header: 'Target Amount',
@@ -44,8 +52,13 @@ export const columns: ColumnDef<PiggyBank>[] = [
 		header: 'Deadline'
 	},
 	{
-		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
-		header: 'Date'
+		accessorKey: 'updatedAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Date'
+			}),
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.updatedAt))
 	},
 	{
 		id: 'actions',

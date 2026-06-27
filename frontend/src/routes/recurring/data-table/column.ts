@@ -1,6 +1,9 @@
+import type { ColumnDef } from '@tanstack/table-core';
+
+import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { RecurringAction } from '$lib/services/types';
-import type { ColumnDef } from '@tanstack/table-core';
+
 import DataTableActions from './data-table-actions.svelte';
 
 const recurringTypeLabels = ['Expense', 'Income'] as const;
@@ -17,11 +20,22 @@ export const columns: ColumnDef<RecurringAction>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Name'
+			})
 	},
 	{
-		header: 'Amount',
-		accessorFn: (row) => row.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
+		accessorKey: 'amount',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Amount'
+			}),
+		cell: ({ row }) => {
+			return row.original.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
+		}
 	},
 	{
 		accessorKey: 'type',
@@ -48,8 +62,13 @@ export const columns: ColumnDef<RecurringAction>[] = [
 		}
 	},
 	{
-		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.recurringAt)),
-		header: 'Next Action Date'
+		accessorKey: 'recurringAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Next Action Date'
+			}),
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.recurringAt))
 	},
 	{
 		id: 'actions',

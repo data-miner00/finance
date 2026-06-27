@@ -1,5 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { Tax } from '$lib/services/types';
 
@@ -16,15 +17,31 @@ export const columns: ColumnDef<Tax>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Name'
+			})
 	},
 	{
-		header: 'Amount',
-		accessorFn: (row) => row.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
+		accessorKey: 'amount',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Amount'
+			}),
+		cell: ({ row }) => {
+			return row.original.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
+		}
 	},
 	{
-		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
-		header: 'Date'
+		accessorKey: 'createdAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Date'
+			}),
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.createdAt))
 	},
 	{
 		id: 'actions',

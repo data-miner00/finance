@@ -1,5 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { Person } from '$lib/services/types';
 
@@ -16,15 +17,24 @@ export const columns: ColumnDef<Person>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Name'
+			})
 	},
 	{
 		header: 'Alias',
 		accessorFn: (row) => row.alias || '-'
 	},
 	{
-		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.createdAt)),
-		header: 'Date'
+		accessorKey: 'updatedAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Date'
+			}),
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.updatedAt))
 	},
 	{
 		id: 'actions',

@@ -1,5 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
 import { type Account, AccountType } from '$lib/services/types';
 
@@ -16,7 +17,11 @@ export const columns: ColumnDef<Account>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Name'
+			})
 	},
 	{
 		accessorFn: (row) => {
@@ -36,12 +41,24 @@ export const columns: ColumnDef<Account>[] = [
 		header: 'Type'
 	},
 	{
-		header: 'Balance',
-		accessorFn: (row) => row.balance.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' })
+		accessorKey: 'balance',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Balance'
+			}),
+		cell: ({ row }) => {
+			return row.original.balance.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
+		}
 	},
 	{
-		accessorFn: (row) => Intl.DateTimeFormat('en-MY').format(new Date(row.updatedAt)),
-		header: 'Updated'
+		accessorKey: 'updatedAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Date'
+			}),
+		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.updatedAt))
 	},
 	{
 		id: 'actions',
