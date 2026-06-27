@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { Toaster } from 'svelte-sonner';
 
@@ -56,6 +57,8 @@
 
 <Toaster position="top-center" />
 <CommandPalette bind:isOpen={appState.isCommandPaletteOpen} />
+
+<ModeWatcher />
 
 <Sidebar.Provider
 	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
