@@ -24,7 +24,7 @@ namespace WebApi
 
             builder.Services.AddSingleton<IDbConnection>(connection);
             builder.Services.AddSingleton<IRepository<Account>, AccountRepository>();
-            builder.Services.AddSingleton<IRepository<Expense>, ExpenseRepository>();
+            builder.Services.AddSingleton<ExpenseRepository>();
             builder.Services.AddSingleton<IRepository<Income>, IncomeRepository>();
             builder.Services.AddSingleton<IRepository<PiggyBank>, PiggyBankRepository>();
             builder.Services.AddSingleton<IRepository<RecurringAction>, RecurringActionRepository>();

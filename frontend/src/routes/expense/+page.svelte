@@ -12,7 +12,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { createExpense, exportAllExpense } from '$lib/services';
+	import { createExpense, exportAllExpense, importExpenses } from '$lib/services';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 	import type { DailyTotal, MonthlyTotal } from '$lib/types';
@@ -82,10 +82,12 @@
 			monthMap.set(month, (monthMap.get(month) ?? 0) + expense.amount);
 		}
 
-		return Array.from(monthMap.entries()).map(([month, total]) => ({
-			month,
-			total: Math.round(total * 100) / 100 // avoid floating point drift
-		}));
+		return Array.from(monthMap.entries())
+			.reverse()
+			.map(([month, total]) => ({
+				month,
+				total: Math.round(total * 100) / 100 // avoid floating point drift
+			}));
 	}
 
 	function groupExpensesByDay(expenses: Expense[]): DailyTotal[] {
@@ -116,12 +118,14 @@
 			dayMap.set(new Date(today.getFullYear(), currentMonth, currentDate), totalAmount);
 		}
 
-		return Array.from(dayMap.entries()).map(
-			([day, total]): DailyTotal => ({
-				day,
-				total: Math.round(total * 100) / 100
-			})
-		);
+		return Array.from(dayMap.entries())
+			.reverse()
+			.map(
+				([day, total]): DailyTotal => ({
+					day,
+					total: Math.round(total * 100) / 100
+				})
+			);
 	}
 
 	const now = new Date();
@@ -164,6 +168,20 @@
 	async function exportAllData() {
 		await exportAllExpense();
 		toast.success('Successfully exported expenses.');
+	}
+
+	let files: FileList | undefined = $state();
+
+	async function importAllData() {
+		if (!files?.[0]) return;
+		const file = files[0];
+
+		try {
+			await importExpenses(file);
+			toast.success('Imported successfully.');
+		} catch (e) {
+			toast.error('Failed to import. ' + e);
+		}
 	}
 </script>
 
@@ -249,6 +267,13 @@
 			Show older expenses
 		</Button>
 		<Button variant="outline" size="sm" onclick={exportAllData}>Export</Button>
+		<Input
+			bind:files
+			type="file"
+			placeholder="Import"
+			name="importExpenses"
+			onchange={importAllData}
+		/>
 	</div>
 {/snippet}
 

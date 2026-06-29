@@ -103,3 +103,10 @@ export async function apiDownloadFile(path: string, filename: string): Promise<v
 		console.error('Download failed:', error);
 	}
 }
+
+export async function apiUploadFile(path: string, formData: FormData): Promise<void> {
+	await fetch(`${apiBase}${path}`, {
+		method: 'POST',
+		body: formData
+	});
+}

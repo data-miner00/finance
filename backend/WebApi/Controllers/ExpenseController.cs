@@ -3,6 +3,7 @@ using Core.Models;
 using Core.Repositories;
 using WebApi.Models;
 using Core.Streams;
+using System.Text.Json;
 
 namespace WebApi.Controllers
 {
@@ -12,11 +13,11 @@ namespace WebApi.Controllers
     {
         private const string DefaultExportFormat = "json";
 
-        private readonly IRepository<Expense> _repository;
+        private readonly ExpenseRepository _repository;
         private readonly IDictionary<string, IDataStreamifier> dataStreamifiers;
 
         public ExpenseController(
-            IRepository<Expense> repository,
+            ExpenseRepository repository,
             IDictionary<string, IDataStreamifier> dataStreamifiers)
         {
             _repository = repository;
@@ -113,6 +114,29 @@ namespace WebApi.Controllers
             string downloadName = $"downloaded_file.{format}";
 
             return File(stream, contentType, downloadName);
+        }
+
+        [HttpPost("import")]
+        public async Task<ActionResult> ImportFrom(IFormFile file,  CancellationToken cancellationToken)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            if (!file.ContentType.Equals("application/json", StringComparison.OrdinalIgnoreCase))
+                return BadRequest("File must be JSON.");
+
+            using var stream = file.OpenReadStream();
+            var items = await JsonSerializer.DeserializeAsync<List<ExpenseImportModel>>(stream, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (items == null)
+                return BadRequest("Could not parse JSON.");
+
+            await this._repository.ImportAsync(items, cancellationToken);
+
+            return this.NoContent();
         }
     }
 }

@@ -10,6 +10,8 @@ namespace Core
 
         public const string AddExpenseWithCategoryName = "usp_AddExpenseWithCategoryName";
 
+        public const string AddExpenseFullParams = "usp_AddExpenseFullParams";
+
         public const string AddIncome = "usp_AddIncome";
 
         public const string AddPiggyBank = "usp_AddPiggyBank";

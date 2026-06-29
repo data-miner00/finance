@@ -94,5 +94,30 @@ namespace Core.Repositories
 
             return updatedExpense.ToModel();
         }
+
+        public async Task ImportAsync(IEnumerable<ExpenseImportModel> expenseImports, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // TODO: Instead of loop, make bulk imports
+            foreach (var model in expenseImports)
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("Id", model.Id);
+                parameters.Add("Name", model.Name);
+                parameters.Add("Amount", model.Amount);
+                parameters.Add("Description", model.Description);
+                parameters.Add("ActionedAt", model.ActionedAt);
+                parameters.Add("CreatedAt", model.CreatedAt);
+                parameters.Add("UpdatedAt", model.UpdatedAt);
+                parameters.Add("CategoryName", model.CategoryName);
+                parameters.Add("Location", model.Location);
+
+                await this.connection.ExecuteAsync(
+                    SpNames.AddExpenseFullParams,
+                    parameters,
+                    commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

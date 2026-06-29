@@ -1,4 +1,4 @@
-import { apiDelete, apiDownloadFile, apiGet, apiPost, apiPut } from './api';
+import { apiDelete, apiDownloadFile, apiGet, apiPost, apiPut, apiUploadFile } from './api';
 import type { CreateExpenseRequest, Expense, UpdateExpenseRequest } from './types';
 
 const path = '/expense';
@@ -36,4 +36,11 @@ export async function exportAllExpense(signal?: AbortSignal): Promise<void> {
 		`${path}/export?format=json`,
 		`export-${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}.json`
 	);
+}
+
+export async function importExpenses(jsonFile: File, signal?: AbortSignal) {
+	const formData = new FormData();
+	formData.append('file', jsonFile);
+
+	return apiUploadFile(`${path}/import`, formData);
 }
