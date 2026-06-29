@@ -1,4 +1,4 @@
-type CurrentPage =
+export type CurrentPage =
 	| 'dashboard'
 	| 'account'
 	| 'piggyBank'

@@ -4,9 +4,90 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { appState } from '$lib/states.svelte';
+	import { type CurrentPage, appState } from '$lib/states.svelte';
 
 	import ModeToggleButton from './custom/mode-toggle-button.svelte';
+
+	type ActionButton = {
+		text: string;
+		isDisplay: boolean;
+		action: () => void;
+	};
+
+	let actions: { [K in CurrentPage]: ActionButton } = {
+		expense: {
+			text: 'Create Expense',
+			isDisplay: true,
+			action() {
+				appState.isAddTransactionDialogOpen = true;
+			}
+		},
+		income: {
+			text: 'Create Income',
+			isDisplay: true,
+			action() {
+				appState.isAddTransactionDialogOpen = true;
+			}
+		},
+		account: {
+			text: 'Create Account',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		recurring: {
+			text: 'Create Recurring',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		piggyBank: {
+			text: 'Create Piggy Bank',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		tax: {
+			text: 'Create Tax',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		people: {
+			text: 'Create People',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		debt: {
+			text: 'Create Debt',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		settings: {
+			text: 'Create Expense',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
+		dashboard: {
+			text: 'Create Expense',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		}
+	};
+
+	let actionButton = $derived(actions[appState.currentPage]);
 </script>
 
 <header
@@ -19,9 +100,9 @@
 		<div class="ms-auto flex items-center gap-2">
 			<ModeToggleButton />
 
-			<Button>
+			<Button onclick={actionButton.action}>
 				<PlusIcon />
-				Create Expense
+				{actionButton.text}
 			</Button>
 		</div>
 	</div>
