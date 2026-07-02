@@ -71,6 +71,20 @@ export const columns: ColumnDef<RecurringAction>[] = [
 		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.recurringAt))
 	},
 	{
+		accessorKey: 'lastExecutedAt',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Last Executed Date'
+			}),
+		cell: ({ row }) => {
+			if (!row.original.lastExecutedAt) {
+				return 'Not executed yet';
+			}
+			return Intl.DateTimeFormat('en-MY').format(new Date(row.original.lastExecutedAt));
+		}
+	},
+	{
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(DataTableActions, { id: row.original.id });

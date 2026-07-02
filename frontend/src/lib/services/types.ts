@@ -101,6 +101,7 @@ export interface RecurringAction extends EntityBase {
 	intervalValue: number;
 	dayOfMonth?: number | null;
 	type: number;
+	lastExecutedAt?: string;
 }
 
 export interface CreateRecurringActionRequest {

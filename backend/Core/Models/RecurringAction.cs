@@ -25,5 +25,7 @@ namespace Core.Models
         public int IntervalValue { get; set; } = 1;
 
         public int? DayOfMonth { get; set; }
+
+        public DateTime? LastExecutedAt { get; set; }
     }
 }

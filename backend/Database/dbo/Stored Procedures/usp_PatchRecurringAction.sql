@@ -36,7 +36,8 @@ BEGIN
         r.[Type],
         r.[Amount],
         r.[CreatedAt],
-        r.[UpdatedAt]
+        r.[UpdatedAt],
+        r.[LastExecutedAt]
     FROM [dbo].[Recurrings] r
     JOIN @OutputTable t ON r.Id = t.Id;
 END

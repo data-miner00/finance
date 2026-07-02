@@ -12,6 +12,7 @@
     [RecurrenceType]  NVARCHAR (50)    CONSTRAINT [DF_Recurrings_RecurrenceType] DEFAULT ('Monthly') NOT NULL,
     [IntervalValue]   INT              CONSTRAINT [DF_Recurrings_IntervalValue] DEFAULT (1) NOT NULL,
     [DayOfMonth]      INT              NULL,
+    [LastExecutedAt]  DATETIME2 (7)    NULL, 
     CONSTRAINT [PK_Recurrings] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

@@ -56,7 +56,8 @@ BEGIN
 		[IntervalValue],
 		[DayOfMonth],
 		[CreatedAt],
-		[UpdatedAt]
+		[UpdatedAt],
+		[LastExecutedAt]
 	FROM [dbo].[Recurrings] l
 	JOIN @OutputTable r
 	ON l.Id = r.Id;

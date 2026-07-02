@@ -2,6 +2,8 @@
 	import { page } from '$app/state';
 	import Button from '$lib/components/ui/button/button.svelte';
 
+	import './layout.css';
+
 	const emojis: Record<number, string> = {
 		404: '👻',
 		420: '🫠',
