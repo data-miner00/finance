@@ -20,7 +20,7 @@
 	} from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
-	import './layout.css';
+	import '../layout.css';
 
 	let { children } = $props();
 

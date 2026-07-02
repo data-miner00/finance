@@ -1,12 +1,14 @@
 <script lang="ts">
-	import CreditCardIcon from "@tabler/icons-svelte/icons/credit-card";
-	import DotsVerticalIcon from "@tabler/icons-svelte/icons/dots-vertical";
-	import LogoutIcon from "@tabler/icons-svelte/icons/logout";
-	import NotificationIcon from "@tabler/icons-svelte/icons/notification";
-	import UserCircleIcon from "@tabler/icons-svelte/icons/user-circle";
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import CreditCardIcon from '@tabler/icons-svelte/icons/credit-card';
+	import DotsVerticalIcon from '@tabler/icons-svelte/icons/dots-vertical';
+	import LogoutIcon from '@tabler/icons-svelte/icons/logout';
+	import NotificationIcon from '@tabler/icons-svelte/icons/notification';
+	import UserCircleIcon from '@tabler/icons-svelte/icons/user-circle';
+
+	import { goto } from '$app/navigation';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 
@@ -29,7 +31,7 @@
 						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
-							<span class="text-muted-foreground truncate text-xs">
+							<span class="truncate text-xs text-muted-foreground">
 								{user.email}
 							</span>
 						</div>
@@ -39,7 +41,7 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
 				class="w-(--bits-dropdown-menu-anchor-width) min-w-56 rounded-lg"
-				side={sidebar.isMobile ? "bottom" : "right"}
+				side={sidebar.isMobile ? 'bottom' : 'right'}
 				align="end"
 				sideOffset={4}
 			>
@@ -51,7 +53,7 @@
 						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
-							<span class="text-muted-foreground truncate text-xs">
+							<span class="truncate text-xs text-muted-foreground">
 								{user.email}
 							</span>
 						</div>
@@ -73,7 +75,7 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item onSelect={() => goto('/login')}>
 					<LogoutIcon />
 					Log out
 				</DropdownMenu.Item>

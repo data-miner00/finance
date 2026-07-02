@@ -58,7 +58,7 @@
 			}
 		},
 		people: {
-			text: 'Create People',
+			text: 'Create Person',
 			isDisplay: true,
 			action() {
 				// noop
