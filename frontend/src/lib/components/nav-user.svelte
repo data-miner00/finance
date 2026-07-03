@@ -61,9 +61,9 @@
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
-					<DropdownMenu.Item>
+					<DropdownMenu.Item onSelect={() => goto('/settings/profile')}>
 						<UserCircleIcon />
-						Account
+						Profile
 					</DropdownMenu.Item>
 					<DropdownMenu.Item>
 						<CreditCardIcon />
