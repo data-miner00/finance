@@ -22,7 +22,6 @@
 	let dayOfMonth = $state<number | null>(null);
 	let type = $state('0');
 	let description = $state('');
-	let isActive = $state(true);
 
 	async function addRecurringAction() {
 		const response = await createRecurringAction({
@@ -34,7 +33,7 @@
 			dayOfMonth: dayOfMonth || undefined,
 			type: Number(type),
 			description: description || undefined,
-			isActive
+			isActive: true
 		});
 
 		appState.recurringActions = [...appState.recurringActions, response];
@@ -47,7 +46,6 @@
 		dayOfMonth = null;
 		type = '0';
 		description = '';
-		isActive = true;
 	}
 
 	onMount(() => {

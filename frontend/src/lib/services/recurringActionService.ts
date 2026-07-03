@@ -1,7 +1,7 @@
-import { apiDelete, apiGet, apiPost, apiPut } from './api';
+import { apiBase, apiDelete, apiGet, apiPost, apiPut, handleResponse } from './api';
 import type {
-	RecurringAction,
 	CreateRecurringActionRequest,
+	RecurringAction,
 	UpdateRecurringActionRequest
 } from './types';
 
@@ -35,4 +35,17 @@ export async function updateRecurringAction(
 
 export async function deleteRecurringAction(id: string, signal?: AbortSignal): Promise<void> {
 	return apiDelete(`${path}/${id}`, signal);
+}
+
+export async function toggleRecurringActionActiveStatus(
+	id: string,
+	signal?: AbortSignal
+): Promise<RecurringAction> {
+	signal?.throwIfAborted();
+
+	const response = await fetch(`${apiBase}${path}/${id}/toggle`, {
+		method: 'PATCH'
+	});
+
+	return handleResponse<RecurringAction>(response);
 }

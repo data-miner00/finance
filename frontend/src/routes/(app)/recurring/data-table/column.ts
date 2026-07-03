@@ -4,6 +4,7 @@ import DataTableSortButton from '$lib/components/custom/table-common/data-table-
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { RecurringAction } from '$lib/services/types';
 
+import ActiveSwitch from './active-switch.svelte';
 import DataTableActions from './data-table-actions.svelte';
 
 const recurringTypeLabels = ['Expense', 'Income'] as const;
@@ -82,6 +83,13 @@ export const columns: ColumnDef<RecurringAction>[] = [
 				return 'Not executed yet';
 			}
 			return Intl.DateTimeFormat('en-MY').format(new Date(row.original.lastExecutedAt));
+		}
+	},
+	{
+		id: 'isActive',
+		header: 'Active',
+		cell: ({ row }) => {
+			return renderComponent(ActiveSwitch, { checked: row.original.isActive, id: row.original.id });
 		}
 	},
 	{

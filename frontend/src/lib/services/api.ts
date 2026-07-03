@@ -1,12 +1,8 @@
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-const apiBase = PUBLIC_API_BASE_URL + '/api';
+export const apiBase = PUBLIC_API_BASE_URL + '/api';
 
-interface RequestOptions extends RequestInit {
-	signal?: AbortSignal;
-}
-
-async function handleResponse<T>(response: Response): Promise<T> {
+export async function handleResponse<T>(response: Response): Promise<T> {
 	if (!response.ok) {
 		const text = await response.text();
 		const error = new Error(

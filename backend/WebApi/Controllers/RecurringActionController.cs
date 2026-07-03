@@ -193,5 +193,22 @@ namespace WebApi.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPatch("{id}/toggle")]
+        public async Task<ActionResult<RecurringAction>> ToggleActive(string id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
+                recurringAction.IsActive = !recurringAction.IsActive;
+
+                var updated = await _repository.UpdateAsync(recurringAction, cancellationToken);
+                return this.Ok(updated);
+            }
+            catch
+            {
+                return this.NotFound();
+            }
+        }
     }
 }
