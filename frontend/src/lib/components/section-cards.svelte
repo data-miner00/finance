@@ -1,8 +1,10 @@
 <script lang="ts">
 	import TrendingDownIcon from '@tabler/icons-svelte/icons/trending-down';
 	import TrendingUpIcon from '@tabler/icons-svelte/icons/trending-up';
+
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { AccountType } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	// Helper function to get current month and year
@@ -58,7 +60,9 @@
 
 	// Derived: Total accumulated savings (sum of all account balances)
 	let totalAccumulatedSavings = $derived(
-		appState.accounts.reduce((sum, account) => sum + account.balance, 0)
+		appState.accounts
+			.filter((account) => account.type !== AccountType.CreditCard)
+			.reduce((sum, account) => sum + account.balance, 0)
 	);
 
 	// Derived: Total piggy bank amounts
