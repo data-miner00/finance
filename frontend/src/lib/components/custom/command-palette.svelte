@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { PlusIcon } from '@lucide/svelte';
-	import CalculatorIcon from '@lucide/svelte/icons/calculator';
-	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import CreditCardIcon from '@lucide/svelte/icons/credit-card';
 	import SettingsIcon from '@lucide/svelte/icons/settings';
-	import SmileIcon from '@lucide/svelte/icons/smile';
 	import UserIcon from '@lucide/svelte/icons/user';
 
 	import { goto } from '$app/navigation';
@@ -26,6 +23,11 @@
 		appState.isAddTransactionDialogOpen = true;
 		isOpen = false;
 	}
+
+	function openCreateAccountDialog() {
+		appState.isAddAccountDialogOpen = true;
+		isOpen = false;
+	}
 </script>
 
 <Command.Dialog class="rounded-lg border shadow-md md:min-w-112.5" bind:open={isOpen}>
@@ -36,6 +38,10 @@
 			<Command.Item onSelect={openCreateExpenseDialog}>
 				<PlusIcon />
 				<span>Create Expense</span>
+			</Command.Item>
+			<Command.Item onSelect={openCreateAccountDialog}>
+				<PlusIcon />
+				<span>Create Account</span>
 			</Command.Item>
 		</Command.Group>
 		<Command.Separator />

@@ -33,7 +33,7 @@
 			text: 'Create Account',
 			isDisplay: true,
 			action() {
-				// noop
+				appState.isAddAccountDialogOpen = true;
 			}
 		},
 		recurring: {
