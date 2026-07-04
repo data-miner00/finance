@@ -28,10 +28,10 @@
 
 	let isCalendarPopoverOpen = $state(false);
 	let name = $state('');
-	let description = $state('');
-	let categoryName = $state(''); // Todo, make this select from existing categories or allow creating new ones
+	let description = $state<string>();
+	let categoryName = $state<string>();
 	let amount = $state(0);
-	let location = $state('');
+	let location = $state<string>();
 	let actionedAt = $state<CalendarDate>();
 
 	async function handleSubmit(event: Event) {
@@ -45,7 +45,7 @@
 			});
 
 			name = '';
-			description = '';
+			description = undefined;
 			amount = 0;
 
 			appState.incomes = [...appState.incomes, income];
@@ -59,10 +59,10 @@
 			});
 
 			name = '';
-			description = '';
-			categoryName = '';
+			description = undefined;
+			categoryName = undefined;
 			amount = 0;
-			location = '';
+			location = undefined;
 			actionedAt = undefined;
 
 			appState.expenses.push(expense);
