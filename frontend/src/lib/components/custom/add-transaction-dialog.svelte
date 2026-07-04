@@ -3,6 +3,7 @@
 	import { CheckIcon, ChevronsUpDownIcon } from '@lucide/svelte';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import { tick } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
@@ -71,6 +72,7 @@
 			}
 		}
 
+		toast.success(`${tab === 'income' ? 'Income' : 'Expense'} created successfully.`);
 		open = false;
 	}
 
@@ -108,7 +110,7 @@
 
 <Dialog.Root bind:open>
 	<form>
-		<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>
 				<Dialog.Title>{tab === 'expense' ? 'Add Expense' : 'Add Income'}</Dialog.Title>
 				<Dialog.Description>

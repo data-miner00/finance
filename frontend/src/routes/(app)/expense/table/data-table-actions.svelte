@@ -2,6 +2,7 @@
 	import { CheckIcon, ChevronsUpDownIcon } from '@lucide/svelte';
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import { tick } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -55,6 +56,7 @@
 					}
 				: e
 		);
+		toast.success('Expense updated successfully.');
 		isEditDialogOpen = false;
 	}
 
@@ -62,6 +64,7 @@
 		await deleteExpense(id);
 		appState.expenses = appState.expenses.filter((e) => e.id !== id);
 		isDeleteDialogOpen = false;
+		toast.success('Expense deleted successfully.');
 	}
 
 	let categoryComboOpen = $state(false);
