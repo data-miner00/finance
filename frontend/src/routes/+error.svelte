@@ -1,27 +1,38 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import SearchIcon from '@lucide/svelte/icons/search';
+	import { onMount } from 'svelte';
+
+	import * as Empty from '$lib/components/ui/empty/index.js';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import * as Kbd from '$lib/components/ui/kbd/index.js';
+	import { appState } from '$lib/states.svelte';
 
 	import './layout.css';
 
-	const emojis: Record<number, string> = {
-		404: '👻',
-		420: '🫠',
-		500: '💥'
-	};
+	onMount(() => {
+		appState.pageTitle = 'Not Found';
+	});
 </script>
 
-<div class="flex h-full w-full items-center justify-center">
-	<div class="mx-auto my-auto w-fit text-center">
-		<h1 class="text-2xl font-bold">{page.status} {page.error?.message}</h1>
-		<span style="font-size: 10em">
-			{emojis[page.status] ?? emojis[500]}
-		</span>
-
-		<p>Looks like something is acting up. Apologies for the inconvenience!</p>
-
-		<div class="mt-4">
-			<Button onclick={() => history.back()}>Go back</Button>
-		</div>
-	</div>
-</div>
+<Empty.Root>
+	<Empty.Header>
+		<Empty.Title>404 - Not Found</Empty.Title>
+		<Empty.Description>
+			The page you're looking for doesn't exist. Try searching for what you need below.
+		</Empty.Description>
+	</Empty.Header>
+	<Empty.Content>
+		<InputGroup.Root class="sm:w-3/4">
+			<InputGroup.Input placeholder="Try searching for pages..." />
+			<InputGroup.Addon>
+				<SearchIcon />
+			</InputGroup.Addon>
+			<InputGroup.Addon align="inline-end">
+				<Kbd.Root>/</Kbd.Root>
+			</InputGroup.Addon>
+		</InputGroup.Root>
+		<Empty.Description>
+			Need help? <a href="#/">Contact support</a>
+		</Empty.Description>
+	</Empty.Content>
+</Empty.Root>
