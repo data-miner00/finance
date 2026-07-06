@@ -30,9 +30,9 @@
 	let isCalendarPopoverOpen = $state(false);
 	let name = $state('');
 	let description = $state<string>();
-	let categoryName = $state<string>();
+	let categoryName = $state('');
 	let amount = $state(0);
-	let location = $state<string>();
+	let location = $state('');
 	let actionedAt = $state<CalendarDate>();
 	let agentName = $state<string>();
 
@@ -62,9 +62,9 @@
 
 			name = '';
 			description = undefined;
-			categoryName = undefined;
+			categoryName = '';
 			amount = 0;
-			location = undefined;
+			location = '';
 			actionedAt = undefined;
 			agentName = undefined;
 

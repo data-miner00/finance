@@ -21,10 +21,10 @@
 	let isEditDialogOpen = $state(false);
 	let isDeleteDialogOpen = $state(false);
 	let name = $state('');
-	let categoryName = $state<string>();
+	let categoryName = $state('');
 	let amount = $state(0);
 	let actionedAt = $state('');
-	let location = $state<string>();
+	let location = $state('');
 	let description = $state<string>();
 	let agentName = $state<string>();
 
@@ -33,9 +33,9 @@
 		if (!item) return;
 		name = item.name;
 		amount = item.amount;
-		categoryName = item.categoryName;
+		categoryName = item.categoryName || '';
 		actionedAt = item.actionedAt;
-		location = item.location || undefined;
+		location = item.location || '';
 		description = item.description || undefined;
 		agentName = item.agentName || undefined;
 		isEditDialogOpen = true;
