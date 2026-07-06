@@ -22,6 +22,7 @@ export type AppState = {
 	pageTitle: string;
 	categories: string[];
 	knownLocations: string[];
+	knownAgents: string[];
 	currentPage: CurrentPage;
 	isCommandPaletteOpen: boolean;
 	isAddAccountDialogOpen: boolean;
@@ -40,6 +41,7 @@ export const appState = $state<AppState>({
 	isAddTransactionDialogOpen: false,
 	categories: [],
 	knownLocations: [],
+	knownAgents: [],
 	isCommandPaletteOpen: false,
 	isAddAccountDialogOpen: false
 });

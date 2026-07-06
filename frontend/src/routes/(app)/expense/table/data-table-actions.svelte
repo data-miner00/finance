@@ -26,6 +26,7 @@
 	let actionedAt = $state('');
 	let location = $state<string>();
 	let description = $state<string>();
+	let agentName = $state<string>();
 
 	function openEditDialog() {
 		const item = appState.expenses.find((e) => e.id === id);
@@ -36,12 +37,21 @@
 		actionedAt = item.actionedAt;
 		location = item.location || undefined;
 		description = item.description || undefined;
+		agentName = item.agentName || undefined;
 		isEditDialogOpen = true;
 	}
 
 	async function saveExpense(event: Event) {
 		event.preventDefault();
-		await updateExpense(id, { name, amount, categoryName, actionedAt, location, description });
+		await updateExpense(id, {
+			name,
+			amount,
+			categoryName,
+			actionedAt,
+			location,
+			description,
+			agentName
+		});
 		appState.expenses = appState.expenses.map((e) =>
 			e.id === id
 				? {
@@ -52,6 +62,7 @@
 						actionedAt,
 						location,
 						description,
+						agentName,
 						updatedAt: new Date().toISOString()
 					}
 				: e
@@ -227,6 +238,15 @@
 							</Command.Root>
 						</Popover.Content>
 					</Popover.Root>
+				</div>
+				<div class="grid gap-3">
+					<Label for="agentName-1">Agent</Label>
+					<Input
+						id="agentName-1"
+						name="agentName"
+						bind:value={agentName}
+						placeholder="e.g. John Doe"
+					/>
 				</div>
 			</div>
 			<Dialog.Footer>

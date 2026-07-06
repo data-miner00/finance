@@ -34,6 +34,7 @@
 	let amount = $state(0);
 	let location = $state<string>();
 	let actionedAt = $state<CalendarDate>();
+	let agentName = $state<string>();
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
@@ -65,6 +66,7 @@
 			amount = 0;
 			location = undefined;
 			actionedAt = undefined;
+			agentName = undefined;
 
 			appState.expenses.push(expense);
 			if (expense.categoryName && !appState.categories.includes(expense.categoryName)) {
@@ -284,6 +286,15 @@
 								/>
 							</Popover.Content>
 						</Popover.Root>
+					</div>
+					<div class="grid gap-3">
+						<Label for="agentName-1">Agent</Label>
+						<Input
+							id="agentName-1"
+							name="agentName"
+							bind:value={agentName}
+							placeholder="e.g. John Doe"
+						/>
 					</div>
 				</Tabs.Content>
 

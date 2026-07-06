@@ -39,6 +39,7 @@ export interface Expense extends EntityBase {
 	location?: string | null;
 	receiptImage?: string | null;
 	actionedAt: string;
+	agentName?: string;
 }
 
 export interface CreateExpenseRequest {
@@ -49,6 +50,7 @@ export interface CreateExpenseRequest {
 	currency?: string | null;
 	location?: string | null;
 	receiptImage?: string | null;
+	agentName?: string;
 }
 
 export interface UpdateExpenseRequest extends CreateExpenseRequest {

@@ -39,6 +39,9 @@
 		appState.knownLocations = Array.from(
 			new Set(appState.expenses.map((e) => e.location || '').filter((l) => !!l))
 		);
+		appState.knownAgents = Array.from(
+			new Set(appState.expenses.map((e) => e.agentName || '').filter((a) => !!a))
+		);
 	});
 
 	function handleKeydown(e: KeyboardEvent) {
