@@ -12,7 +12,8 @@ CREATE PROCEDURE [dbo].[usp_AddExpenseFullParams]
 	@UpdatedAt DATETIME2(7),
 	@CategoryName NVARCHAR(50) = NULL,
 	@Location NVARCHAR(255) = NULL,
-	@Description NVARCHAR(255) = NULL
+	@Description NVARCHAR(255) = NULL,
+	@AgentName NVARCHAR(255) = NULL
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -43,7 +44,8 @@ BEGIN
 		[Description],
 		[ActionedAt],
 		[CreatedAt],
-		[UpdatedAt]
+		[UpdatedAt],
+		[AgentName]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
@@ -56,7 +58,8 @@ BEGIN
 		@Description,
 		@ActionedAt,
 		@CreatedAt,
-		@UpdatedAt
+		@UpdatedAt,
+		@AgentName
 	);
 
 	SELECT
@@ -68,7 +71,8 @@ BEGIN
 		l.[Location],
 		l.[ActionedAt],
 		l.[CreatedAt],
-		l.[UpdatedAt]
+		l.[UpdatedAt],
+		l.[AgentName]
 	FROM [dbo].[Expenses] l
 	JOIN @OutputTable r ON l.Id = r.Id;
 END

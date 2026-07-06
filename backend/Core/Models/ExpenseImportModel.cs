@@ -19,5 +19,7 @@
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        public string? AgentName { get; set; }
     }
 }

@@ -8,7 +8,8 @@ CREATE PROCEDURE [dbo].[usp_AddExpense]
 	@Amount MONEY,
 	@CategoryId UNIQUEIDENTIFIER = NULL,
 	@Location NVARCHAR(255) = NULL,
-	@Description NVARCHAR(255) = NULL
+	@Description NVARCHAR(255) = NULL,
+	@AgentName NVARCHAR(255) = NULL
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -20,7 +21,8 @@ BEGIN
 		[CategoryId],
 		[Amount],
 		[Location],
-		[Description]
+		[Description],
+		[AgentName]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
@@ -29,7 +31,8 @@ BEGIN
 		@CategoryId,
 		@Amount,
 		@Location,
-		@Description
+		@Description,
+		@AgentName
 	);
 
 	SELECT
@@ -41,7 +44,8 @@ BEGIN
 		[Location],
 		[Description],
 		[CreatedAt],
-		[UpdatedAt]
+		[UpdatedAt],
+		[AgentName]
 	FROM [dbo].[Expenses] l
 	JOIN @OutputTable r
 	ON l.Id = r.Id;

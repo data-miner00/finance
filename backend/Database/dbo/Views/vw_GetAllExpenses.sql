@@ -1,7 +1,7 @@
 ﻿CREATE VIEW dbo.vw_GetAllExpenses
 AS
 SELECT        TOP (100) PERCENT dbo.Expenses.Id, dbo.Expenses.Name, dbo.Expenses.Description, dbo.Expenses.Amount, dbo.Expenses.Location, dbo.Expenses.ActionedAt, dbo.Expenses.CreatedAt, dbo.Expenses.UpdatedAt, 
-                         dbo.Categories.Name AS CategoryName
+                         dbo.Categories.Name AS CategoryName, dbo.Expenses.AgentName
 FROM            dbo.Expenses LEFT OUTER JOIN
                          dbo.Categories ON dbo.Expenses.CategoryId = dbo.Categories.Id
 ORDER BY dbo.Expenses.ActionedAt DESC
@@ -89,7 +89,7 @@ Begin DesignProperties =
                Right = 208
             End
             DisplayFlags = 280
-            TopColumn = 5
+            TopColumn = 6
          End
          Begin Table = "Categories"
             Begin Extent = 

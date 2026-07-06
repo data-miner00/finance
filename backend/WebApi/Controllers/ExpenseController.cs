@@ -57,6 +57,7 @@ namespace WebApi.Controllers
                 Currency = request.Currency,
                 Location = request.Location,
                 ReceiptImage = request.ReceiptImage,
+                AgentName = request.AgentName,
             };
 
             var createdExpense = await _repository.CreateAsync(expense, cancellationToken);
@@ -77,6 +78,7 @@ namespace WebApi.Controllers
                 expense.Location = request.Location;
                 expense.ReceiptImage = request.ReceiptImage;
                 expense.ActionedAt = request.ActionedAt;
+                expense.AgentName = request.AgentName;
 
                 var updated = await _repository.UpdateAsync(expense, cancellationToken);
                 return this.Ok(updated);

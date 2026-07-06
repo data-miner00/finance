@@ -8,6 +8,7 @@
     [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Expenses_ActionedAt] DEFAULT (getdate()) NOT NULL,
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_UpdatedAt] DEFAULT (getdate()) NOT NULL,
+    [AgentName] NVARCHAR(255) NULL, 
     CONSTRAINT [PK_Expenses] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Expenses_Categories1] FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Categories] ([Id])
 );

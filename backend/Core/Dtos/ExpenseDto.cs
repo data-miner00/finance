@@ -19,6 +19,8 @@ namespace Core.Dtos
 
         public DateTime ActionedAt { get; set; }
 
+        public string? AgentName { get; set; }
+
         public override Expense ToModel()
         {
             return new Expense
@@ -32,6 +34,7 @@ namespace Core.Dtos
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
                 ActionedAt = ActionedAt,
+                AgentName = AgentName,
             };
         }
     }

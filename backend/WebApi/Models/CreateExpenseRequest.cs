@@ -15,5 +15,7 @@
         public string? Location { get; set; }
 
         public string? ReceiptImage { get; set; }
+
+        public string? AgentName { get; set; }
     }
 }

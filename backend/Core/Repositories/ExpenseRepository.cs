@@ -27,6 +27,7 @@ namespace Core.Repositories
             parameters.Add("CategoryName", entity.CategoryName);
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
+            parameters.Add("AgentName", entity.AgentName);
 
             var createdExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.AddExpenseWithCategoryName,
@@ -86,6 +87,7 @@ namespace Core.Repositories
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
             parameters.Add("ActionedAt", entity.ActionedAt);
+            parameters.Add("AgentName", entity.AgentName);
 
             var updatedExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.UpdateExpenseWithCategoryName,
@@ -112,6 +114,7 @@ namespace Core.Repositories
                 parameters.Add("UpdatedAt", model.UpdatedAt);
                 parameters.Add("CategoryName", model.CategoryName);
                 parameters.Add("Location", model.Location);
+                parameters.Add("AgentName", model.AgentName);
 
                 await this.connection.ExecuteAsync(
                     SpNames.AddExpenseFullParams,

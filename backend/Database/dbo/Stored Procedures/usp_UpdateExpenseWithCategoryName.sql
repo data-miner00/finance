@@ -10,7 +10,8 @@ CREATE PROCEDURE [dbo].[usp_UpdateExpenseWithCategoryName]
     @ActionedAt DATETIME2(7),
     @CategoryName NVARCHAR(50) = NULL,
     @Location NVARCHAR(255) = NULL,
-    @Description NVARCHAR(255) = NULL
+    @Description NVARCHAR(255) = NULL,
+    @AgentName NVARCHAR(255) = NULL
 AS
 BEGIN
     DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -35,7 +36,8 @@ BEGIN
         [Amount] = @Amount,
         [Location] = @Location,
         [Description] = @Description,
-        [ActionedAt] = @ActionedAt
+        [ActionedAt] = @ActionedAt,
+        [AgentName] = @AgentName
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
 
@@ -48,7 +50,8 @@ BEGIN
         e.[Location],
         e.[ActionedAt],
         e.[CreatedAt],
-        e.[UpdatedAt]
+        e.[UpdatedAt],
+        e.[AgentName]
     FROM [dbo].[Expenses] e
     JOIN @OutputTable r ON e.Id = r.Id;
 END
