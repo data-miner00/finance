@@ -34,7 +34,7 @@
 	let amount = $state(0);
 	let location = $state('');
 	let actionedAt = $state<CalendarDate>();
-	let agentName = $state<string>();
+	let agentName = $state('');
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
@@ -57,7 +57,8 @@
 				description,
 				categoryName,
 				amount,
-				location
+				location,
+				agentName
 			});
 
 			name = '';
@@ -66,7 +67,7 @@
 			amount = 0;
 			location = '';
 			actionedAt = undefined;
-			agentName = undefined;
+			agentName = '';
 
 			appState.expenses.push(expense);
 			if (expense.categoryName && !appState.categories.includes(expense.categoryName)) {
@@ -84,6 +85,9 @@
 	let locationComboOpen = $state(false);
 	let locationTriggerRef = $state<HTMLButtonElement>(null!);
 
+	let agentComboOpen = $state(false);
+	let agentTriggerRef = $state<HTMLButtonElement>(null!);
+
 	// We want to refocus the trigger button when the user selects
 	// an item from the list so users can continue navigating the
 	// rest of the form with the keyboard.
@@ -98,6 +102,13 @@
 		locationComboOpen = false;
 		tick().then(() => {
 			locationTriggerRef.focus();
+		});
+	}
+
+	function closeAndFocusAgentTrigger() {
+		agentComboOpen = false;
+		tick().then(() => {
+			agentTriggerRef.focus();
 		});
 	}
 
@@ -289,12 +300,44 @@
 					</div>
 					<div class="grid gap-3">
 						<Label for="agentName-1">Agent</Label>
-						<Input
-							id="agentName-1"
-							name="agentName"
-							bind:value={agentName}
-							placeholder="e.g. John Doe"
-						/>
+						<Popover.Root bind:open={agentComboOpen}>
+							<Popover.Trigger bind:ref={agentTriggerRef}>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										variant="outline"
+										class="justify-between"
+										role="combobox"
+										aria-expanded={agentComboOpen}
+									>
+										{agentName || 'Select or add a new agent...'}
+										<ChevronsUpDownIcon class="opacity-50" />
+									</Button>
+								{/snippet}
+							</Popover.Trigger>
+							<Popover.Content class="p-0">
+								<Command.Root>
+									<Command.Input placeholder="e.g. John Doe" bind:value={agentName} />
+									<Command.List>
+										<Command.Empty>{agentName}</Command.Empty>
+										<Command.Group value="frameworks">
+											{#each appState.knownAgents as agent (agent)}
+												<Command.Item
+													value={agent}
+													onSelect={() => {
+														agentName = agent;
+														closeAndFocusAgentTrigger();
+													}}
+												>
+													<CheckIcon class={cn(agentName !== agent && 'text-transparent')} />
+													{agent}
+												</Command.Item>
+											{/each}
+										</Command.Group>
+									</Command.List>
+								</Command.Root>
+							</Popover.Content>
+						</Popover.Root>
 					</div>
 				</Tabs.Content>
 

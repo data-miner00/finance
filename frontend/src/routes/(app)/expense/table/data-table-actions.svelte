@@ -26,7 +26,7 @@
 	let actionedAt = $state('');
 	let location = $state('');
 	let description = $state<string>();
-	let agentName = $state<string>();
+	let agentName = $state('');
 
 	function openEditDialog() {
 		const item = appState.expenses.find((e) => e.id === id);
@@ -37,7 +37,7 @@
 		actionedAt = item.actionedAt;
 		location = item.location || '';
 		description = item.description || undefined;
-		agentName = item.agentName || undefined;
+		agentName = item.agentName || '';
 		isEditDialogOpen = true;
 	}
 
@@ -95,6 +95,16 @@
 		locationComboOpen = false;
 		tick().then(() => {
 			locationTriggerRef.focus();
+		});
+	}
+
+	let agentComboOpen = $state(false);
+	let agentTriggerRef = $state<HTMLButtonElement>(null!);
+
+	function closeAndFocusAgentTrigger() {
+		agentComboOpen = false;
+		tick().then(() => {
+			agentTriggerRef.focus();
 		});
 	}
 </script>
@@ -241,12 +251,44 @@
 				</div>
 				<div class="grid gap-3">
 					<Label for="agentName-1">Agent</Label>
-					<Input
-						id="agentName-1"
-						name="agentName"
-						bind:value={agentName}
-						placeholder="e.g. John Doe"
-					/>
+					<Popover.Root bind:open={agentComboOpen}>
+						<Popover.Trigger bind:ref={agentTriggerRef}>
+							{#snippet child({ props })}
+								<Button
+									{...props}
+									variant="outline"
+									class="justify-between"
+									role="combobox"
+									aria-expanded={agentComboOpen}
+								>
+									{agentName || 'Select or add a new agent...'}
+									<ChevronsUpDownIcon class="opacity-50" />
+								</Button>
+							{/snippet}
+						</Popover.Trigger>
+						<Popover.Content class="p-0">
+							<Command.Root>
+								<Command.Input placeholder="e.g. John Doe" bind:value={agentName} />
+								<Command.List>
+									<Command.Empty>{agentName}</Command.Empty>
+									<Command.Group value="frameworks">
+										{#each appState.knownAgents as agent (agent)}
+											<Command.Item
+												value={agent}
+												onSelect={() => {
+													agentName = agent;
+													closeAndFocusAgentTrigger();
+												}}
+											>
+												<CheckIcon class={cn(agentName !== agent && 'text-transparent')} />
+												{agent}
+											</Command.Item>
+										{/each}
+									</Command.Group>
+								</Command.List>
+							</Command.Root>
+						</Popover.Content>
+					</Popover.Root>
 				</div>
 			</div>
 			<Dialog.Footer>
