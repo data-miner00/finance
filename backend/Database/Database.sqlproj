@@ -96,11 +96,6 @@
     <Build Include="dbo\Stored Procedures\usp_UpdateExpenseWithCategoryName.sql" />
     <Build Include="dbo\Views\vw_GetAllExpenses.sql" />
     <Build Include="dbo\Stored Procedures\usp_IncrementOrDecrementAccountBalance.sql" />
-    <Build Include="dbo\Tables\People.sql" />
-    <Build Include="dbo\Stored Procedures\usp_AddPerson.sql" />
-    <Build Include="dbo\Stored Procedures\usp_UpdatePerson.sql" />
-    <Build Include="dbo\Stored Procedures\usp_PatchPerson.sql" />
-    <Build Include="dbo\Stored Procedures\usp_DeletePerson.sql" />
     <Build Include="dbo\Tables\Taxes.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddTax.sql" />
     <Build Include="dbo\Stored Procedures\usp_DeleteTax.sql" />

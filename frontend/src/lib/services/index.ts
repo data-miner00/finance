@@ -5,5 +5,4 @@ export * from './expenseService';
 export * from './incomeService';
 export * from './piggyBankService';
 export * from './recurringActionService';
-export * from './personService';
 export * from './taxService';

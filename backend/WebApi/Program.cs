@@ -29,7 +29,6 @@ namespace WebApi
             builder.Services.AddSingleton<IRepository<PiggyBank>, PiggyBankRepository>();
             builder.Services.AddSingleton<IRepository<RecurringAction>, RecurringActionRepository>();
             builder.Services.AddSingleton<IRepository<Category>, CategoryRepository>();
-            builder.Services.AddSingleton<IRepository<Person>, PersonRepository>();
             builder.Services.AddSingleton<IRepository<Tax>, TaxRepository>();
             builder.Services.AddSingleton<IDictionary<string, IDataStreamifier>>((ctx) =>
             {

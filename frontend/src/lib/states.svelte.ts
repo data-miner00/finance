@@ -7,7 +7,6 @@ export type CurrentPage =
 	| 'settings'
 	| 'recurring'
 	| 'tax'
-	| 'people'
 	| 'debt';
 
 export type AppState = {
@@ -16,7 +15,6 @@ export type AppState = {
 	incomes: Awaited<ReturnType<typeof import('./services').getIncomes>>;
 	recurringActions: Awaited<ReturnType<typeof import('./services').getRecurringActions>>;
 	piggyBanks: Awaited<ReturnType<typeof import('./services').getPiggyBanks>>;
-	people: Awaited<ReturnType<typeof import('./services/personService').getPeople>>;
 	taxes: Awaited<ReturnType<typeof import('./services/taxService').getTaxes>>;
 	isAddTransactionDialogOpen: boolean;
 	pageTitle: string;
@@ -36,7 +34,6 @@ export const appState = $state<AppState>({
 	incomes: [],
 	recurringActions: [],
 	piggyBanks: [],
-	people: [],
 	taxes: [],
 	isAddTransactionDialogOpen: false,
 	categories: [],

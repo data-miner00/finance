@@ -18,8 +18,6 @@ namespace Core
 
         public const string AddRecurring = "usp_AddRecurringAction";
 
-        public const string AddPerson = "usp_AddPerson";
-
         public const string AddTax = "usp_AddTax";
 
         public const string DeleteAccount = "usp_DeleteAccount";
@@ -33,8 +31,6 @@ namespace Core
         public const string DeleteRecurringAction = "usp_DeleteRecurringAction";
 
         public const string DeleteCategory = "usp_DeleteCategory";
-
-        public const string DeletePerson = "usp_DeletePerson";
 
         public const string DeleteTax = "usp_DeleteTax";
 
@@ -51,8 +47,6 @@ namespace Core
         public const string UpdateRecurringAction = "usp_UpdateRecurringAction";
 
         public const string UpdateCategory = "usp_UpdateCategory";
-
-        public const string UpdatePerson = "usp_UpdatePerson";
 
         public const string UpdateTax = "usp_UpdateTax";
 

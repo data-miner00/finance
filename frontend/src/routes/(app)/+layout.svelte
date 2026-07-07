@@ -14,7 +14,6 @@
 		getAccounts,
 		getExpenses,
 		getIncomes,
-		getPeople,
 		getPiggyBanks,
 		getRecurringActions,
 		getTaxes
@@ -31,7 +30,6 @@
 		appState.incomes = await getIncomes();
 		appState.recurringActions = await getRecurringActions();
 		appState.piggyBanks = await getPiggyBanks();
-		appState.people = await getPeople();
 		appState.taxes = await getTaxes();
 		appState.categories = Array.from(
 			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))

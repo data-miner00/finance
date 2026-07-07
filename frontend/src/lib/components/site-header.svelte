@@ -57,13 +57,6 @@
 				// noop
 			}
 		},
-		people: {
-			text: 'Create Person',
-			isDisplay: true,
-			action() {
-				// noop
-			}
-		},
 		debt: {
 			text: 'Create Debt',
 			isDisplay: true,

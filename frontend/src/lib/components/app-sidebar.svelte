@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { CircleDollarSignIcon } from '@lucide/svelte';
-	import HandCoinsIcon from '@lucide/svelte/icons/hand-coins';
 	import Bell from '@tabler/icons-svelte/icons/bell';
 	import Braces from '@tabler/icons-svelte/icons/braces';
 	import InfinityIcon from '@tabler/icons-svelte/icons/infinity';
@@ -11,7 +10,6 @@
 	import SearchIcon from '@tabler/icons-svelte/icons/search';
 	import SettingsIcon from '@tabler/icons-svelte/icons/settings';
 	import Tax from '@tabler/icons-svelte/icons/tax';
-	import UserScan from '@tabler/icons-svelte/icons/user-scan';
 	import type { ComponentProps } from 'svelte';
 
 	import { PUBLIC_API_BASE_URL } from '$env/static/public';
@@ -75,19 +73,9 @@
 		],
 		documents: [
 			{
-				title: 'Debts',
-				url: '/debts',
-				icon: HandCoinsIcon
-			},
-			{
 				title: 'Tax',
 				url: '/tax',
 				icon: Tax
-			},
-			{
-				title: 'People',
-				url: '/people',
-				icon: UserScan
 			},
 			{
 				title: 'Notifications',
