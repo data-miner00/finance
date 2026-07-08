@@ -14,8 +14,24 @@ namespace WebApi
 
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var app = WebApplication.CreateBuilder(args)
+                .ConfigureServices()
+                .Build();
 
+            app.MapOpenApi();
+            app.UseSwaggerUI(opt =>
+            {
+                opt.SwaggerEndpoint("/openapi/v1.json", "Finance API V1"); // /swagger/index
+            });
+            app.UseHttpsRedirection();
+            app.UseCors(CorsPolicyName);
+            app.UseAuthorization();
+            app.MapControllers();
+            app.Run();
+        }
+
+        private static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
+        {
             builder.ConfigureCors();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
@@ -40,23 +56,7 @@ namespace WebApi
                 };
             });
 
-            var app = builder.Build();
-
-            app.MapOpenApi();
-            app.UseSwaggerUI(opt =>
-            {
-                opt.SwaggerEndpoint("/openapi/v1.json", "Finance API V1"); // /swagger/index
-            });
-
-            app.UseHttpsRedirection();
-
-            app.UseCors(CorsPolicyName);
-
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.Run();
+            return builder;
         }
 
         private static WebApplicationBuilder ConfigureCors(this WebApplicationBuilder builder)
