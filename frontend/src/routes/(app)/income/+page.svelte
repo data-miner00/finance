@@ -7,11 +7,12 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { type Income, createIncome } from '$lib/services';
+	import { type Expense, type Income, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import type { MonthlyTotal } from '$lib/types';
 
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
+	import MonthlyNetIncome from './charts/monthly-net-income.svelte';
 	import { columns } from './data-table/column';
 
 	let isDialogOpen = $state(false);
@@ -58,6 +59,33 @@
 	}
 
 	let monthlyIncome = $derived(groupIncomeByMonth(appState.incomes));
+
+	function groupExpensesByMonth(expenses: Expense[]): MonthlyTotal[] {
+		const monthMap = new Map<string, number>();
+
+		for (const expense of expenses) {
+			const date = new Date(expense.actionedAt);
+			const month = date.toLocaleString('default', { month: 'long' }); // e.g. "January"
+
+			monthMap.set(month, (monthMap.get(month) ?? 0) + expense.amount);
+		}
+
+		return Array.from(monthMap.entries())
+			.reverse()
+			.map(([month, total]) => ({
+				month,
+				total: Math.round(total * 100) / 100 // avoid floating point drift
+			}));
+	}
+
+	let monthlyExpenses = $derived(groupExpensesByMonth(appState.expenses));
+	let monthlyNetIncome = $derived.by(() =>
+		monthlyIncome.map((income) => {
+			const expense = monthlyExpenses.find((e) => e.month === income.month);
+			const netIncome = income.total - (expense?.total || 0);
+			return { month: income.month, netIncome };
+		})
+	);
 </script>
 
 {#snippet dataTableControls()}
@@ -69,6 +97,8 @@
 
 <div class="flex gap-4 p-6">
 	<MonthlyDistribution chartData={monthlyIncome} />
+
+	<MonthlyNetIncome chartData={monthlyNetIncome} />
 </div>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
