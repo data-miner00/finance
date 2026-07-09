@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { ArrowBigLeft, ArrowBigRight, CalendarArrowDown, CalendarIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { exportAllExpense, importExpenses } from '$lib/services';
@@ -156,67 +158,10 @@
 			toast.error('Failed to import. ' + e);
 		}
 	}
+
+	const thisMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+	const thisMonthLastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 </script>
-
-<div class="flex gap-4 p-6">
-	<CategoryCount
-		chartData={appState.categories.map((category, index) => {
-			const count = appState.expenses.filter((expense) => expense.categoryName === category).length;
-			const color = `var(--chart-${index + 1})`;
-			return { category, count, color };
-		})}
-	/>
-	<CategoryCost
-		chartData={appState.categories.map((category, index) => {
-			const cost = appState.expenses
-				.filter((expense) => expense.categoryName === category)
-				.reduce((prev, curr) => prev + curr.amount, 0);
-			const color = `var(--chart-${index + 1})`;
-			return { category, cost, color };
-		})}
-	/>
-	<TotalByMonth chartData={monthlyExpense} />
-
-	<DailySpending chartData={dailySpending} />
-</div>
-
-<div class="flex gap-4 p-6">
-	<Card.Root class="w-[200px]">
-		<Card.Header>
-			<Card.Description>Average daily spendings</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{formatCurrency(averageSpendingPerDay)}
-			</Card.Title>
-		</Card.Header>
-	</Card.Root>
-
-	<Card.Root class="w-[200px]">
-		<Card.Header>
-			<Card.Description>Average monthly spendings</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{formatCurrency(averageSpendingPerMonth)}
-			</Card.Title>
-		</Card.Header>
-	</Card.Root>
-
-	<Card.Root class="w-[200px]">
-		<Card.Header>
-			<Card.Description>Total expenses recorded</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{appState.expenses.length}
-			</Card.Title>
-		</Card.Header>
-	</Card.Root>
-
-	<Card.Root class="w-[200px]">
-		<Card.Header>
-			<Card.Description>Expenses logged this month</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{appState.expenses.filter(isCurrentMonthExpense).length}
-			</Card.Title>
-		</Card.Header>
-	</Card.Root>
-</div>
 
 {#snippet dataTableControls()}
 	<div class="flex items-center justify-between gap-2">
@@ -246,13 +191,111 @@
 {/snippet}
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-	<div class="px-4 lg:px-6">
+	<div class="flex items-center justify-between px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
 			<h1 class="text-xl font-bold">Expenses</h1>
 			<p class="text-sm text-muted-foreground">
 				Track your spending with a sortable expense table, category filters, and summary totals.
 			</p>
 		</div>
+
+		<div class="flex items-center gap-2">
+			<ButtonGroup.Root>
+				<Button variant="outline" size="icon">
+					<ArrowBigLeft />
+				</Button>
+				<Button variant="outline">
+					<CalendarIcon />
+					{thisMonthFirstDay.toLocaleDateString()} - {thisMonthLastDay.toLocaleDateString()}
+				</Button>
+				<Button variant="outline" size="icon">
+					<ArrowBigRight />
+				</Button>
+			</ButtonGroup.Root>
+
+			<ButtonGroup.Root>
+				<Button
+					size="icon"
+					variant={showCurrentMonthOnly ? 'default' : 'outline'}
+					onclick={() => (showCurrentMonthOnly = true)}
+				>
+					<CalendarArrowDown />
+				</Button>
+				<Button
+					variant={!showCurrentMonthOnly ? 'default' : 'outline'}
+					onclick={() => (showCurrentMonthOnly = false)}
+				>
+					<CalendarIcon />
+					Show All
+				</Button>
+			</ButtonGroup.Root>
+		</div>
+	</div>
+
+	<div class="flex gap-4 p-6">
+		<CategoryCount
+			chartData={appState.categories.map((category, index) => {
+				const count = appState.expenses.filter(
+					(expense) => expense.categoryName === category
+				).length;
+				const color = `var(--chart-${index + 1})`;
+				return { category, count, color };
+			})}
+		/>
+		<CategoryCost
+			chartData={appState.categories.map((category, index) => {
+				const cost = appState.expenses
+					.filter((expense) => expense.categoryName === category)
+					.reduce((prev, curr) => prev + curr.amount, 0);
+				const color = `var(--chart-${index + 1})`;
+				return { category, cost, color };
+			})}
+		/>
+		<TotalByMonth chartData={monthlyExpense} />
+
+		<DailySpending chartData={dailySpending} />
+	</div>
+
+	<div class="flex gap-4 p-6">
+		<Card.Root class="w-[200px]">
+			<Card.Header>
+				<Card.Description>Average daily spendings</Card.Description>
+				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					{formatCurrency(averageSpendingPerDay)}
+				</Card.Title>
+			</Card.Header>
+		</Card.Root>
+
+		<Card.Root class="w-[200px]">
+			<Card.Header>
+				<Card.Description>Average monthly spendings</Card.Description>
+				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					{formatCurrency(averageSpendingPerMonth)}
+				</Card.Title>
+			</Card.Header>
+		</Card.Root>
+
+		<Card.Root class="w-[200px]">
+			<Card.Header>
+				<Card.Description>Total expenses recorded</Card.Description>
+				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					{appState.expenses.length}
+				</Card.Title>
+			</Card.Header>
+		</Card.Root>
+
+		<Card.Root class="w-[200px]">
+			<Card.Header>
+				<Card.Description>Expenses logged this month</Card.Description>
+				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+					{appState.expenses.filter(isCurrentMonthExpense).length}
+				</Card.Title>
+			</Card.Header>
+		</Card.Root>
+	</div>
+
+	<div class="px-4 lg:px-6">
+		<h2 class="text-lg font-semibold">Recent Expenses</h2>
 	</div>
 
 	<div class="px-4 lg:px-6">
