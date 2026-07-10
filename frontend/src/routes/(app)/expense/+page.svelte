@@ -4,6 +4,7 @@
 
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -19,16 +20,6 @@
 
 	let showCurrentMonthOnly = $state(true);
 
-	const timeRanges = [
-		{ value: 'day', label: 'Day' },
-		{ value: 'month', label: 'Month' },
-		{ value: 'year', label: 'Year' },
-		{ value: 'all', label: 'All' }
-	];
-	let timeRange = $state<'day' | 'month' | 'year' | 'all'>('day');
-	const timeRangeLabel = $derived(
-		timeRanges.find((tr) => tr.value === timeRange)?.label ?? 'Select a time range'
-	);
 	const isCurrentMonthExpense = (expense: Expense) => {
 		const created = new Date(expense.createdAt);
 		const today = new Date();
@@ -62,11 +53,14 @@
 			}));
 	}
 
-	let categoryCountData = $derived.by(() => {
-		const categoryData = appState.categories.map((category, index) => {
+	let categoryCountRaw = $derived(
+		appState.categories.map((category) => {
 			const count = appState.expenses.filter((expense) => expense.categoryName === category).length;
 			return { category, count };
-		});
+		})
+	);
+	let categoryCountData = $derived.by(() => {
+		const categoryData = categoryCountRaw;
 
 		categoryData.sort((a, b) => b.count - a.count);
 
@@ -291,5 +285,31 @@
 
 	<div class="px-4 lg:px-6">
 		<DataTable data={filteredExpenses} {columns} controls={dataTableControls} />
+	</div>
+
+	<!-- <div class="px-4 lg:px-6">
+		{#each categoryCountRaw as { category, count }, index (category)}
+			<div class="flex items-center gap-2">
+				<div class="h-3 w-3 rounded-full" style="background-color: var(--chart-{index + 1})"></div>
+				<span class="text-sm font-medium">{category}</span>
+				<span class="text-sm text-muted-foreground">({count})</span>
+			</div>
+		{/each}
+	</div> -->
+
+	<div class="px-4 lg:px-6">
+		<h2 class="text-lg font-semibold">Category Summary</h2>
+		<div class="flex flex-wrap gap-2">
+			{#each categoryCountRaw as { category, count } (category)}
+				<div
+					class="flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground"
+				>
+					<span>{category}</span>
+					<Badge>
+						{count}
+					</Badge>
+				</div>
+			{/each}
+		</div>
 	</div>
 </div>
