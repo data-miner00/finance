@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { ArrowBigLeft, ArrowBigRight, CalendarArrowDown, CalendarIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
 
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { exportAllExpense, importExpenses } from '$lib/services';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 	import type { DailyTotal, MonthlyTotal } from '$lib/types';
@@ -140,25 +137,6 @@
 	}
 	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
 
-	async function exportAllData() {
-		await exportAllExpense();
-		toast.success('Successfully exported expenses.');
-	}
-
-	let files: FileList | undefined = $state();
-
-	async function importAllData() {
-		if (!files?.[0]) return;
-		const file = files[0];
-
-		try {
-			await importExpenses(file);
-			toast.success('Imported successfully.');
-		} catch (e) {
-			toast.error('Failed to import. ' + e);
-		}
-	}
-
 	const thisMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 	const thisMonthLastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 </script>
@@ -179,14 +157,6 @@
 		>
 			Show older expenses
 		</Button>
-		<Button variant="outline" size="sm" onclick={exportAllData}>Export</Button>
-		<Input
-			bind:files
-			type="file"
-			placeholder="Import"
-			name="importExpenses"
-			onchange={importAllData}
-		/>
 	</div>
 {/snippet}
 
