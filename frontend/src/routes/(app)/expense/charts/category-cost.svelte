@@ -10,18 +10,7 @@
 	let { chartData }: Props = $props();
 
 	const chartConfig = Object.fromEntries(
-		chartData
-			.slice(0, 5)
-			.map((d) => [d.category, { label: d.category, color: d.color }])
-			.concat([
-				[
-					'other',
-					{
-						label: 'Other',
-						color: 'var(--color-other)'
-					}
-				]
-			])
+		chartData.map((d) => [d.category, { label: d.category, color: d.color }])
 	) satisfies Chart.ChartConfig;
 </script>
 
