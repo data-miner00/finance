@@ -23,7 +23,7 @@
 
 <Card.Root>
 	<Card.Header>
-		<Card.Title>Bar Chart - Negative</Card.Title>
+		<Card.Title>Monthly Net Income</Card.Title>
 		<Card.Description>January - June 2024</Card.Description>
 	</Card.Header>
 	<Card.Content>

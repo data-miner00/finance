@@ -11,12 +11,16 @@
 		appState.pageTitle = 'Dashboard';
 		appState.currentPage = 'dashboard';
 	});
+
+	let chartData = $derived(
+		appState.expenses.map((e) => ({ date: new Date(e.actionedAt), expense: e.amount }))
+	);
 </script>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<SectionCards />
 	<div class="px-4 lg:px-6">
-		<ChartAreaInteractive />
+		<ChartAreaInteractive {chartData} />
 	</div>
 	<DataTable {data} />
 </div>
