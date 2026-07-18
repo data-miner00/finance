@@ -6,6 +6,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import AddAccountDialog from '$lib/components/custom/add-account-dialog.svelte';
+	import AddTaxDialog from '$lib/components/custom/add-tax-dialog.svelte';
 	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
 	import CommandPalette from '$lib/components/custom/command-palette.svelte';
 	import SiteHeader from '$lib/components/site-header.svelte';
@@ -78,3 +79,4 @@
 
 <AddTransactionDialog bind:open={appState.isAddTransactionDialogOpen} />
 <AddAccountDialog bind:open={appState.isAddAccountDialogOpen} />
+<AddTaxDialog />

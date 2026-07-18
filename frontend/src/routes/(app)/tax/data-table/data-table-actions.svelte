@@ -53,15 +53,15 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit income</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
 
 			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
-				Copy income ID
+				Copy ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
-			Delete income
+			Delete
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
@@ -71,7 +71,7 @@
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Tax</Dialog.Title>
-				<Dialog.Description>Update income name and amount.</Dialog.Description>
+				<Dialog.Description>Update tax name and amount.</Dialog.Description>
 			</Dialog.Header>
 			<div class="grid gap-4">
 				<div class="grid gap-3">
@@ -96,7 +96,7 @@
 <AlertDialog.Root bind:open={isDeleteDialogOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>Delete income?</AlertDialog.Title>
+			<AlertDialog.Title>Delete tax record?</AlertDialog.Title>
 			<AlertDialog.Description>This action cannot be undone.</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

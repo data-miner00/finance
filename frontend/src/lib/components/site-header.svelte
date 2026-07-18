@@ -54,7 +54,7 @@
 			text: 'Create Tax',
 			isDisplay: true,
 			action() {
-				// noop
+				appState.isAddTaxDialogOpen = true;
 			}
 		},
 		debt: {

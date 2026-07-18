@@ -28,6 +28,11 @@
 		appState.isAddAccountDialogOpen = true;
 		isOpen = false;
 	}
+
+	function openCreateTaxDialog() {
+		appState.isAddTaxDialogOpen = true;
+		isOpen = false;
+	}
 </script>
 
 <Command.Dialog class="rounded-lg border shadow-md md:min-w-112.5" bind:open={isOpen}>
@@ -42,6 +47,10 @@
 			<Command.Item onSelect={openCreateAccountDialog}>
 				<PlusIcon />
 				<span>Create Account</span>
+			</Command.Item>
+			<Command.Item onSelect={openCreateTaxDialog}>
+				<PlusIcon />
+				<span>Create Tax</span>
 			</Command.Item>
 		</Command.Group>
 		<Command.Separator />

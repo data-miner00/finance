@@ -27,6 +27,7 @@ export type AppState = {
 	settings: {
 		pieChartDisplayTop: number;
 	};
+	isAddTaxDialogOpen: boolean;
 };
 
 export const appState = $state<AppState>({
@@ -44,6 +45,7 @@ export const appState = $state<AppState>({
 	knownAgents: [],
 	isCommandPaletteOpen: false,
 	isAddAccountDialogOpen: false,
+	isAddTaxDialogOpen: false,
 	settings: {
 		pieChartDisplayTop: 5
 	}
