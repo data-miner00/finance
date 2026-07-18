@@ -46,6 +46,7 @@ namespace WebApi
             builder.Services.AddSingleton<IRepository<RecurringAction>, RecurringActionRepository>();
             builder.Services.AddSingleton<IRepository<Category>, CategoryRepository>();
             builder.Services.AddSingleton<IRepository<Tax>, TaxRepository>();
+            builder.Services.AddSingleton<IProfileRepository, ProfileRepository>();
             builder.Services.AddSingleton<IDictionary<string, IDataStreamifier>>((ctx) =>
             {
                 return new Dictionary<string, IDataStreamifier>

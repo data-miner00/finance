@@ -16,6 +16,8 @@ namespace Core
 
         public const string AddPiggyBank = "usp_AddPiggyBank";
 
+        public const string AddProfile = "usp_AddProfile";
+
         public const string AddRecurring = "usp_AddRecurringAction";
 
         public const string AddTax = "usp_AddTax";
@@ -43,6 +45,8 @@ namespace Core
         public const string UpdateIncome = "usp_UpdateIncome";
 
         public const string UpdatePiggyBank = "usp_UpdatePiggyBank";
+
+        public const string UpdateProfile = "usp_UpdateProfile";
 
         public const string UpdateRecurringAction = "usp_UpdateRecurringAction";
 

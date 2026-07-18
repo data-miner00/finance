@@ -101,5 +101,8 @@
     <Build Include="dbo\Stored Procedures\usp_DeleteTax.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpdateTax.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddExpenseFullParams.sql" />
+    <Build Include="dbo\Stored Procedures\usp_AddProfile.sql" />
+    <Build Include="dbo\Stored Procedures\usp_UpdateProfile.sql" />
+    <Build Include="dbo\Tables\Profiles.sql" />
   </ItemGroup>
 </Project>

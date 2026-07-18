@@ -133,3 +133,25 @@ export interface CreateTaxRequest {
 }
 
 export interface UpdateTaxRequest extends CreateTaxRequest {}
+
+export interface Profile extends EntityBase {
+	username: string;
+	firstName?: string | null;
+	lastName?: string | null;
+	email?: string | null;
+	bio?: string | null;
+	companyName?: string | null;
+	websiteUrl?: string | null;
+	avatarImage?: string | null;
+}
+
+export interface SaveProfileRequest {
+	username: string;
+	firstName?: string | null;
+	lastName?: string | null;
+	email?: string | null;
+	bio?: string | null;
+	companyName?: string | null;
+	websiteUrl?: string | null;
+	avatarImage?: string | null;
+}
