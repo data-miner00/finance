@@ -2,7 +2,7 @@
 
 This is a personal self-hosted finance application.
 
-- `backend` is a C# .NET 10 WebApi server currently connected to in-memory repository without database yet.
+- `backend` is a C# .NET 10 WebApi server currently connected to containerized SQL Server.
 - `frontend` is a web client written in SvelteKit using [shadcn-svelte](https://shadcn-svelte.com/llms.txt) for UI components.
 
 Also available in this repository:
