@@ -16,6 +16,7 @@
 		getExpenses,
 		getIncomes,
 		getPiggyBanks,
+		getProfile,
 		getRecurringActions,
 		getTaxes
 	} from '$lib/services';
@@ -32,6 +33,7 @@
 		appState.recurringActions = await getRecurringActions();
 		appState.piggyBanks = await getPiggyBanks();
 		appState.taxes = await getTaxes();
+		appState.profile = await getProfile();
 		appState.categories = Array.from(
 			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))
 		);

@@ -14,18 +14,20 @@
 
 	import { PUBLIC_API_BASE_URL } from '$env/static/public';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { appState } from '$lib/states.svelte';
 
 	import NavDocuments from './nav-documents.svelte';
 	import NavMain from './nav-main.svelte';
 	import NavSecondary from './nav-secondary.svelte';
 	import NavUser from './nav-user.svelte';
 
+	let navUser = $derived({
+		name: appState.profile?.username || 'Guest',
+		email: appState.profile?.email || 'm@example.com',
+		avatar: appState.profile?.avatarImage || '/avatars/shadcn.jpg'
+	});
+
 	const data = {
-		user: {
-			name: 'shadcn',
-			email: 'm@example.com',
-			avatar: '/avatars/shadcn.jpg'
-		},
 		navMain: [
 			{
 				title: 'Expenses',
@@ -109,6 +111,6 @@
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser user={navUser} />
 	</Sidebar.Footer>
 </Sidebar.Root>

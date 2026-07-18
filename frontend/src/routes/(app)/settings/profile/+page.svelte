@@ -1,6 +1,5 @@
 <script lang="ts">
 	import InfoIcon from '@lucide/svelte/icons/info';
-	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
@@ -8,43 +7,24 @@
 	import * as InputGroup from '$lib/components/ui/input-group/index.js';
 	import * as Label from '$lib/components/ui/label/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { getProfile, saveProfile as saveProfileRequest } from '$lib/services';
+	import { saveProfile as saveProfileRequest } from '$lib/services';
 	import type { SaveProfileRequest } from '$lib/services';
+	import { appState } from '$lib/states.svelte';
 
 	let profile = $state<SaveProfileRequest>({
-		avatarImage: 'notexist.jpg',
-		username: 'User',
-		firstName: '',
-		lastName: '',
-		email: '',
-		bio: '',
-		companyName: '',
-		websiteUrl: ''
-	});
-
-	onMount(async () => {
-		try {
-			const existing = await getProfile();
-			if (existing) {
-				profile = {
-					avatarImage: existing.avatarImage || 'notexist.jpg',
-					username: existing.username || 'User',
-					firstName: existing.firstName || '',
-					lastName: existing.lastName || '',
-					email: existing.email || '',
-					bio: existing.bio || '',
-					companyName: existing.companyName || '',
-					websiteUrl: existing.websiteUrl || ''
-				};
-			}
-		} catch (error) {
-			toast.error('Failed to load profile');
-		}
+		avatarImage: appState.profile?.avatarImage || 'notexist.jpg',
+		username: appState.profile?.username || 'User',
+		firstName: appState.profile?.firstName || '',
+		lastName: appState.profile?.lastName || '',
+		email: appState.profile?.email || '',
+		bio: appState.profile?.bio || '',
+		companyName: appState.profile?.companyName || '',
+		websiteUrl: appState.profile?.websiteUrl || ''
 	});
 
 	async function saveProfile() {
 		try {
-			await saveProfileRequest(profile);
+			appState.profile = await saveProfileRequest(profile);
 			toast.success('Profile updated successfully');
 		} catch (error) {
 			toast.error('Failed to update profile');
