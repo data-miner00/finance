@@ -28,6 +28,10 @@ namespace Core.Repositories
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
             parameters.Add("AgentName", entity.AgentName);
+            parameters.Add(
+                "AccountId",
+                string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
+                DbType.Guid);
 
             var createdExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.AddExpenseWithCategoryName,
@@ -88,6 +92,10 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("ActionedAt", entity.ActionedAt);
             parameters.Add("AgentName", entity.AgentName);
+            parameters.Add(
+                "AccountId",
+                string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
+                DbType.Guid);
 
             var updatedExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.UpdateExpenseWithCategoryName,

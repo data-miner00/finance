@@ -11,7 +11,8 @@ CREATE PROCEDURE [dbo].[usp_UpdateExpenseWithCategoryName]
     @CategoryName NVARCHAR(50) = NULL,
     @Location NVARCHAR(255) = NULL,
     @Description NVARCHAR(255) = NULL,
-    @AgentName NVARCHAR(255) = NULL
+    @AgentName NVARCHAR(255) = NULL,
+    @AccountId UNIQUEIDENTIFIER = NULL
 AS
 BEGIN
     DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -37,7 +38,8 @@ BEGIN
         [Location] = @Location,
         [Description] = @Description,
         [ActionedAt] = @ActionedAt,
-        [AgentName] = @AgentName
+        [AgentName] = @AgentName,
+        [AccountId] = @AccountId
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
 
@@ -51,7 +53,10 @@ BEGIN
         e.[ActionedAt],
         e.[CreatedAt],
         e.[UpdatedAt],
-        e.[AgentName]
+        e.[AgentName],
+        e.[AccountId],
+        a.[Name] AS AccountName
     FROM [dbo].[Expenses] e
-    JOIN @OutputTable r ON e.Id = r.Id;
+    JOIN @OutputTable r ON e.Id = r.Id
+    LEFT OUTER JOIN [dbo].[Accounts] a ON e.[AccountId] = a.[Id];
 END

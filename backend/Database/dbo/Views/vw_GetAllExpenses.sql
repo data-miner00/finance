@@ -1,9 +1,10 @@
 ﻿CREATE VIEW dbo.vw_GetAllExpenses
 AS
-SELECT        TOP (100) PERCENT dbo.Expenses.Id, dbo.Expenses.Name, dbo.Expenses.Description, dbo.Expenses.Amount, dbo.Expenses.Location, dbo.Expenses.ActionedAt, dbo.Expenses.CreatedAt, dbo.Expenses.UpdatedAt, 
-                         dbo.Categories.Name AS CategoryName, dbo.Expenses.AgentName
+SELECT        TOP (100) PERCENT dbo.Expenses.Id, dbo.Expenses.Name, dbo.Expenses.Description, dbo.Expenses.Amount, dbo.Expenses.Location, dbo.Expenses.ActionedAt, dbo.Expenses.CreatedAt, dbo.Expenses.UpdatedAt,
+                         dbo.Categories.Name AS CategoryName, dbo.Expenses.AgentName, dbo.Expenses.AccountId, dbo.Accounts.Name AS AccountName
 FROM            dbo.Expenses LEFT OUTER JOIN
-                         dbo.Categories ON dbo.Expenses.CategoryId = dbo.Categories.Id
+                         dbo.Categories ON dbo.Expenses.CategoryId = dbo.Categories.Id LEFT OUTER JOIN
+                         dbo.Accounts ON dbo.Expenses.AccountId = dbo.Accounts.Id
 ORDER BY dbo.Expenses.ActionedAt DESC
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_DiagramPaneCount', @value = 1, @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'VIEW', @level1name = N'vw_GetAllExpenses';

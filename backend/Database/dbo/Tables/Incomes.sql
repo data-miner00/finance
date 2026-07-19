@@ -1,12 +1,14 @@
 ﻿CREATE TABLE [dbo].[Incomes] (
     [Id]          UNIQUEIDENTIFIER CONSTRAINT [DF_Incomes_Id] DEFAULT (newid()) ROWGUIDCOL NOT NULL,
+    [AccountId]   UNIQUEIDENTIFIER NULL,
     [Name]        NVARCHAR (50)    NOT NULL,
     [Description] NVARCHAR (255)   NULL,
     [Amount]      MONEY            CONSTRAINT [DF_Incomes_Amount] DEFAULT ((0.00)) NOT NULL,
     [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Incomes_ActionedAt] DEFAULT (getdate()) NOT NULL,
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Incomes_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Incomes_UpdatedAt] DEFAULT (getdate()) NOT NULL,
-    CONSTRAINT [PK_Incomes] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_Incomes] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Incomes_Accounts] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[Accounts] ([Id])
 );
 
 GO

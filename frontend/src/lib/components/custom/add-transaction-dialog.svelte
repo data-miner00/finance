@@ -14,7 +14,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { AccountType, createExpense, createIncome } from '$lib/services';
+	import { createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
 
@@ -35,6 +35,7 @@
 	let location = $state('');
 	let actionedAt = $state<CalendarDate>();
 	let agentName = $state('');
+	let accountId = $state('');
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
@@ -43,12 +44,14 @@
 			const income = await createIncome({
 				name,
 				description,
-				amount
+				amount,
+				accountId: accountId || undefined
 			});
 
 			name = '';
 			description = undefined;
 			amount = 0;
+			accountId = '';
 
 			appState.incomes = [...appState.incomes, income];
 		} else {
@@ -58,12 +61,14 @@
 				categoryName,
 				amount,
 				location,
-				agentName
+				agentName,
+				accountId: accountId || undefined
 			});
 
 			name = '';
 			description = undefined;
 			categoryName = '';
+			accountId = '';
 			amount = 0;
 			location = '';
 			actionedAt = undefined;
@@ -111,14 +116,6 @@
 			agentTriggerRef.focus();
 		});
 	}
-
-	const paymentMethods = Object.values(AccountType).filter((v) => typeof v === 'string');
-
-	let value = $state('');
-
-	const triggerContent = $derived(
-		paymentMethods.find((f) => f === value) ?? 'Select a payment method'
-	);
 </script>
 
 <Dialog.Root bind:open>
@@ -150,23 +147,22 @@
 							autocomplete="off"
 						/>
 					</div>
-					<!-- <div class="grid gap-3">
-						<Label for="paymentMethod">Method</Label>
-						<Select.Root type="single" name="paymentMethod" bind:value>
-							<Select.Trigger class="w-full">
-								{triggerContent}
+					<div class="grid gap-3">
+						<Label for="account-1">Account</Label>
+						<Select.Root type="single" name="accountId" bind:value={accountId}>
+							<Select.Trigger id="account-1" class="w-full">
+								{appState.accounts.find((a) => a.id === accountId)?.name ?? 'No account'}
 							</Select.Trigger>
 							<Select.Content>
-								<Select.Group>
-									{#each paymentMethods as method (method)}
-										<Select.Item value={method} label={method}>
-											{method}
-										</Select.Item>
-									{/each}
-								</Select.Group>
+								<Select.Item value="" label="No account">No account</Select.Item>
+								{#each appState.accounts as account (account.id)}
+									<Select.Item value={account.id} label={account.name}>
+										{account.name}
+									</Select.Item>
+								{/each}
 							</Select.Content>
 						</Select.Root>
-					</div> -->
+					</div>
 					<div class="grid gap-3">
 						<Label for="category-1">Category</Label>
 						<Popover.Root bind:open={comboOpen}>
@@ -372,6 +368,22 @@
 							bind:value={amount}
 							placeholder="e.g. 100.00"
 						/>
+					</div>
+					<div class="grid gap-3">
+						<Label for="account-2">Account</Label>
+						<Select.Root type="single" name="accountId" bind:value={accountId}>
+							<Select.Trigger id="account-2" class="w-full">
+								{appState.accounts.find((a) => a.id === accountId)?.name ?? 'No account'}
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Item value="" label="No account">No account</Select.Item>
+								{#each appState.accounts as account (account.id)}
+									<Select.Item value={account.id} label={account.name}>
+										{account.name}
+									</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
 					</div>
 				</Tabs.Content>
 			</Tabs.Root>

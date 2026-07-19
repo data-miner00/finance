@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dbo].[Expenses] (
     [Id]          UNIQUEIDENTIFIER CONSTRAINT [DF_Expenses_Id] DEFAULT (newid()) ROWGUIDCOL NOT NULL,
     [CategoryId]  UNIQUEIDENTIFIER NULL,
+    [AccountId]   UNIQUEIDENTIFIER NULL,
     [Name]        NVARCHAR (255)   NOT NULL,
     [Description] NVARCHAR (255)   NULL,
     [Amount]      MONEY            NOT NULL,
@@ -8,9 +9,10 @@
     [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Expenses_ActionedAt] DEFAULT (getdate()) NOT NULL,
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_UpdatedAt] DEFAULT (getdate()) NOT NULL,
-    [AgentName] NVARCHAR(255) NULL, 
+    [AgentName] NVARCHAR(255) NULL,
     CONSTRAINT [PK_Expenses] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Expenses_Categories1] FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Categories] ([Id])
+    CONSTRAINT [FK_Expenses_Categories1] FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Categories] ([Id]),
+    CONSTRAINT [FK_Expenses_Accounts] FOREIGN KEY ([AccountId]) REFERENCES [dbo].[Accounts] ([Id])
 );
 
 

@@ -15,6 +15,10 @@ namespace Core.Dtos
 
         public DateTime ActionedAt { get; set; }
 
+        public Guid? AccountId { get; set; }
+
+        public string? AccountName { get; set; }
+
         public override Income ToModel()
         {
             return new Income
@@ -26,6 +30,8 @@ namespace Core.Dtos
                 ActionedAt = ActionedAt,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
+                AccountId = AccountId?.ToString(),
+                AccountName = AccountName,
             };
         }
     }

@@ -25,6 +25,10 @@ namespace Core.Repositories
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
             parameters.Add("Description", entity.Description);
+            parameters.Add(
+                "AccountId",
+                string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
+                DbType.Guid);
 
             var createdIncome = await this.connection.QuerySingleOrDefaultAsync<IncomeDto>(
                 SpNames.AddIncome,
@@ -52,7 +56,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM Incomes ORDER BY [ActionedAt] DESC;");
+                $"SELECT * FROM {VwNames.GetAllIncomes} ORDER BY {nameof(Income.ActionedAt)} DESC;");
 
             var dtos = await this.connection.QueryAsync<IncomeDto>(command);
             return dtos.Select(x => x.ToModel());
@@ -61,7 +65,7 @@ namespace Core.Repositories
         public async Task<Income> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Incomes] WHERE [Id] = @Id;";
+            var query = $"SELECT * FROM [dbo].[{VwNames.GetAllIncomes}] WHERE [Id] = @Id;";
             var dto = await this.connection.QueryFirstAsync<IncomeDto>(query, new { Id = Guid.Parse(id) });
 
             return dto.ToModel();
@@ -76,6 +80,10 @@ namespace Core.Repositories
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
             parameters.Add("Description", entity.Description);
+            parameters.Add(
+                "AccountId",
+                string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
+                DbType.Guid);
 
             var updatedIncome = await this.connection.QuerySingleOrDefaultAsync<IncomeDto>(
                 SpNames.UpdateIncome,

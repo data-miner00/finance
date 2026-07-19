@@ -6,7 +6,8 @@
 CREATE PROCEDURE [dbo].[usp_AddIncome]
 	@Name NVARCHAR(50),
 	@Amount MONEY,
-	@Description NVARCHAR(255) = NULL
+	@Description NVARCHAR(255) = NULL,
+	@AccountId UNIQUEIDENTIFIER = NULL
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -16,25 +17,30 @@ BEGIN
 	(
 		[Name],
 		[Amount],
-		[Description]
+		[Description],
+		[AccountId]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
 		@Amount,
-		@Description
+		@Description,
+		@AccountId
 	);
 
 	SELECT
 		l.[Id],
-		[Name],
-		[Description],
-		[Amount],
-		[ActionedAt],
-		[CreatedAt],
-		[UpdatedAt]
+		l.[Name],
+		l.[Description],
+		l.[Amount],
+		l.[ActionedAt],
+		l.[CreatedAt],
+		l.[UpdatedAt],
+		l.[AccountId],
+		a.[Name] AS AccountName
 	FROM [dbo].[Incomes] l
 	JOIN @OutputTable r
-	ON l.Id = r.Id;
+	ON l.Id = r.Id
+	LEFT OUTER JOIN [dbo].[Accounts] a ON l.[AccountId] = a.[Id];
 END

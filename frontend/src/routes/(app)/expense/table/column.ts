@@ -28,8 +28,9 @@ export const columns: ColumnDef<Expense>[] = [
 		header: 'Category'
 	},
 	{
-		cell: () => 'Credit Card',
-		header: 'Method'
+		accessorKey: 'accountName',
+		header: 'Account',
+		cell: ({ row }) => row.original.accountName ?? '—'
 	},
 	{
 		accessorKey: 'amount',

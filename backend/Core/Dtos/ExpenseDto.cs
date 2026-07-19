@@ -9,6 +9,10 @@ namespace Core.Dtos
     {
         public string? CategoryName { get; set; }
 
+        public Guid? AccountId { get; set; }
+
+        public string? AccountName { get; set; }
+
         public string Name { get; set; }
 
         public string? Description { get; set; }
@@ -29,6 +33,8 @@ namespace Core.Dtos
                 Name = Name,
                 Description = Description,
                 CategoryName = CategoryName,
+                AccountId = AccountId?.ToString(),
+                AccountName = AccountName,
                 Amount = Amount,
                 Location = Location,
                 CreatedAt = CreatedAt,

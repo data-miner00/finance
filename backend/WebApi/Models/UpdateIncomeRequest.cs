@@ -7,5 +7,7 @@ namespace WebApi.Models
         public string? Description { get; set; }
 
         public decimal Amount { get; set; }
+
+        public string? AccountId { get; set; }
     }
 }

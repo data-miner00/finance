@@ -7,5 +7,7 @@ namespace Core
     public static class ViewNames
     {
         public const string GetAllExpenses = "vw_GetAllExpenses";
+
+        public const string GetAllIncomes = "vw_GetAllIncomes";
     }
 }

@@ -44,6 +44,11 @@ export const columns: ColumnDef<Income>[] = [
 		cell: ({ row }) => Intl.DateTimeFormat('en-MY').format(new Date(row.original.actionedAt))
 	},
 	{
+		accessorKey: 'accountName',
+		header: 'Account',
+		cell: ({ row }) => row.original.accountName ?? '—'
+	},
+	{
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(DataTableActions, { id: row.original.id });

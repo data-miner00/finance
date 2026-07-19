@@ -13,7 +13,8 @@ CREATE PROCEDURE [dbo].[usp_AddExpenseFullParams]
 	@CategoryName NVARCHAR(50) = NULL,
 	@Location NVARCHAR(255) = NULL,
 	@Description NVARCHAR(255) = NULL,
-	@AgentName NVARCHAR(255) = NULL
+	@AgentName NVARCHAR(255) = NULL,
+	@AccountId UNIQUEIDENTIFIER = NULL
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -45,7 +46,8 @@ BEGIN
 		[ActionedAt],
 		[CreatedAt],
 		[UpdatedAt],
-		[AgentName]
+		[AgentName],
+		[AccountId]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
@@ -59,7 +61,8 @@ BEGIN
 		@ActionedAt,
 		@CreatedAt,
 		@UpdatedAt,
-		@AgentName
+		@AgentName,
+		@AccountId
 	);
 
 	SELECT
@@ -72,7 +75,10 @@ BEGIN
 		l.[ActionedAt],
 		l.[CreatedAt],
 		l.[UpdatedAt],
-		l.[AgentName]
+		l.[AgentName],
+		l.[AccountId],
+		a.[Name] AS AccountName
 	FROM [dbo].[Expenses] l
-	JOIN @OutputTable r ON l.Id = r.Id;
+	JOIN @OutputTable r ON l.Id = r.Id
+	LEFT OUTER JOIN [dbo].[Accounts] a ON l.[AccountId] = a.[Id];
 END

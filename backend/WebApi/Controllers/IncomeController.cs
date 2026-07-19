@@ -45,6 +45,7 @@ namespace WebApi.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 Amount = request.Amount,
+                AccountId = request.AccountId,
             };
 
             var createdIncome = await _repository.CreateAsync(income, cancellationToken);
@@ -60,6 +61,7 @@ namespace WebApi.Controllers
                 income.Name = request.Name;
                 income.Description = request.Description;
                 income.Amount = request.Amount;
+                income.AccountId = request.AccountId;
 
                 var updated = await _repository.UpdateAsync(income, cancellationToken);
                 return this.Ok(updated);

@@ -1,13 +1,15 @@
 <script lang="ts">
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { appState } from '$lib/states.svelte';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { deleteIncome, updateIncome } from '$lib/services';
+	import { appState } from '$lib/states.svelte';
 
 	let { id }: { id: string } = $props();
 
@@ -15,20 +17,32 @@
 	let isDeleteDialogOpen = $state(false);
 	let name = $state('');
 	let amount = $state(0);
+	let accountId = $state('');
 
 	function openEditDialog() {
 		const item = appState.incomes.find((i) => i.id === id);
 		if (!item) return;
 		name = item.name;
 		amount = item.amount;
+		accountId = item.accountId ?? '';
 		isEditDialogOpen = true;
 	}
 
 	async function saveIncome(event: Event) {
 		event.preventDefault();
-		await updateIncome(id, { name, amount });
+		const accountName = appState.accounts.find((a) => a.id === accountId)?.name;
+		await updateIncome(id, { name, amount, accountId: accountId || undefined });
 		appState.incomes = appState.incomes.map((i) =>
-			i.id === id ? { ...i, name, amount, updatedAt: new Date().toISOString() } : i
+			i.id === id
+				? {
+						...i,
+						name,
+						amount,
+						accountId: accountId || null,
+						accountName,
+						updatedAt: new Date().toISOString()
+					}
+				: i
 		);
 		isEditDialogOpen = false;
 	}
@@ -80,6 +94,22 @@
 				<div class="grid gap-3">
 					<Label for="edit-amount">Amount</Label>
 					<Input id="edit-amount" name="amount" type="number" step="0.01" bind:value={amount} />
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-account">Account</Label>
+					<Select.Root type="single" name="accountId" bind:value={accountId}>
+						<Select.Trigger id="edit-account" class="w-full">
+							{appState.accounts.find((a) => a.id === accountId)?.name ?? 'No account'}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="" label="No account">No account</Select.Item>
+							{#each appState.accounts as account (account.id)}
+								<Select.Item value={account.id} label={account.name}>
+									{account.name}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 			</div>
 			<Dialog.Footer>

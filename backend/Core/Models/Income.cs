@@ -13,5 +13,9 @@ namespace Core.Models
         public decimal Amount { get; set; }
 
         public DateTime ActionedAt { get; set; }
+
+        public string? AccountId { get; set; }
+
+        public string? AccountName { get; set; }
     }
 }

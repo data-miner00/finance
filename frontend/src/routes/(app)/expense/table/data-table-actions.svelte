@@ -12,6 +12,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { deleteExpense, updateExpense } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
@@ -27,6 +28,7 @@
 	let location = $state('');
 	let description = $state<string>();
 	let agentName = $state('');
+	let accountId = $state('');
 
 	function openEditDialog() {
 		const item = appState.expenses.find((e) => e.id === id);
@@ -38,11 +40,13 @@
 		location = item.location || '';
 		description = item.description || undefined;
 		agentName = item.agentName || '';
+		accountId = item.accountId ?? '';
 		isEditDialogOpen = true;
 	}
 
 	async function saveExpense(event: Event) {
 		event.preventDefault();
+		const accountName = appState.accounts.find((a) => a.id === accountId)?.name;
 		await updateExpense(id, {
 			name,
 			amount,
@@ -50,7 +54,8 @@
 			actionedAt,
 			location,
 			description,
-			agentName
+			agentName,
+			accountId: accountId || undefined
 		});
 		appState.expenses = appState.expenses.map((e) =>
 			e.id === id
@@ -63,6 +68,8 @@
 						location,
 						description,
 						agentName,
+						accountId: accountId || null,
+						accountName,
 						updatedAt: new Date().toISOString()
 					}
 				: e
@@ -205,6 +212,22 @@
 						step="0.01"
 						bind:value={amount}
 					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-account">Account</Label>
+					<Select.Root type="single" name="accountId" bind:value={accountId}>
+						<Select.Trigger id="edit-account" class="w-full">
+							{appState.accounts.find((a) => a.id === accountId)?.name ?? 'No account'}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="" label="No account">No account</Select.Item>
+							{#each appState.accounts as account (account.id)}
+								<Select.Item value={account.id} label={account.name}>
+									{account.name}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="location-1">Location</Label>
