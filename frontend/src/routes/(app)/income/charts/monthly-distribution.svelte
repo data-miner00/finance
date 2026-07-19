@@ -23,11 +23,14 @@
 		income: { label: 'Income', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
-	let firstMonth = $derived(chartData[0].month);
-	let lastMonth = $derived(chartData[chartData.length - 1].month);
-	let currentMonthIncome = $derived(chartData[chartData.length - 1].total);
-	let lastMonthIncome = $derived(chartData[chartData.length - 2].total);
-	let percentageChange = $derived(((currentMonthIncome - lastMonthIncome) / lastMonthIncome) * 100);
+	let firstMonth = $derived(chartData[0]?.month);
+	let lastMonth = $derived(chartData[chartData.length - 1]?.month);
+	let currentMonthIncome = $derived(chartData[chartData.length - 1]?.total ?? 0);
+	let lastMonthIncome = $derived(chartData[chartData.length - 2]?.total);
+	let hasTrend = $derived(chartData.length >= 2 && !!lastMonthIncome);
+	let percentageChange = $derived(
+		hasTrend ? ((currentMonthIncome - (lastMonthIncome ?? 0)) / (lastMonthIncome ?? 1)) * 100 : 0
+	);
 </script>
 
 <Card.Root>
@@ -64,18 +67,21 @@
 		<div class="flex w-full items-start gap-2 text-sm">
 			<div class="grid gap-2">
 				<div class="flex items-center gap-2 leading-none font-medium">
-					{#if percentageChange >= 0}
-						Trending up by {Math.abs(percentageChange).toFixed(2)}% this month <TrendingUpIcon
+					{#if !hasTrend}
+						Income by month
+					{:else if percentageChange >= 0}
+						Up {Math.abs(percentageChange).toFixed(1)}% vs last month <TrendingUpIcon
 							class="size-4"
 						/>
 					{:else}
-						Winding down by {Math.abs(percentageChange).toFixed(2)}% this month <TrendingDownIcon
+						Down {Math.abs(percentageChange).toFixed(1)}% vs last month <TrendingDownIcon
 							class="size-4"
 						/>
 					{/if}
 				</div>
 				<div class="flex items-center gap-2 leading-none text-muted-foreground">
-					Showing total income for the last 6 months
+					Showing total income for {chartData.length}
+					{chartData.length === 1 ? 'month' : 'months'}
 				</div>
 			</div>
 		</div>

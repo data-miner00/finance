@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { TrendingDownIcon } from '@lucide/svelte';
 	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 	import { scaleBand } from 'd3-scale';
 	import { BarChart } from 'layerchart';
@@ -63,12 +64,19 @@
 		<div class="flex w-full items-start gap-2 text-sm">
 			<div class="grid gap-2">
 				<div class="flex items-center gap-2 leading-none font-medium">
-					Averaging {averageRate.toFixed(1)}% saved across shown months <TrendingUpIcon
-						class="size-4"
-					/>
+					{#if averageRate >= 0}
+						Averaging {averageRate.toFixed(1)}% saved across shown months <TrendingUpIcon
+							class="size-4"
+						/>
+					{:else}
+						Averaging {averageRate.toFixed(1)}% overspent across shown months <TrendingDownIcon
+							class="size-4"
+						/>
+					{/if}
 				</div>
 				<div class="flex items-center gap-2 leading-none text-muted-foreground">
-					(Income − Expense) ÷ Income for each month
+					(Income - Expense) ÷ Income for {chartData.length}
+					{chartData.length === 1 ? 'month' : 'months'} with income
 				</div>
 			</div>
 		</div>

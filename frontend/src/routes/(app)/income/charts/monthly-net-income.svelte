@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { TrendingDownIcon } from '@lucide/svelte';
 	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 	import { scaleBand } from 'd3-scale';
 	import { BarChart } from 'layerchart';
 
+	import { formatCurrency } from '$lib';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 
@@ -19,12 +21,22 @@
 	const chartConfig = {
 		netIncome: { label: 'Net Income' }
 	} satisfies Chart.ChartConfig;
+
+	let firstMonth = $derived(chartData[0]?.month);
+	let lastMonth = $derived(chartData[chartData.length - 1]?.month);
+	let hasTrend = $derived(chartData.length >= 2);
+	// Net income can cross zero, so a currency delta is more meaningful here than a % change
+	let change = $derived(
+		hasTrend
+			? chartData[chartData.length - 1].netIncome - chartData[chartData.length - 2].netIncome
+			: 0
+	);
 </script>
 
 <Card.Root>
 	<Card.Header>
 		<Card.Title>Monthly Net Income</Card.Title>
-		<Card.Description>January - June 2024</Card.Description>
+		<Card.Description>{firstMonth} - {lastMonth}</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<Chart.Container config={chartConfig}>
@@ -65,10 +77,17 @@
 		<div class="flex w-full items-start gap-2 text-sm">
 			<div class="grid gap-2">
 				<div class="flex items-center gap-2 leading-none font-medium">
-					Trending up by 5.2% this month <TrendingUpIcon class="size-4" />
+					{#if !hasTrend}
+						Net income (income minus expenses) by month
+					{:else if change >= 0}
+						Up {formatCurrency(Math.abs(change))} vs last month <TrendingUpIcon class="size-4" />
+					{:else}
+						Down {formatCurrency(Math.abs(change))} vs last month <TrendingDownIcon class="size-4" />
+					{/if}
 				</div>
 				<div class="flex items-center gap-2 leading-none text-muted-foreground">
-					Showing total visitors for the last 6 months
+					Showing net income for {chartData.length}
+					{chartData.length === 1 ? 'month' : 'months'}
 				</div>
 			</div>
 		</div>
