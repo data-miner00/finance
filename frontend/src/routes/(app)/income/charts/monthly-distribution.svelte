@@ -33,7 +33,7 @@
 <Card.Root>
 	<Card.Header>
 		<Card.Title>Monthly Income</Card.Title>
-		<Card.Description>{firstMonth} - {lastMonth} 2024</Card.Description>
+		<Card.Description>{firstMonth} - {lastMonth}</Card.Description>
 	</Card.Header>
 	<Card.Content>
 		<Chart.Container config={chartConfig}>

@@ -7,12 +7,12 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { type Expense, type Income, createIncome } from '$lib/services';
+	import { createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
-	import type { MonthlyTotal } from '$lib/types';
 
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
 	import MonthlyNetIncome from './charts/monthly-net-income.svelte';
+	import SavingsRate from './charts/savings-rate.svelte';
 	import { columns } from './data-table/column';
 
 	let isDialogOpen = $state(false);
@@ -40,51 +40,60 @@
 		appState.currentPage = 'income';
 	});
 
-	function groupIncomeByMonth(incomes: Income[]): MonthlyTotal[] {
+	type MonthlyBucket = { month: string; monthKey: string; total: number };
+
+	function groupByMonth(items: { actionedAt: string; amount: number }[]): MonthlyBucket[] {
 		const monthMap = new Map<string, number>();
 
-		for (const income of incomes) {
-			const date = new Date(income.actionedAt);
-			const month = date.toLocaleString('default', { month: 'long' }); // e.g. "January"
+		for (const item of items) {
+			const date = new Date(item.actionedAt);
+			const monthKey = `${date.getFullYear()}-${String(date.getMonth()).padStart(2, '0')}`;
 
-			monthMap.set(month, (monthMap.get(month) ?? 0) + income.amount);
+			monthMap.set(monthKey, (monthMap.get(monthKey) ?? 0) + item.amount);
 		}
 
 		return Array.from(monthMap.entries())
-			.reverse()
-			.map(([month, total]) => ({
-				month,
-				total: Math.round(total * 100) / 100 // avoid floating point drift
-			}));
+			.sort(([a], [b]) => a.localeCompare(b))
+			.map(([monthKey, total]) => {
+				const [year, monthIndex] = monthKey.split('-').map(Number);
+				const month = new Date(year, monthIndex, 1).toLocaleString('default', {
+					month: 'long',
+					year: 'numeric'
+				});
+				return { month, monthKey, total: Math.round(total * 100) / 100 };
+			});
 	}
 
-	let monthlyIncome = $derived(groupIncomeByMonth(appState.incomes));
+	let monthlyIncome = $derived(groupByMonth(appState.incomes));
+	let monthlyExpenses = $derived(groupByMonth(appState.expenses));
 
-	function groupExpensesByMonth(expenses: Expense[]): MonthlyTotal[] {
-		const monthMap = new Map<string, number>();
+	// TODO: Last 6 month
+	let monthlyNetIncome = $derived.by(() => {
+		const monthKeys = new Set([
+			...monthlyIncome.map((m) => m.monthKey),
+			...monthlyExpenses.map((m) => m.monthKey)
+		]);
 
-		for (const expense of expenses) {
-			const date = new Date(expense.actionedAt);
-			const month = date.toLocaleString('default', { month: 'long' }); // e.g. "January"
+		return Array.from(monthKeys)
+			.sort()
+			.map((monthKey) => {
+				const income = monthlyIncome.find((m) => m.monthKey === monthKey);
+				const expense = monthlyExpenses.find((m) => m.monthKey === monthKey);
+				const month = (income ?? expense)!.month;
+				const netIncome = (income?.total ?? 0) - (expense?.total ?? 0);
+				return { month, netIncome };
+			});
+	});
 
-			monthMap.set(month, (monthMap.get(month) ?? 0) + expense.amount);
-		}
-
-		return Array.from(monthMap.entries())
-			.reverse()
-			.map(([month, total]) => ({
-				month,
-				total: Math.round(total * 100) / 100 // avoid floating point drift
-			}));
-	}
-
-	let monthlyExpenses = $derived(groupExpensesByMonth(appState.expenses));
-	let monthlyNetIncome = $derived.by(() =>
-		monthlyIncome.map((income) => {
-			const expense = monthlyExpenses.find((e) => e.month === income.month);
-			const netIncome = income.total - (expense?.total || 0);
-			return { month: income.month, netIncome };
-		})
+	// TODO: Last 6 month
+	let monthlySavingsRate = $derived.by(() =>
+		monthlyIncome
+			.filter((income) => income.total > 0)
+			.map((income) => {
+				const expense = monthlyExpenses.find((e) => e.monthKey === income.monthKey);
+				const savingsRate = ((income.total - (expense?.total ?? 0)) / income.total) * 100;
+				return { month: income.month, savingsRate: Math.max(0, Math.round(savingsRate * 10) / 10) };
+			})
 	);
 </script>
 
@@ -99,6 +108,8 @@
 	<MonthlyDistribution chartData={monthlyIncome} />
 
 	<MonthlyNetIncome chartData={monthlyNetIncome} />
+
+	<SavingsRate chartData={monthlySavingsRate} />
 </div>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
