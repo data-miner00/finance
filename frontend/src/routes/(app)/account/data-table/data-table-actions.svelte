@@ -8,6 +8,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { copyText } from '$lib';
 	import { type AccountType, deleteAccount, updateAccount } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -61,7 +62,7 @@
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit account</DropdownMenu.Item>
 
-			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
+			<DropdownMenu.Item onclick={() => copyText(id, 'ID copied to clipboard')}>
 				Copy account ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>

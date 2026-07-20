@@ -6,6 +6,7 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { copyText } from '$lib';
 	import { appState } from '$lib/states.svelte';
 	import { deleteRecurringAction, updateRecurringAction } from '$lib/services';
 	import * as Select from '$lib/components/ui/select/index.js';
@@ -89,7 +90,7 @@
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit recurring</DropdownMenu.Item>
 
-			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
+			<DropdownMenu.Item onclick={() => copyText(id, 'ID copied to clipboard')}>
 				Copy recurring ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>

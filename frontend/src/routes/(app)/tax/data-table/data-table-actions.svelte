@@ -7,6 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { copyText } from '$lib';
 	import { deleteTax, updateTax } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -55,7 +56,7 @@
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
 			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
 
-			<DropdownMenu.Item onclick={() => navigator.clipboard.writeText(id)}>
+			<DropdownMenu.Item onclick={() => copyText(id, 'ID copied to clipboard')}>
 				Copy ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
