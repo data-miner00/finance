@@ -1,5 +1,4 @@
 <script lang="ts">
-	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 	import { Arc, PieChart, Text } from 'layerchart';
 
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -12,12 +11,17 @@
 	const chartConfig = Object.fromEntries(
 		chartData.map((d) => [d.category, { label: d.category, color: d.color }])
 	) satisfies Chart.ChartConfig;
+
+	let totalCount = $derived(chartData.reduce((sum, d) => sum + d.count, 0));
+	let topCategory = $derived.by(() =>
+		chartData.length ? chartData.reduce((max, d) => (d.count > max.count ? d : max)) : undefined
+	);
 </script>
 
 <Card.Root class="flex flex-col">
 	<Card.Header class="items-center">
 		<Card.Title>Category Distribution</Card.Title>
-		<Card.Description>January - June 2024</Card.Description>
+		<Card.Description>All-time breakdown by expense count</Card.Description>
 	</Card.Header>
 	<Card.Content class="flex-1">
 		<Chart.Container config={chartConfig} class="mx-auto aspect-square max-h-[250px]">
@@ -53,11 +57,13 @@
 		</Chart.Container>
 	</Card.Content>
 	<Card.Footer class="flex-col gap-2 text-sm">
-		<div class="flex items-center gap-2 leading-none font-medium">
-			Trending up by 5.2% this month <TrendingUpIcon class="size-4" />
-		</div>
+		{#if topCategory}
+			<div class="flex items-center gap-2 leading-none font-medium">
+				{topCategory.category} has the most expenses ({topCategory.count})
+			</div>
+		{/if}
 		<div class="leading-none text-muted-foreground">
-			Showing total visitors for the last 6 months
+			Based on {totalCount} all-time recorded expenses
 		</div>
 	</Card.Footer>
 </Card.Root>

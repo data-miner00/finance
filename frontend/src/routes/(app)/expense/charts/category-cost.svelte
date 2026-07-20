@@ -1,7 +1,7 @@
 <script lang="ts">
-	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 	import { Arc, PieChart, Text } from 'layerchart';
 
+	import { formatCurrency } from '$lib';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 
@@ -12,12 +12,20 @@
 	const chartConfig = Object.fromEntries(
 		chartData.map((d) => [d.category, { label: d.category, color: d.color }])
 	) satisfies Chart.ChartConfig;
+
+	let totalCost = $derived(chartData.reduce((sum, d) => sum + d.cost, 0));
+	let topCategory = $derived.by(() =>
+		chartData.length ? chartData.reduce((max, d) => (d.cost > max.cost ? d : max)) : undefined
+	);
+	let topShare = $derived(
+		topCategory && totalCost > 0 ? (topCategory.cost / totalCost) * 100 : 0
+	);
 </script>
 
 <Card.Root class="flex flex-col">
 	<Card.Header class="items-center">
 		<Card.Title>Category Cost Distribution</Card.Title>
-		<Card.Description>January - June 2024</Card.Description>
+		<Card.Description>All-time cost breakdown by category</Card.Description>
 	</Card.Header>
 	<Card.Content class="flex-1">
 		<Chart.Container config={chartConfig} class="mx-auto aspect-square max-h-[250px]">
@@ -53,11 +61,13 @@
 		</Chart.Container>
 	</Card.Content>
 	<Card.Footer class="flex-col gap-2 text-sm">
-		<div class="flex items-center gap-2 leading-none font-medium">
-			Trending up by 5.2% this month <TrendingUpIcon class="size-4" />
-		</div>
+		{#if topCategory}
+			<div class="flex items-center gap-2 leading-none font-medium">
+				{topCategory.category} leads at {topShare.toFixed(1)}% of total spend
+			</div>
+		{/if}
 		<div class="leading-none text-muted-foreground">
-			Showing total visitors for the last 6 months
+			Based on {formatCurrency(totalCost)} in all-time recorded expenses
 		</div>
 	</Card.Footer>
 </Card.Root>
