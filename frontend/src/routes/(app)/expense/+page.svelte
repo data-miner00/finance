@@ -4,9 +4,9 @@
 
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
+	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 	import type { DailyTotal, MonthlyTotal } from '$lib/types';
@@ -24,6 +24,30 @@
 		const today = new Date();
 		return created.getFullYear() === today.getFullYear() && created.getMonth() === today.getMonth();
 	};
+
+	const isLastMonthExpense = (expense: Expense) => {
+		const created = new Date(expense.createdAt);
+		const today = new Date();
+		const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1);
+		return created.getFullYear() === lastMonth.getFullYear() && created.getMonth() === lastMonth.getMonth();
+	};
+
+	function calculatePercentageChange(current: number, previous: number): number {
+		if (previous === 0) return 0;
+		return ((current - previous) / previous) * 100;
+	}
+
+	function getTrendDescription(
+		percentChange: number,
+		period: string
+	): { direction: 'up' | 'down'; text: string } {
+		if (percentChange > 0) {
+			return { direction: 'up', text: `Up ${Math.abs(percentChange).toFixed(1)}% ${period}` };
+		} else if (percentChange < 0) {
+			return { direction: 'down', text: `Down ${Math.abs(percentChange).toFixed(1)}% ${period}` };
+		}
+		return { direction: 'up', text: `No change ${period}` };
+	}
 
 	let filteredExpenses = $derived(
 		showCurrentMonthOnly ? appState.expenses.filter(isCurrentMonthExpense) : appState.expenses
@@ -132,11 +156,18 @@
 	}
 
 	const now = new Date();
+	const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 	let averageSpendingPerDay = $derived(
 		getAverageForMonth(appState.expenses, now.getFullYear(), now.getMonth() + 1)
 	);
+	let averageSpendingPerDayLastMonth = $derived(
+		getAverageForMonth(appState.expenses, lastMonthDate.getFullYear(), lastMonthDate.getMonth() + 1)
+	);
 	let averageSpendingPerMonth = $derived(
 		getMonthlyAverageForYear(appState.expenses, now.getFullYear())
+	);
+	let averageSpendingPerMonthLastYear = $derived(
+		getMonthlyAverageForYear(appState.expenses, now.getFullYear() - 1)
 	);
 	let dailySpending = $derived(groupExpensesByDay(appState.expenses));
 
@@ -216,42 +247,90 @@
 		</div>
 	</div>
 
-	<div class="grid grid-cols-2 gap-4 px-4 lg:grid-cols-4 lg:px-6">
-		<Card.Root>
-			<Card.Header>
-				<Card.Description>Average daily spendings</Card.Description>
-				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-					{formatCurrency(averageSpendingPerDay)}
-				</Card.Title>
-			</Card.Header>
-		</Card.Root>
+	<div
+		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
+	>
+		<StatCard
+			description="Average daily spendings"
+			value={formatCurrency(averageSpendingPerDay)}
+			trendDirection={getTrendDescription(
+				calculatePercentageChange(averageSpendingPerDay, averageSpendingPerDayLastMonth),
+				'this month'
+			).direction}
+			badgeText="{calculatePercentageChange(averageSpendingPerDay, averageSpendingPerDayLastMonth) > 0
+				? '+'
+				: ''}{calculatePercentageChange(
+				averageSpendingPerDay,
+				averageSpendingPerDayLastMonth
+			).toFixed(1)}%"
+			footerText={getTrendDescription(
+				calculatePercentageChange(averageSpendingPerDay, averageSpendingPerDayLastMonth),
+				'this month'
+			).text}
+			footerSubText="vs {formatCurrency(averageSpendingPerDayLastMonth)} last month"
+		/>
 
-		<Card.Root>
-			<Card.Header>
-				<Card.Description>Average monthly spendings</Card.Description>
-				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-					{formatCurrency(averageSpendingPerMonth)}
-				</Card.Title>
-			</Card.Header>
-		</Card.Root>
+		<StatCard
+			description="Average monthly spendings"
+			value={formatCurrency(averageSpendingPerMonth)}
+			trendDirection={getTrendDescription(
+				calculatePercentageChange(averageSpendingPerMonth, averageSpendingPerMonthLastYear),
+				'this year'
+			).direction}
+			badgeText="{calculatePercentageChange(
+				averageSpendingPerMonth,
+				averageSpendingPerMonthLastYear
+			) > 0
+				? '+'
+				: ''}{calculatePercentageChange(
+				averageSpendingPerMonth,
+				averageSpendingPerMonthLastYear
+			).toFixed(1)}%"
+			footerText={getTrendDescription(
+				calculatePercentageChange(averageSpendingPerMonth, averageSpendingPerMonthLastYear),
+				'this year'
+			).text}
+			footerSubText="vs {formatCurrency(averageSpendingPerMonthLastYear)} last year"
+		/>
 
-		<Card.Root>
-			<Card.Header>
-				<Card.Description>Total expenses recorded</Card.Description>
-				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-					{appState.expenses.length}
-				</Card.Title>
-			</Card.Header>
-		</Card.Root>
+		<StatCard
+			description="Total expenses recorded"
+			value={appState.expenses.length.toString()}
+			trendDirection="up"
+			badgeText="All-time"
+			footerText="Accumulated over time"
+			footerSubText="Across all recorded expenses"
+		/>
 
-		<Card.Root>
-			<Card.Header>
-				<Card.Description>Expenses logged this month</Card.Description>
-				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-					{appState.expenses.filter(isCurrentMonthExpense).length}
-				</Card.Title>
-			</Card.Header>
-		</Card.Root>
+		<StatCard
+			description="Expenses logged this month"
+			value={appState.expenses.filter(isCurrentMonthExpense).length.toString()}
+			trendDirection={getTrendDescription(
+				calculatePercentageChange(
+					appState.expenses.filter(isCurrentMonthExpense).length,
+					appState.expenses.filter(isLastMonthExpense).length
+				),
+				'this month'
+			).direction}
+			badgeText="{calculatePercentageChange(
+				appState.expenses.filter(isCurrentMonthExpense).length,
+				appState.expenses.filter(isLastMonthExpense).length
+			) > 0
+				? '+'
+				: ''}{calculatePercentageChange(
+				appState.expenses.filter(isCurrentMonthExpense).length,
+				appState.expenses.filter(isLastMonthExpense).length
+			).toFixed(1)}%"
+			footerText={getTrendDescription(
+				calculatePercentageChange(
+					appState.expenses.filter(isCurrentMonthExpense).length,
+					appState.expenses.filter(isLastMonthExpense).length
+				),
+				'this month'
+			).text}
+			footerSubText="vs {appState.expenses.filter(isLastMonthExpense)
+				.length} logged last month"
+		/>
 	</div>
 
 	<div class="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
