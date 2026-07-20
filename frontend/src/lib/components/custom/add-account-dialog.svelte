@@ -50,7 +50,7 @@
 						type="single"
 						onValueChange={(value: string) => (accountType = parseInt(value) as AccountType)}
 					>
-						<Select.Trigger size="sm" class={'w-full' + buttonVariants({ variant: 'outline' })}>
+						<Select.Trigger size="sm" class="w-full">
 							<span data-slot="select-value">
 								{accountType === 0
 									? 'Savings'
