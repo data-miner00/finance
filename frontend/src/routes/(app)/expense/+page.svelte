@@ -16,7 +16,7 @@
 	import CategoryCount from './charts/category-count.svelte';
 	import DailySpending from './charts/daily-spending.svelte';
 	import TotalByMonth from './charts/total-month.svelte';
-	import { columns } from './table/column';
+	import { columns } from './data-table/column';
 
 	let showCurrentMonthOnly = $state(true);
 
