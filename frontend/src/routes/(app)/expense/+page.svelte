@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { ArrowBigLeft, ArrowBigRight, CalendarArrowDown, CalendarIcon } from '@lucide/svelte';
+	import { ArrowBigLeft, ArrowBigRight, CalendarIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -214,35 +213,11 @@
 					<ArrowBigRight />
 				</Button>
 			</ButtonGroup.Root>
-
-			<ButtonGroup.Root>
-				<Button
-					size="icon"
-					variant={showCurrentMonthOnly ? 'default' : 'outline'}
-					onclick={() => (showCurrentMonthOnly = true)}
-				>
-					<CalendarArrowDown />
-				</Button>
-				<Button
-					variant={!showCurrentMonthOnly ? 'default' : 'outline'}
-					onclick={() => (showCurrentMonthOnly = false)}
-				>
-					<CalendarIcon />
-					Show All
-				</Button>
-			</ButtonGroup.Root>
 		</div>
 	</div>
 
-	<div class="flex gap-4 p-6">
-		<CategoryCount chartData={categoryCountData} />
-		<CategoryCost chartData={categoryCostData} />
-		<TotalByMonth chartData={monthlyExpense} />
-		<DailySpending chartData={dailySpending} />
-	</div>
-
-	<div class="flex gap-4 p-6">
-		<Card.Root class="w-[200px]">
+	<div class="grid grid-cols-2 gap-4 px-4 lg:grid-cols-4 lg:px-6">
+		<Card.Root>
 			<Card.Header>
 				<Card.Description>Average daily spendings</Card.Description>
 				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -251,7 +226,7 @@
 			</Card.Header>
 		</Card.Root>
 
-		<Card.Root class="w-[200px]">
+		<Card.Root>
 			<Card.Header>
 				<Card.Description>Average monthly spendings</Card.Description>
 				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -260,7 +235,7 @@
 			</Card.Header>
 		</Card.Root>
 
-		<Card.Root class="w-[200px]">
+		<Card.Root>
 			<Card.Header>
 				<Card.Description>Total expenses recorded</Card.Description>
 				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -269,7 +244,7 @@
 			</Card.Header>
 		</Card.Root>
 
-		<Card.Root class="w-[200px]">
+		<Card.Root>
 			<Card.Header>
 				<Card.Description>Expenses logged this month</Card.Description>
 				<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -279,37 +254,18 @@
 		</Card.Root>
 	</div>
 
+	<div class="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
+		<CategoryCount chartData={categoryCountData} />
+		<CategoryCost chartData={categoryCostData} />
+		<TotalByMonth chartData={monthlyExpense} />
+		<DailySpending chartData={dailySpending} />
+	</div>
+
 	<div class="px-4 lg:px-6">
 		<h2 class="text-lg font-semibold">Recent Expenses</h2>
 	</div>
 
 	<div class="px-4 lg:px-6">
 		<DataTable data={filteredExpenses} {columns} controls={dataTableControls} />
-	</div>
-
-	<!-- <div class="px-4 lg:px-6">
-		{#each categoryCountRaw as { category, count }, index (category)}
-			<div class="flex items-center gap-2">
-				<div class="h-3 w-3 rounded-full" style="background-color: var(--chart-{index + 1})"></div>
-				<span class="text-sm font-medium">{category}</span>
-				<span class="text-sm text-muted-foreground">({count})</span>
-			</div>
-		{/each}
-	</div> -->
-
-	<div class="px-4 lg:px-6">
-		<h2 class="text-lg font-semibold">Category Summary</h2>
-		<div class="flex flex-wrap gap-2">
-			{#each categoryCountRaw as { category, count } (category)}
-				<div
-					class="flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground"
-				>
-					<span>{category}</span>
-					<Badge>
-						{count}
-					</Badge>
-				</div>
-			{/each}
-		</div>
 	</div>
 </div>
