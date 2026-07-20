@@ -28,7 +28,26 @@
 	});
 
 	const data = {
-		navMain: [
+		navMain: [],
+		navSecondary: [
+			{
+				title: 'Settings',
+				url: '/settings',
+				icon: SettingsIcon
+			},
+			{
+				title: 'Swagger',
+				url: `${PUBLIC_API_BASE_URL}/swagger/index.html`,
+				icon: Braces,
+				external: true
+			},
+			{
+				title: 'Search',
+				url: '#',
+				icon: SearchIcon
+			}
+		],
+		documents: [
 			{
 				title: 'Expenses',
 				url: '/expense',
@@ -53,27 +72,7 @@
 				title: 'Piggy Bank',
 				url: '/piggy-bank',
 				icon: PigMoney
-			}
-		],
-		navSecondary: [
-			{
-				title: 'Settings',
-				url: '/settings',
-				icon: SettingsIcon
 			},
-			{
-				title: 'Swagger',
-				url: `${PUBLIC_API_BASE_URL}/swagger/index.html`,
-				icon: Braces,
-				external: true
-			},
-			{
-				title: 'Search',
-				url: '#',
-				icon: SearchIcon
-			}
-		],
-		documents: [
 			{
 				title: 'Tax',
 				url: '/tax',
@@ -106,7 +105,7 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
+		<NavMain />
 		<NavDocuments items={data.documents} />
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>

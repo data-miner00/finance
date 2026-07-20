@@ -7,11 +7,11 @@
 </script>
 
 <Sidebar.Group class="group-data-[collapsible=icon]:hidden">
-	<Sidebar.GroupLabel>Miscellaneous</Sidebar.GroupLabel>
+	<Sidebar.GroupLabel>Menu</Sidebar.GroupLabel>
 	<Sidebar.Menu>
 		{#each items as item (item.title)}
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton>
+				<Sidebar.MenuButton tooltipContent={item.title}>
 					{#snippet child({ props })}
 						<a {...props} href={item.url}>
 							<item.icon />
