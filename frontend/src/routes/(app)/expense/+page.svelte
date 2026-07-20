@@ -7,6 +7,7 @@
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
 	import type { DailyTotal, MonthlyTotal } from '$lib/types';
@@ -29,7 +30,10 @@
 		const created = new Date(expense.createdAt);
 		const today = new Date();
 		const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1);
-		return created.getFullYear() === lastMonth.getFullYear() && created.getMonth() === lastMonth.getMonth();
+		return (
+			created.getFullYear() === lastMonth.getFullYear() &&
+			created.getMonth() === lastMonth.getMonth()
+		);
 	};
 
 	function calculatePercentageChange(current: number, previous: number): number {
@@ -257,7 +261,8 @@
 				calculatePercentageChange(averageSpendingPerDay, averageSpendingPerDayLastMonth),
 				'this month'
 			).direction}
-			badgeText="{calculatePercentageChange(averageSpendingPerDay, averageSpendingPerDayLastMonth) > 0
+			badgeText="{calculatePercentageChange(averageSpendingPerDay, averageSpendingPerDayLastMonth) >
+			0
 				? '+'
 				: ''}{calculatePercentageChange(
 				averageSpendingPerDay,
@@ -328,23 +333,31 @@
 				),
 				'this month'
 			).text}
-			footerSubText="vs {appState.expenses.filter(isLastMonthExpense)
-				.length} logged last month"
+			footerSubText="vs {appState.expenses.filter(isLastMonthExpense).length} logged last month"
 		/>
 	</div>
 
-	<div class="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
-		<CategoryCount chartData={categoryCountData} />
-		<CategoryCost chartData={categoryCostData} />
-		<TotalByMonth chartData={monthlyExpense} />
-		<DailySpending chartData={dailySpending} />
-	</div>
+	<Tabs.Root value="records" class="gap-4">
+		<div class="px-4 lg:px-6">
+			<Tabs.List>
+				<Tabs.Trigger value="records">Records</Tabs.Trigger>
+				<Tabs.Trigger value="visualizations">Visualizations</Tabs.Trigger>
+			</Tabs.List>
+		</div>
 
-	<div class="px-4 lg:px-6">
-		<h2 class="text-lg font-semibold">Recent Expenses</h2>
-	</div>
+		<Tabs.Content value="records" class="flex flex-col gap-4">
+			<div class="px-4 lg:px-6">
+				<DataTable data={filteredExpenses} {columns} controls={dataTableControls} />
+			</div>
+		</Tabs.Content>
 
-	<div class="px-4 lg:px-6">
-		<DataTable data={filteredExpenses} {columns} controls={dataTableControls} />
-	</div>
+		<Tabs.Content value="visualizations">
+			<div class="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
+				<CategoryCount chartData={categoryCountData} />
+				<CategoryCost chartData={categoryCostData} />
+				<TotalByMonth chartData={monthlyExpense} />
+				<DailySpending chartData={dailySpending} />
+			</div>
+		</Tabs.Content>
+	</Tabs.Root>
 </div>
