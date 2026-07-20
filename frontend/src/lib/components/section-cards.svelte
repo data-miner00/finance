@@ -1,9 +1,5 @@
 <script lang="ts">
-	import TrendingDownIcon from '@tabler/icons-svelte/icons/trending-down';
-	import TrendingUpIcon from '@tabler/icons-svelte/icons/trending-up';
-
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import StatCard from '$lib/components/stat-card.svelte';
 	import { AccountType } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -107,111 +103,36 @@
 <div
 	class="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card"
 >
-	<Card.Root class="@container/card">
-		<Card.Header>
-			<Card.Description>Income</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{formatCurrency(totalIncomeThisMonth)}
-			</Card.Title>
-			<Card.Action>
-				<Badge variant="outline">
-					{#if getTrendDescription(incomeChangePercent).icon === 'up'}
-						<TrendingUpIcon />
-					{:else}
-						<TrendingDownIcon />
-					{/if}
-					{incomeChangePercent > 0 ? '+' : ''}{incomeChangePercent.toFixed(1)}%
-				</Badge>
-			</Card.Action>
-		</Card.Header>
-		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
-			<div class="line-clamp-1 flex gap-2 font-medium">
-				{getTrendDescription(incomeChangePercent).text}
-				{#if getTrendDescription(incomeChangePercent).icon === 'up'}
-					<TrendingUpIcon class="size-4" />
-				{:else}
-					<TrendingDownIcon class="size-4" />
-				{/if}
-			</div>
-			<div class="text-muted-foreground">vs {formatCurrency(totalIncomeLastMonth)} last month</div>
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root class="@container/card">
-		<Card.Header>
-			<Card.Description>Spending</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{formatCurrency(totalExpenseThisMonth)}
-			</Card.Title>
-			<Card.Action>
-				<Badge variant="outline">
-					{#if getTrendDescription(expenseChangePercent).icon === 'up'}
-						<TrendingUpIcon />
-					{:else}
-						<TrendingDownIcon />
-					{/if}
-					{expenseChangePercent > 0 ? '+' : ''}{expenseChangePercent.toFixed(1)}%
-				</Badge>
-			</Card.Action>
-		</Card.Header>
-		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
-			<div class="line-clamp-1 flex gap-2 font-medium">
-				{getTrendDescription(expenseChangePercent).text}
-				{#if getTrendDescription(expenseChangePercent).icon === 'up'}
-					<TrendingUpIcon class="size-4" />
-				{:else}
-					<TrendingDownIcon class="size-4" />
-				{/if}
-			</div>
-			<div class="text-muted-foreground">vs {formatCurrency(totalExpenseLastMonth)} last month</div>
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root class="@container/card">
-		<Card.Header>
-			<Card.Description>Savings</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{formatCurrency(totalAccumulatedSavings)}
-			</Card.Title>
-			<Card.Action>
-				<Badge variant="outline">
-					<TrendingUpIcon />
-					Current Total
-				</Badge>
-			</Card.Action>
-		</Card.Header>
-		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
-			<div class="line-clamp-1 flex gap-2 font-medium">
-				Accumulated over time <TrendingUpIcon class="size-4" />
-			</div>
-			<div class="text-muted-foreground">Across all accounts</div>
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root class="@container/card">
-		<Card.Header>
-			<Card.Description>Left to Spend</Card.Description>
-			<Card.Title class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-				{formatCurrency(leftToSpend)}
-			</Card.Title>
-			<Card.Action>
-				<Badge variant="outline">
-					{#if getTrendDescription(leftToSpendChangePercent).icon === 'up'}
-						<TrendingUpIcon />
-					{:else}
-						<TrendingDownIcon />
-					{/if}
-					{leftToSpendChangePercent > 0 ? '+' : ''}{leftToSpendChangePercent.toFixed(1)}%
-				</Badge>
-			</Card.Action>
-		</Card.Header>
-		<Card.Footer class="flex-col items-start gap-1.5 text-sm">
-			<div class="line-clamp-1 flex gap-2 font-medium">
-				{getTrendDescription(leftToSpendChangePercent).text}
-				{#if getTrendDescription(leftToSpendChangePercent).icon === 'up'}
-					<TrendingUpIcon class="size-4" />
-				{:else}
-					<TrendingDownIcon class="size-4" />
-				{/if}
-			</div>
-			<div class="text-muted-foreground">vs {formatCurrency(leftToSpendLastMonth)} last month</div>
-		</Card.Footer>
-	</Card.Root>
+	<StatCard
+		description="Income"
+		value={formatCurrency(totalIncomeThisMonth)}
+		trendDirection={getTrendDescription(incomeChangePercent).icon}
+		badgeText="{incomeChangePercent > 0 ? '+' : ''}{incomeChangePercent.toFixed(1)}%"
+		footerText={getTrendDescription(incomeChangePercent).text}
+		footerSubText="vs {formatCurrency(totalIncomeLastMonth)} last month"
+	/>
+	<StatCard
+		description="Spending"
+		value={formatCurrency(totalExpenseThisMonth)}
+		trendDirection={getTrendDescription(expenseChangePercent).icon}
+		badgeText="{expenseChangePercent > 0 ? '+' : ''}{expenseChangePercent.toFixed(1)}%"
+		footerText={getTrendDescription(expenseChangePercent).text}
+		footerSubText="vs {formatCurrency(totalExpenseLastMonth)} last month"
+	/>
+	<StatCard
+		description="Savings"
+		value={formatCurrency(totalAccumulatedSavings)}
+		trendDirection="up"
+		badgeText="Current Total"
+		footerText="Accumulated over time"
+		footerSubText="Across all accounts"
+	/>
+	<StatCard
+		description="Left to Spend"
+		value={formatCurrency(leftToSpend)}
+		trendDirection={getTrendDescription(leftToSpendChangePercent).icon}
+		badgeText="{leftToSpendChangePercent > 0 ? '+' : ''}{leftToSpendChangePercent.toFixed(1)}%"
+		footerText={getTrendDescription(leftToSpendChangePercent).text}
+		footerSubText="vs {formatCurrency(leftToSpendLastMonth)} last month"
+	/>
 </div>
