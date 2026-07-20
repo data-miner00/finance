@@ -10,9 +10,10 @@ This agent is for coordinated backend and frontend work.
 
 ## Guidance
 
-- When adding a backend endpoint, also update the frontend service, store, and route that use it.
-- Use the same domain terms across backend and frontend: `Account`, `Expense`, `Income`, `RecurringIncome`, `PiggyBank`.
-- Avoid mismatched property names between backend JSON payloads and frontend forms.
+- When adding a backend endpoint, also update the frontend service, state, and route that use it.
+- Use the same domain terms across backend and frontend: `Account`, `Expense`, `Income`, `RecurringAction`, `PiggyBank`, `Category`, `Tax`.
+- A new backend endpoint usually needs a matching stored procedure/view in `backend/Database`.
+- Avoid mismatched property names between backend JSON payloads (`CreateXxxRequest`/`UpdateXxxRequest`) and frontend `types.ts`/forms.
 - Prefer small, incremental changes that preserve existing repository and component structure.
 
 ## When to use this agent
