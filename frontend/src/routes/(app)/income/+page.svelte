@@ -4,6 +4,7 @@
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import StatCard from '$lib/components/stat-card.svelte';
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { appState } from '$lib/states.svelte';
 
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
@@ -245,13 +246,26 @@
 		/>
 	</div>
 
-	<div class="flex gap-4 px-4 lg:px-6">
-		<MonthlyDistribution chartData={monthlyIncome} />
-		<MonthlyNetIncome chartData={monthlyNetIncome} />
-		<SavingsRate chartData={monthlySavingsRate} />
-	</div>
+	<Tabs.Root value="records" class="gap-4">
+		<div class="px-4 lg:px-6">
+			<Tabs.List>
+				<Tabs.Trigger value="records">Records</Tabs.Trigger>
+				<Tabs.Trigger value="visualizations">Visualizations</Tabs.Trigger>
+			</Tabs.List>
+		</div>
 
-	<div class="px-4 lg:px-6">
-		<DataTable data={appState.incomes} {columns} controls={dataTableControls} />
-	</div>
+		<Tabs.Content value="records" class="flex flex-col gap-4">
+			<div class="px-4 lg:px-6">
+				<DataTable data={appState.incomes} {columns} controls={dataTableControls} />
+			</div>
+		</Tabs.Content>
+
+		<Tabs.Content value="visualizations">
+			<div class="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
+				<MonthlyDistribution chartData={monthlyIncome} />
+				<MonthlyNetIncome chartData={monthlyNetIncome} />
+				<SavingsRate chartData={monthlySavingsRate} />
+			</div>
+		</Tabs.Content>
+	</Tabs.Root>
 </div>
