@@ -7,6 +7,7 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { appState } from '$lib/states.svelte';
 
+	import CumulativeIncome from './charts/cumulative-income.svelte';
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
 	import MonthlyNetIncome from './charts/monthly-net-income.svelte';
 	import SavingsRate from './charts/savings-rate.svelte';
@@ -154,6 +155,18 @@
 					10
 			: 0
 	);
+
+	// Cumulative income for the current year (YTD running total)
+	let cumulativeIncome = $derived.by(() => {
+		const currentYearPrefix = `${now.getFullYear()}-`;
+		let running = 0;
+		return monthlyIncome
+			.filter((bucket) => bucket.monthKey.startsWith(currentYearPrefix))
+			.map((bucket) => {
+				running += bucket.total;
+				return { month: bucket.month, cumulative: Math.round(running * 100) / 100 };
+			});
+	});
 </script>
 
 {#snippet dataTableControls()}
@@ -265,6 +278,7 @@
 				<MonthlyDistribution chartData={monthlyIncome} />
 				<MonthlyNetIncome chartData={monthlyNetIncome} />
 				<SavingsRate chartData={monthlySavingsRate} />
+				<CumulativeIncome chartData={cumulativeIncome} />
 			</div>
 		</Tabs.Content>
 	</Tabs.Root>
