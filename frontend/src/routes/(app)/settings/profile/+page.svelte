@@ -1,5 +1,6 @@
 <script lang="ts">
 	import InfoIcon from '@lucide/svelte/icons/info';
+	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
@@ -20,6 +21,11 @@
 		bio: appState.profile?.bio || '',
 		companyName: appState.profile?.companyName || '',
 		websiteUrl: appState.profile?.websiteUrl || ''
+	});
+
+	onMount(() => {
+		appState.pageTitle = 'Profile Settings';
+		appState.currentPage = 'settings';
 	});
 
 	async function saveProfile() {

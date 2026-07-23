@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import * as Label from '$lib/components/ui/label/index.js';
@@ -9,6 +11,11 @@
 		// Save changes logic here
 		console.log('Changes saved');
 	}
+
+	onMount(() => {
+		appState.pageTitle = 'General Settings';
+		appState.currentPage = 'settings';
+	});
 
 	let tempPieChartDisplayTop = $state(appState.settings.pieChartDisplayTop);
 </script>

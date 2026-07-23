@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { DownloadIcon } from '@lucide/svelte';
+	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { exportAllExpense, importExpenses } from '$lib/services';
+	import { appState } from '$lib/states.svelte';
+
+	onMount(() => {
+		appState.pageTitle = 'Data Management';
+		appState.currentPage = 'settings';
+	});
 
 	async function exportAllData() {
 		try {
