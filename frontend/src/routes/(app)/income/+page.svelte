@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
+	import StatCard from '$lib/components/stat-card.svelte';
 	import { appState } from '$lib/states.svelte';
 
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
@@ -13,6 +15,35 @@
 		appState.pageTitle = 'Incomes';
 		appState.currentPage = 'income';
 	});
+
+	function calculatePercentageChange(current: number, previous: number): number {
+		if (previous === 0) return 0;
+		return ((current - previous) / previous) * 100;
+	}
+
+	function getTrendDescription(
+		percentChange: number,
+		period: string
+	): { direction: 'up' | 'down'; text: string } {
+		if (percentChange > 0) {
+			return { direction: 'up', text: `Up ${Math.abs(percentChange).toFixed(1)}% ${period}` };
+		} else if (percentChange < 0) {
+			return { direction: 'down', text: `Down ${Math.abs(percentChange).toFixed(1)}% ${period}` };
+		}
+		return { direction: 'up', text: `No change ${period}` };
+	}
+
+	function getTrendDescriptionPercentagePoints(
+		pointChange: number,
+		period: string
+	): { direction: 'up' | 'down'; text: string } {
+		if (pointChange > 0) {
+			return { direction: 'up', text: `Up ${Math.abs(pointChange).toFixed(1)}pp ${period}` };
+		} else if (pointChange < 0) {
+			return { direction: 'down', text: `Down ${Math.abs(pointChange).toFixed(1)}pp ${period}` };
+		}
+		return { direction: 'up', text: `No change ${period}` };
+	}
 
 	type MonthlyBucket = { month: string; monthKey: string; total: number };
 
@@ -69,17 +100,64 @@
 				return { month: income.month, savingsRate: Math.max(0, Math.round(savingsRate * 10) / 10) };
 			})
 	);
+
+	function monthKeyOf(date: Date): string {
+		return `${date.getFullYear()}-${String(date.getMonth()).padStart(2, '0')}`;
+	}
+
+	function getMonthTotal(buckets: MonthlyBucket[], monthKey: string): number {
+		return buckets.find((bucket) => bucket.monthKey === monthKey)?.total ?? 0;
+	}
+
+	function getMonthlyAverageForYear(items: { actionedAt: string; amount: number }[], year: number) {
+		const filtered = items.filter((item) => new Date(item.actionedAt).getFullYear() === year);
+		if (filtered.length === 0) return 0;
+
+		const total = filtered.reduce((sum, item) => sum + item.amount, 0);
+		return Math.round((total / 12) * 100) / 100;
+	}
+
+	const now = new Date();
+	const currentMonthKey = monthKeyOf(now);
+	const lastMonthKey = monthKeyOf(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+
+	// Average monthly income, this year vs last year
+	let averageIncomePerMonth = $derived(
+		getMonthlyAverageForYear(appState.incomes, now.getFullYear())
+	);
+	let averageIncomePerMonthLastYear = $derived(
+		getMonthlyAverageForYear(appState.incomes, now.getFullYear() - 1)
+	);
+
+	// Total income, this month vs last month
+	let totalIncomeThisMonth = $derived(getMonthTotal(monthlyIncome, currentMonthKey));
+	let totalIncomeLastMonth = $derived(getMonthTotal(monthlyIncome, lastMonthKey));
+
+	let totalExpenseThisMonth = $derived(getMonthTotal(monthlyExpenses, currentMonthKey));
+	let totalExpenseLastMonth = $derived(getMonthTotal(monthlyExpenses, lastMonthKey));
+
+	// Net income, this month vs last month
+	let netIncomeThisMonth = $derived(totalIncomeThisMonth - totalExpenseThisMonth);
+	let netIncomeLastMonth = $derived(totalIncomeLastMonth - totalExpenseLastMonth);
+
+	// Savings rate, this month vs last month
+	let savingsRateThisMonth = $derived(
+		totalIncomeThisMonth > 0
+			? Math.round(((totalIncomeThisMonth - totalExpenseThisMonth) / totalIncomeThisMonth) * 1000) /
+					10
+			: 0
+	);
+	let savingsRateLastMonth = $derived(
+		totalIncomeLastMonth > 0
+			? Math.round(((totalIncomeLastMonth - totalExpenseLastMonth) / totalIncomeLastMonth) * 1000) /
+					10
+			: 0
+	);
 </script>
 
 {#snippet dataTableControls()}
 	<div></div>
 {/snippet}
-
-<div class="flex gap-4 p-6">
-	<MonthlyDistribution chartData={monthlyIncome} />
-	<MonthlyNetIncome chartData={monthlyNetIncome} />
-	<SavingsRate chartData={monthlySavingsRate} />
-</div>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
@@ -89,6 +167,88 @@
 				Track your income with a sortable income table, category filters, and summary totals.
 			</p>
 		</div>
+	</div>
+
+	<div
+		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
+	>
+		<StatCard
+			description="Average monthly income"
+			value={formatCurrency(averageIncomePerMonth)}
+			trendDirection={getTrendDescription(
+				calculatePercentageChange(averageIncomePerMonth, averageIncomePerMonthLastYear),
+				'this year'
+			).direction}
+			badgeText="{calculatePercentageChange(averageIncomePerMonth, averageIncomePerMonthLastYear) >
+			0
+				? '+'
+				: ''}{calculatePercentageChange(
+				averageIncomePerMonth,
+				averageIncomePerMonthLastYear
+			).toFixed(1)}%"
+			footerText={getTrendDescription(
+				calculatePercentageChange(averageIncomePerMonth, averageIncomePerMonthLastYear),
+				'this year'
+			).text}
+			footerSubText="vs {formatCurrency(averageIncomePerMonthLastYear)} last year"
+		/>
+
+		<StatCard
+			description="Total income this month"
+			value={formatCurrency(totalIncomeThisMonth)}
+			trendDirection={getTrendDescription(
+				calculatePercentageChange(totalIncomeThisMonth, totalIncomeLastMonth),
+				'this month'
+			).direction}
+			badgeText="{calculatePercentageChange(totalIncomeThisMonth, totalIncomeLastMonth) > 0
+				? '+'
+				: ''}{calculatePercentageChange(totalIncomeThisMonth, totalIncomeLastMonth).toFixed(1)}%"
+			footerText={getTrendDescription(
+				calculatePercentageChange(totalIncomeThisMonth, totalIncomeLastMonth),
+				'this month'
+			).text}
+			footerSubText="vs {formatCurrency(totalIncomeLastMonth)} last month"
+		/>
+
+		<StatCard
+			description="Net income this month"
+			value={formatCurrency(netIncomeThisMonth)}
+			trendDirection={getTrendDescription(
+				calculatePercentageChange(netIncomeThisMonth, netIncomeLastMonth),
+				'this month'
+			).direction}
+			badgeText="{calculatePercentageChange(netIncomeThisMonth, netIncomeLastMonth) > 0
+				? '+'
+				: ''}{calculatePercentageChange(netIncomeThisMonth, netIncomeLastMonth).toFixed(1)}%"
+			footerText={getTrendDescription(
+				calculatePercentageChange(netIncomeThisMonth, netIncomeLastMonth),
+				'this month'
+			).text}
+			footerSubText="vs {formatCurrency(netIncomeLastMonth)} last month"
+		/>
+
+		<StatCard
+			description="Savings rate this month"
+			value="{savingsRateThisMonth.toFixed(1)}%"
+			trendDirection={getTrendDescriptionPercentagePoints(
+				savingsRateThisMonth - savingsRateLastMonth,
+				'this month'
+			).direction}
+			badgeText="{savingsRateThisMonth - savingsRateLastMonth > 0 ? '+' : ''}{(
+				savingsRateThisMonth - savingsRateLastMonth
+			).toFixed(1)}pp"
+			footerText={getTrendDescriptionPercentagePoints(
+				savingsRateThisMonth - savingsRateLastMonth,
+				'this month'
+			).text}
+			footerSubText="vs {savingsRateLastMonth.toFixed(1)}% last month"
+		/>
+	</div>
+
+	<div class="flex gap-4 px-4 lg:px-6">
+		<MonthlyDistribution chartData={monthlyIncome} />
+		<MonthlyNetIncome chartData={monthlyNetIncome} />
+		<SavingsRate chartData={monthlySavingsRate} />
 	</div>
 
 	<div class="px-4 lg:px-6">
