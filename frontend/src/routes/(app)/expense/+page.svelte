@@ -227,27 +227,12 @@
 {/snippet}
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-	<div class="flex items-center justify-between px-4 lg:px-6">
+	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
 			<h1 class="text-xl font-bold">Expenses</h1>
 			<p class="text-sm text-muted-foreground">
 				Track your spending with a sortable expense table, category filters, and summary totals.
 			</p>
-		</div>
-
-		<div class="flex items-center gap-2">
-			<ButtonGroup.Root>
-				<Button variant="outline" size="icon">
-					<ArrowBigLeft />
-				</Button>
-				<Button variant="outline">
-					<CalendarIcon />
-					{thisMonthFirstDay.toLocaleDateString()} - {thisMonthLastDay.toLocaleDateString()}
-				</Button>
-				<Button variant="outline" size="icon">
-					<ArrowBigRight />
-				</Button>
-			</ButtonGroup.Root>
 		</div>
 	</div>
 
@@ -338,11 +323,25 @@
 	</div>
 
 	<Tabs.Root value="records" class="gap-4">
-		<div class="px-4 lg:px-6">
+		<div class="flex items-center justify-between px-4 lg:px-6">
 			<Tabs.List>
 				<Tabs.Trigger value="records">Records</Tabs.Trigger>
 				<Tabs.Trigger value="visualizations">Visualizations</Tabs.Trigger>
 			</Tabs.List>
+			<div class="flex items-center gap-2">
+				<ButtonGroup.Root>
+					<Button variant="outline" size="icon">
+						<ArrowBigLeft />
+					</Button>
+					<Button variant="outline">
+						<CalendarIcon />
+						{thisMonthFirstDay.toLocaleDateString()} - {thisMonthLastDay.toLocaleDateString()}
+					</Button>
+					<Button variant="outline" size="icon">
+						<ArrowBigRight />
+					</Button>
+				</ButtonGroup.Root>
+			</div>
 		</div>
 
 		<Tabs.Content value="records" class="flex flex-col gap-4">
