@@ -6,13 +6,17 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as Label from '$lib/components/ui/label/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { Switch } from '$lib/components/ui/switch';
 	import { parseSettings, saveSettings, toSettingsValues } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	async function saveChanges() {
 		try {
 			const updated = await saveSettings({
-				values: toSettingsValues({ pieChartDisplayTop: tempPieChartDisplayTop })
+				values: toSettingsValues({
+					pieChartDisplayTop: tempPieChartDisplayTop,
+					enableTax: tempEnableTax
+				})
 			});
 			appState.settings = parseSettings(updated);
 			toast.success('Settings saved');
@@ -27,6 +31,7 @@
 	});
 
 	let tempPieChartDisplayTop = $state(appState.settings.pieChartDisplayTop);
+	let tempEnableTax = $state(appState.settings.enableTax);
 </script>
 
 <h1 class="text-2xl font-bold">General Settings</h1>
@@ -49,6 +54,17 @@
 		type="number"
 		class="mb-4"
 	/>
+
+	<Separator class="my-6 " />
+
+	<h2 class="mb-1 text-lg font-semibold">Features</h2>
+
+	<p class="mb-4 text-sm text-muted-foreground">Enable or disable optional features.</p>
+
+	<div class="mb-4 flex items-center justify-between">
+		<Label.Root for="enableTax">Enable Tax</Label.Root>
+		<Switch id="enableTax" bind:checked={tempEnableTax} />
+	</div>
 
 	<Separator class="my-6 " />
 

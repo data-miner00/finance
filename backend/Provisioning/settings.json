@@ -21,7 +21,8 @@
   },
   "Settings": {
     "DefaultValues": {
-      "pieChartDisplayTop": "5"
+      "pieChartDisplayTop": "5",
+      "enableTax": "true"
     }
   }
 }

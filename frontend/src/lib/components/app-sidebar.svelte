@@ -27,7 +27,7 @@
 		avatar: appState.profile?.avatarImage || '/avatars/shadcn.jpg'
 	});
 
-	const data = {
+	const data = $derived({
 		navMain: [],
 		navSecondary: [
 			{
@@ -73,18 +73,22 @@
 				url: '/piggy-bank',
 				icon: PigMoney
 			},
-			{
-				title: 'Tax',
-				url: '/tax',
-				icon: Tax
-			},
+			...(appState.settings.enableTax
+				? [
+						{
+							title: 'Tax',
+							url: '/tax',
+							icon: Tax
+						}
+					]
+				: []),
 			{
 				title: 'Notifications',
 				url: '/notifications',
 				icon: Bell
 			}
 		]
-	};
+	});
 
 	let { ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
