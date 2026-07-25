@@ -1,15 +1,24 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import * as Label from '$lib/components/ui/label/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { parseSettings, saveSettings, toSettingsValues } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
-	function saveChanges() {
-		// Save changes logic here
-		console.log('Changes saved');
+	async function saveChanges() {
+		try {
+			const updated = await saveSettings({
+				values: toSettingsValues({ pieChartDisplayTop: tempPieChartDisplayTop })
+			});
+			appState.settings = parseSettings(updated);
+			toast.success('Settings saved');
+		} catch (error) {
+			toast.error('Failed to save settings');
+		}
 	}
 
 	onMount(() => {

@@ -6,4 +6,6 @@ export * from './incomeService';
 export * from './piggyBankService';
 export * from './profileService';
 export * from './recurringActionService';
+export * from './settingsDefaults';
+export * from './settingsService';
 export * from './taxService';

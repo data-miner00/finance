@@ -1,3 +1,5 @@
+import { DEFAULT_SETTINGS, type KnownSettings } from './services/settingsDefaults';
+
 export type CurrentPage =
 	| 'dashboard'
 	| 'account'
@@ -25,9 +27,7 @@ export type AppState = {
 	currentPage: CurrentPage;
 	isCommandPaletteOpen: boolean;
 	isAddAccountDialogOpen: boolean;
-	settings: {
-		pieChartDisplayTop: number;
-	};
+	settings: KnownSettings;
 	isAddTaxDialogOpen: boolean;
 };
 
@@ -48,7 +48,5 @@ export const appState = $state<AppState>({
 	isCommandPaletteOpen: false,
 	isAddAccountDialogOpen: false,
 	isAddTaxDialogOpen: false,
-	settings: {
-		pieChartDisplayTop: 5
-	}
+	settings: { ...DEFAULT_SETTINGS }
 });

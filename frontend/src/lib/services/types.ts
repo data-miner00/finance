@@ -161,3 +161,12 @@ export interface SaveProfileRequest {
 	websiteUrl?: string | null;
 	avatarImage?: string | null;
 }
+
+export interface Setting extends EntityBase {
+	key: string;
+	value: string;
+}
+
+export interface UpdateSettingsRequest {
+	values: Record<string, string>;
+}

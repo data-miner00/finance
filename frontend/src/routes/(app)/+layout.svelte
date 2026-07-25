@@ -18,7 +18,9 @@
 		getPiggyBanks,
 		getProfile,
 		getRecurringActions,
-		getTaxes
+		getSettings,
+		getTaxes,
+		parseSettings
 	} from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -34,6 +36,7 @@
 		appState.piggyBanks = await getPiggyBanks();
 		appState.taxes = await getTaxes();
 		appState.profile = await getProfile();
+		appState.settings = parseSettings(await getSettings());
 		appState.categories = Array.from(
 			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))
 		);
