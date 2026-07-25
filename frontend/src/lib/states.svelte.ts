@@ -29,6 +29,7 @@ export type AppState = {
 	isAddAccountDialogOpen: boolean;
 	settings: KnownSettings;
 	isAddTaxDialogOpen: boolean;
+	isAddPiggyBankDialogOpen: boolean;
 };
 
 export const appState = $state<AppState>({
@@ -48,5 +49,6 @@ export const appState = $state<AppState>({
 	isCommandPaletteOpen: false,
 	isAddAccountDialogOpen: false,
 	isAddTaxDialogOpen: false,
+	isAddPiggyBankDialogOpen: false,
 	settings: { ...DEFAULT_SETTINGS }
 });

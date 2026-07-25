@@ -47,7 +47,7 @@
 			text: 'Create Piggy Bank',
 			isDisplay: true,
 			action() {
-				// noop
+				appState.isAddPiggyBankDialogOpen = true;
 			}
 		},
 		tax: {
