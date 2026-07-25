@@ -55,5 +55,7 @@ namespace Core
         public const string UpdateTax = "usp_UpdateTax";
 
         public const string IncrementOrDecrementAccountBalance = "usp_IncrementOrDecrementAccountBalance";
+
+        public const string UpsertSetting = "usp_UpsertSetting";
     }
 }
