@@ -54,6 +54,12 @@ internal static class ContainerConfig
 
         builder.RegisterInstance(expenseOption);
 
+        var settingsOption =
+            config.GetSection(SettingsOption.SectionName).Get<SettingsOption>()
+            ?? throw new InvalidOperationException("The settings option cannot be empty.");
+
+        builder.RegisterInstance(settingsOption);
+
         return builder;
     }
 
@@ -78,6 +84,7 @@ internal static class ContainerConfig
     private static ContainerBuilder ConfigureRepositories(this ContainerBuilder builder)
     {
         builder.RegisterType<CategoryRepository>().As<IRepository<Category>>().SingleInstance();
+        builder.RegisterType<SettingsRepository>().As<ISettingsRepository>().SingleInstance();
 
         return builder;
     }
@@ -93,6 +100,7 @@ internal static class ContainerConfig
     {
         builder.RegisterType<ProvisionDatabaseActivity>().SingleInstance();
         builder.RegisterType<SeedCategoriesActivity>().SingleInstance();
+        builder.RegisterType<SeedSettingsActivity>().SingleInstance();
 
         builder.Register(ctx =>
         {
@@ -101,6 +109,7 @@ internal static class ContainerConfig
                 ctx.Resolve<ProvisionDatabaseActivity>(),
                 new VoidActivity("Manual step to provision tables."),
                 ctx.Resolve<SeedCategoriesActivity>(),
+                ctx.Resolve<SeedSettingsActivity>(),
             };
 
             return activities;

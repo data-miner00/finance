@@ -20,7 +20,13 @@ namespace Provisioning.Activities
 
         public async Task ProvisionAsync(CancellationToken cancellationToken)
         {
-            foreach (var category in this.option.DefaultCategories)
+            var existing = (await this.repository.GetAllAsync(cancellationToken))
+                .Select(x => x.Name)
+                .ToHashSet();
+
+            var missingCategories = this.option.DefaultCategories.Except(existing);
+
+            foreach (var category in missingCategories)
             {
                 await this.repository.CreateAsync(new Category { Name = category }, cancellationToken);
                 Console.WriteLine($"Provisioned category \"{category}\".");

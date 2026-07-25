@@ -18,5 +18,10 @@
       "Entertainment", // Spotify, Movie
       "Gift"
     ]
+  },
+  "Settings": {
+    "DefaultValues": {
+      "pieChartDisplayTop": "5"
+    }
   }
 }
