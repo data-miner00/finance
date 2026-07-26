@@ -45,6 +45,7 @@
 		"eslint-plugin-svelte": "^3.17.0",
 		"globals": "^17.4.0",
 		"layerchart": "^2.0.0-next.48",
+		"little-date": "^1.2.1",
 		"mode-watcher": "^1.1.0",
 		"playwright": "^1.59.1",
 		"prettier": "^3.8.1",
