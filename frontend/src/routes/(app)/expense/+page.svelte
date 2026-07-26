@@ -82,47 +82,6 @@
 			}));
 	}
 
-	let categoryCountRaw = $derived(
-		appState.categories.map((category) => {
-			const count = appState.expenses.filter((expense) => expense.categoryName === category).length;
-			return { category, count };
-		})
-	);
-	let categoryCountData = $derived.by(() => {
-		const categoryData = categoryCountRaw;
-
-		categoryData.sort((a, b) => b.count - a.count);
-
-		const topCategories = categoryData.slice(0, appState.settings.pieChartDisplayTop);
-		const otherCount = categoryData
-			.slice(appState.settings.pieChartDisplayTop)
-			.reduce((acc, curr) => acc + curr.count, 0);
-		return [
-			...topCategories.map((cat, index) => ({ ...cat, color: `var(--chart-${index + 1})` })),
-			{ category: 'Other', count: otherCount, color: 'var(--color-other)' }
-		];
-	});
-
-	let categoryCostData = $derived.by(() => {
-		const categoryData = appState.categories.map((category) => {
-			const cost = appState.expenses
-				.filter((expense) => expense.categoryName === category)
-				.reduce((prev, curr) => prev + curr.amount, 0);
-			return { category, cost };
-		});
-
-		categoryData.sort((a, b) => b.cost - a.cost);
-
-		const topCategories = categoryData.slice(0, appState.settings.pieChartDisplayTop);
-		const otherCount = categoryData
-			.slice(appState.settings.pieChartDisplayTop)
-			.reduce((acc, curr) => acc + curr.cost, 0);
-		return [
-			...topCategories.map((cat, index) => ({ ...cat, color: `var(--chart-${index + 1})` })),
-			{ category: 'Other', cost: otherCount, color: 'var(--color-other)' }
-		];
-	});
-
 	function groupExpensesByDay(expenses: Expense[]): DailyTotal[] {
 		const dayMap = new Map<Date, number>();
 
@@ -205,24 +164,27 @@
 	}
 	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
 
-	let value = $state<DateRange | undefined>({
-		start: today('Asia/Kuala_Lumpur').set({ day: 0 }),
-		end: today('Asia/Kuala_Lumpur')
+	let value = $state<DateRange>({
+		start: today(getLocalTimeZone()).set({ day: 0 }),
+		end: today(getLocalTimeZone())
 	});
 
 	function resetToThisMonth() {
-		value!.start = today('Asia/Kuala_Lumpur').set({ day: 0 });
-		value!.end = today('Asia/Kuala_Lumpur');
+		value.start = today(getLocalTimeZone()).set({ day: 0 });
+		value.end = today(getLocalTimeZone());
 
 		toast.success('Reset date range to this month.');
 	}
 
 	let newFilter = $derived(
 		appState.expenses.filter((x) => {
-			var start = value!.start!.toDate('Asia/Kuala_Lumpur');
-			var end = value!.end!.toDate('Asia/Kuala_Lumpur');
-			var actionedAt = new Date(x.actionedAt);
+			var start = value.start?.toDate(getLocalTimeZone());
+			var end = value.end?.toDate(getLocalTimeZone());
 
+			// When interactively selecting the date range from the UI, the `end` will be temporarily undefined when the selection is pending
+			if (!start || !end) return true;
+
+			var actionedAt = new Date(x.actionedAt);
 			return start <= actionedAt && actionedAt <= end;
 		})
 	);
@@ -232,6 +194,49 @@
 			includeTime: false
 		});
 	}
+
+	let categoryCountRaw = $derived(
+		appState.categories.map((category) => {
+			const count = newFilter.filter((expense) => expense.categoryName === category).length;
+			return { category, count };
+		})
+	);
+	let categoryCountData = $derived.by(() => {
+		const categoryData = categoryCountRaw.filter((x) => x.count != 0);
+
+		categoryData.sort((a, b) => b.count - a.count);
+
+		const topCategories = categoryData.slice(0, appState.settings.pieChartDisplayTop);
+		const otherCount = categoryData
+			.slice(appState.settings.pieChartDisplayTop)
+			.reduce((acc, curr) => acc + curr.count, 0);
+		return [
+			...topCategories.map((cat, index) => ({ ...cat, color: `var(--chart-${index + 1})` })),
+			...(otherCount ? [{ category: 'Other', count: otherCount, color: 'var(--color-other)' }] : [])
+		];
+	});
+
+	let categoryCostData = $derived.by(() => {
+		const categoryData = appState.categories.map((category) => {
+			const cost = newFilter
+				.filter((expense) => expense.categoryName === category)
+				.reduce((prev, curr) => prev + curr.amount, 0);
+			return { category, cost };
+		});
+
+		categoryData.sort((a, b) => b.cost - a.cost);
+
+		const topCategories = categoryData
+			.filter((x) => x.cost != 0)
+			.slice(0, appState.settings.pieChartDisplayTop);
+		const otherCount = categoryData
+			.slice(appState.settings.pieChartDisplayTop)
+			.reduce((acc, curr) => acc + curr.cost, 0);
+		return [
+			...topCategories.map((cat, index) => ({ ...cat, color: `var(--chart-${index + 1})` })),
+			...(otherCount ? [{ category: 'Other', cost: otherCount, color: 'var(--color-other)' }] : [])
+		];
+	});
 </script>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
