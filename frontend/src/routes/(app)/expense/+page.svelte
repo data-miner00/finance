@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { ArrowBigLeft, ArrowBigRight, CalendarIcon } from '@lucide/svelte';
+	import { type DateValue, getLocalTimeZone, today } from '@internationalized/date';
+	import { ArrowBigLeft, ArrowBigRight, ChevronDownIcon, X } from '@lucide/svelte';
+	import { type DateRange } from 'bits-ui';
+	import { formatDateRange } from 'little-date';
 	import { onMount } from 'svelte';
 
 	import { formatCurrency } from '$lib';
@@ -7,6 +10,8 @@
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
+	import * as Popover from '$lib/components/ui/popover/index.js';
+	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import type { Expense } from '$lib/services/types';
 	import { appState } from '$lib/states.svelte';
@@ -17,6 +22,8 @@
 	import DailySpending from './charts/daily-spending.svelte';
 	import TotalByMonth from './charts/total-month.svelte';
 	import { columns } from './data-table/column';
+
+	const id = $props.id();
 
 	let showCurrentMonthOnly = $state(true);
 
@@ -203,28 +210,27 @@
 	}
 	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
 
-	const thisMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-	const thisMonthLastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
-</script>
+	let value = $state<DateRange | undefined>({
+		start: today('Asia/Kuala_Lumpur').subtract({ days: 5 }),
+		end: today('Asia/Kuala_Lumpur')
+	});
 
-{#snippet dataTableControls()}
-	<div class="flex items-center justify-between gap-2">
-		<Button
-			variant={showCurrentMonthOnly ? 'default' : 'outline'}
-			size="sm"
-			onclick={() => (showCurrentMonthOnly = true)}
-		>
-			Current month
-		</Button>
-		<Button
-			variant={!showCurrentMonthOnly ? 'default' : 'outline'}
-			size="sm"
-			onclick={() => (showCurrentMonthOnly = false)}
-		>
-			Show older expenses
-		</Button>
-	</div>
-{/snippet}
+	let newFilter = $derived(
+		appState.expenses.filter((x) => {
+			var start = value!.start!.toDate('Asia/Kuala_Lumpur');
+			var end = value!.end!.toDate('Asia/Kuala_Lumpur');
+			var actionedAt = new Date(x.actionedAt);
+
+			return start <= actionedAt && actionedAt <= end;
+		})
+	);
+
+	function formatRange(start: DateValue, end: DateValue) {
+		return formatDateRange(start.toDate(getLocalTimeZone()), end.toDate(getLocalTimeZone()), {
+			includeTime: false
+		});
+	}
+</script>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
@@ -237,7 +243,7 @@
 	</div>
 
 	<div
-		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
+		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
 	>
 		<StatCard
 			description="Average daily spendings"
@@ -333,10 +339,23 @@
 					<Button variant="outline" size="icon">
 						<ArrowBigLeft />
 					</Button>
-					<Button variant="outline">
-						<CalendarIcon />
-						{thisMonthFirstDay.toLocaleDateString()} - {thisMonthLastDay.toLocaleDateString()}
-					</Button>
+					<Popover.Root>
+						<Popover.Trigger id="{id}-dates">
+							{#snippet child({ props })}
+								<Button {...props} variant="outline" class="w-56 justify-between font-normal">
+									{#if value?.start && value?.end}
+										{formatRange(value.start, value.end)}
+									{:else}
+										Select date
+									{/if}
+									<ChevronDownIcon />
+								</Button>
+							{/snippet}
+						</Popover.Trigger>
+						<Popover.Content class="w-auto overflow-hidden p-0" align="start">
+							<RangeCalendar bind:value captionLayout="dropdown" />
+						</Popover.Content>
+					</Popover.Root>
 					<Button variant="outline" size="icon">
 						<ArrowBigRight />
 					</Button>
@@ -346,7 +365,7 @@
 
 		<Tabs.Content value="records" class="flex flex-col gap-4">
 			<div class="px-4 lg:px-6">
-				<DataTable data={filteredExpenses} {columns} controls={dataTableControls} />
+				<DataTable data={newFilter} {columns} />
 			</div>
 		</Tabs.Content>
 
