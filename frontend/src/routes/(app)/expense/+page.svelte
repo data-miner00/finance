@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { type DateValue, getLocalTimeZone, today } from '@internationalized/date';
-	import { ArrowBigLeft, ArrowBigRight, ChevronDownIcon, X } from '@lucide/svelte';
+	import { ArrowBigLeft, ArrowBigRight, ChevronDownIcon, RefreshCcw, X } from '@lucide/svelte';
 	import { type DateRange } from 'bits-ui';
 	import { formatDateRange } from 'little-date';
 	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import { formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
@@ -24,8 +25,6 @@
 	import { columns } from './data-table/column';
 
 	const id = $props.id();
-
-	let showCurrentMonthOnly = $state(true);
 
 	const isCurrentMonthExpense = (expense: Expense) => {
 		const created = new Date(expense.createdAt);
@@ -59,10 +58,6 @@
 		}
 		return { direction: 'up', text: `No change ${period}` };
 	}
-
-	let filteredExpenses = $derived(
-		showCurrentMonthOnly ? appState.expenses.filter(isCurrentMonthExpense) : appState.expenses
-	);
 
 	onMount(() => {
 		appState.pageTitle = 'Expenses';
@@ -211,9 +206,16 @@
 	let monthlyExpense = $derived(groupExpensesByMonth(appState.expenses));
 
 	let value = $state<DateRange | undefined>({
-		start: today('Asia/Kuala_Lumpur').subtract({ days: 5 }),
+		start: today('Asia/Kuala_Lumpur').set({ day: 0 }),
 		end: today('Asia/Kuala_Lumpur')
 	});
+
+	function resetToThisMonth() {
+		value!.start = today('Asia/Kuala_Lumpur').set({ day: 0 });
+		value!.end = today('Asia/Kuala_Lumpur');
+
+		toast.success('Reset date range to this month.');
+	}
 
 	let newFilter = $derived(
 		appState.expenses.filter((x) => {
@@ -358,6 +360,9 @@
 					</Popover.Root>
 					<Button variant="outline" size="icon">
 						<ArrowBigRight />
+					</Button>
+					<Button variant="outline" size="icon" onclick={resetToThisMonth}>
+						<RefreshCcw />
 					</Button>
 				</ButtonGroup.Root>
 			</div>
