@@ -136,6 +136,38 @@
 	);
 	let dailySpending = $derived(groupExpensesByDay(appState.expenses));
 
+	// Helper function to get current month and year
+	function isCurrentMonth(dateString: string): boolean {
+		const date = new Date(dateString);
+		const now = new Date();
+		return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+	}
+
+	// Helper function to get last month
+	function isLastMonth(dateString: string): boolean {
+		const date = new Date(dateString);
+		const now = new Date();
+		const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
+		return (
+			date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear()
+		);
+	}
+	// Derived: Total expense for this month
+	let totalExpenseThisMonth = $derived(
+		appState.expenses
+			.filter((expense) => isCurrentMonth(expense.actionedAt ?? expense.createdAt))
+			.reduce((sum, expense) => sum + expense.amount, 0)
+	);
+
+	// Derived: Total expense for last month
+	let totalExpenseLastMonth = $derived(
+		appState.expenses
+			.filter((expense) => isLastMonth(expense.actionedAt ?? expense.createdAt))
+			.reduce((sum, expense) => sum + expense.amount, 0)
+	);
+	let expenseChangePercent = $derived(
+		calculatePercentageChange(totalExpenseThisMonth, totalExpenseLastMonth)
+	);
 	function getAverageForMonth(expenses: Expense[], year: number, month: number): number {
 		const filtered = expenses.filter((expense) => {
 			const date = new Date(expense.actionedAt || expense.createdAt);
@@ -274,6 +306,15 @@
 	<div
 		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
 	>
+		<StatCard
+			description="Spending"
+			value={formatCurrency(totalExpenseThisMonth)}
+			trendDirection={getTrendDescription(expenseChangePercent, 'this month').direction}
+			badgeText="{expenseChangePercent > 0 ? '+' : ''}{expenseChangePercent.toFixed(1)}%"
+			footerText={getTrendDescription(expenseChangePercent, 'last month').text}
+			footerSubText="vs {formatCurrency(totalExpenseLastMonth)} last month"
+		/>
+
 		<StatCard
 			description="Average daily spendings"
 			value={formatCurrency(averageSpendingPerDay)}
