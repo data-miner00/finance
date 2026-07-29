@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -31,11 +29,6 @@
 		description = '';
 		deadline = '';
 	}
-
-	onMount(() => {
-		appState.pageTitle = 'Piggy Banks';
-		appState.currentPage = 'piggyBank';
-	});
 </script>
 
 <Dialog.Root bind:open={appState.isAddPiggyBankDialogOpen}>

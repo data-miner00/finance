@@ -68,14 +68,14 @@
 			text: 'Create Expense',
 			isDisplay: true,
 			action() {
-				// noop
+				appState.isAddTransactionDialogOpen = true;
 			}
 		},
 		dashboard: {
 			text: 'Create Expense',
 			isDisplay: true,
 			action() {
-				// noop
+				appState.isAddTransactionDialogOpen = true;
 			}
 		}
 	};

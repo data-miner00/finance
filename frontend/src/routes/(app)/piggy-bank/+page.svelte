@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { PlusIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	import DataTable from '$lib/components/data-table-revamp.svelte';
@@ -13,10 +12,6 @@
 	});
 </script>
 
-{#snippet dataTableControls()}
-	<div></div>
-{/snippet}
-
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -28,6 +23,6 @@
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.piggyBanks} {columns} controls={dataTableControls} />
+		<DataTable data={appState.piggyBanks} {columns} />
 	</div>
 </div>
