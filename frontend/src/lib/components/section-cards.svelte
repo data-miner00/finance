@@ -1,30 +1,8 @@
 <script lang="ts">
+	import { calculatePercentageChange, isCurrentMonth, isLastMonth } from '$lib';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { AccountType } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
-
-	// Helper function to get current month and year
-	function isCurrentMonth(dateString: string): boolean {
-		const date = new Date(dateString);
-		const now = new Date();
-		return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-	}
-
-	// Helper function to get last month
-	function isLastMonth(dateString: string): boolean {
-		const date = new Date(dateString);
-		const now = new Date();
-		const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
-		return (
-			date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear()
-		);
-	}
-
-	// Helper function to calculate percentage change
-	function calculatePercentageChange(current: number, previous: number): number {
-		if (previous === 0) return 0;
-		return ((current - previous) / previous) * 100;
-	}
 
 	// Derived: Total income for this month
 	let totalIncomeThisMonth = $derived(

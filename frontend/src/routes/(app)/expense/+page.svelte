@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { formatCurrency } from '$lib';
+	import { calculatePercentageChange, formatCurrency, isCurrentMonth, isLastMonth } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -25,27 +25,6 @@
 	import { columns } from './data-table/column';
 
 	const id = $props.id();
-
-	const isCurrentMonthExpense = (expense: Expense) => {
-		const created = new Date(expense.createdAt);
-		const today = new Date();
-		return created.getFullYear() === today.getFullYear() && created.getMonth() === today.getMonth();
-	};
-
-	const isLastMonthExpense = (expense: Expense) => {
-		const created = new Date(expense.createdAt);
-		const today = new Date();
-		const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1);
-		return (
-			created.getFullYear() === lastMonth.getFullYear() &&
-			created.getMonth() === lastMonth.getMonth()
-		);
-	};
-
-	function calculatePercentageChange(current: number, previous: number): number {
-		if (previous === 0) return 0;
-		return ((current - previous) / previous) * 100;
-	}
 
 	function getTrendDescription(
 		percentChange: number,
@@ -136,22 +115,6 @@
 	);
 	let dailySpending = $derived(groupExpensesByDay(appState.expenses));
 
-	// Helper function to get current month and year
-	function isCurrentMonth(dateString: string): boolean {
-		const date = new Date(dateString);
-		const now = new Date();
-		return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-	}
-
-	// Helper function to get last month
-	function isLastMonth(dateString: string): boolean {
-		const date = new Date(dateString);
-		const now = new Date();
-		const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
-		return (
-			date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear()
-		);
-	}
 	// Derived: Total expense for this month
 	let totalExpenseThisMonth = $derived(
 		appState.expenses
@@ -230,7 +193,7 @@
 		toast.success('Set date range to previous month.');
 	}
 
-	let newFilter = $derived(
+	let filteredExpensesByDateRange = $derived(
 		appState.expenses.filter((x) => {
 			var start = value.start?.toDate(getLocalTimeZone());
 			var end = value.end?.toDate(getLocalTimeZone());
@@ -251,10 +214,13 @@
 
 	let categoryCountRaw = $derived(
 		appState.categories.map((category) => {
-			const count = newFilter.filter((expense) => expense.categoryName === category).length;
+			const count = filteredExpensesByDateRange.filter(
+				(expense) => expense.categoryName === category
+			).length;
 			return { category, count };
 		})
 	);
+
 	let categoryCountData = $derived.by(() => {
 		const categoryData = categoryCountRaw.filter((x) => x.count != 0);
 
@@ -272,7 +238,7 @@
 
 	let categoryCostData = $derived.by(() => {
 		const categoryData = appState.categories.map((category) => {
-			const cost = newFilter
+			const cost = filteredExpensesByDateRange
 				.filter((expense) => expense.categoryName === category)
 				.reduce((prev, curr) => prev + curr.amount, 0);
 			return { category, cost };
@@ -370,31 +336,34 @@
 
 		<StatCard
 			description="Expenses logged this month"
-			value={appState.expenses.filter(isCurrentMonthExpense).length.toString()}
+			value={appState.expenses
+				.filter((expense) => isCurrentMonth(expense.actionedAt))
+				.length.toString()}
 			trendDirection={getTrendDescription(
 				calculatePercentageChange(
-					appState.expenses.filter(isCurrentMonthExpense).length,
-					appState.expenses.filter(isLastMonthExpense).length
+					appState.expenses.filter((expense) => isCurrentMonth(expense.actionedAt)).length,
+					appState.expenses.filter((expense) => isLastMonth(expense.actionedAt)).length
 				),
 				'this month'
 			).direction}
 			badgeText="{calculatePercentageChange(
-				appState.expenses.filter(isCurrentMonthExpense).length,
-				appState.expenses.filter(isLastMonthExpense).length
+				appState.expenses.filter((expense) => isCurrentMonth(expense.actionedAt)).length,
+				appState.expenses.filter((expense) => isLastMonth(expense.actionedAt)).length
 			) > 0
 				? '+'
 				: ''}{calculatePercentageChange(
-				appState.expenses.filter(isCurrentMonthExpense).length,
-				appState.expenses.filter(isLastMonthExpense).length
+				appState.expenses.filter((expense) => isCurrentMonth(expense.actionedAt)).length,
+				appState.expenses.filter((expense) => isLastMonth(expense.actionedAt)).length
 			).toFixed(1)}%"
 			footerText={getTrendDescription(
 				calculatePercentageChange(
-					appState.expenses.filter(isCurrentMonthExpense).length,
-					appState.expenses.filter(isLastMonthExpense).length
+					appState.expenses.filter((expense) => isCurrentMonth(expense.actionedAt)).length,
+					appState.expenses.filter((expense) => isLastMonth(expense.actionedAt)).length
 				),
 				'this month'
 			).text}
-			footerSubText="vs {appState.expenses.filter(isLastMonthExpense).length} logged last month"
+			footerSubText="vs {appState.expenses.filter((expense) => isLastMonth(expense.actionedAt))
+				.length} logged last month"
 		/>
 	</div>
 
@@ -438,7 +407,7 @@
 
 		<Tabs.Content value="records" class="flex flex-col gap-4">
 			<div class="px-4 lg:px-6">
-				<DataTable data={newFilter} {columns} />
+				<DataTable data={filteredExpensesByDateRange} {columns} />
 			</div>
 		</Tabs.Content>
 

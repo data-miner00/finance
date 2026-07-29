@@ -33,3 +33,21 @@ export async function copyText(text: string, message = 'Copied to clipboard') {
 		});
 	}
 }
+
+export function isCurrentMonth(dateString: string): boolean {
+	const date = new Date(dateString);
+	const now = new Date();
+	return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+}
+
+export function isLastMonth(dateString: string): boolean {
+	const date = new Date(dateString);
+	const now = new Date();
+	const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
+	return date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear();
+}
+
+export function calculatePercentageChange(current: number, previous: number): number {
+	if (previous === 0) return 0;
+	return ((current - previous) / previous) * 100;
+}
