@@ -107,5 +107,7 @@
     <Build Include="dbo\Tables\Profiles.sql" />
     <Build Include="dbo\Tables\Settings.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpsertSetting.sql" />
+    <Build Include="dbo\Tables\ServiceMetadata.sql" />
+    <Build Include="dbo\Stored Procedures\usp_UpsertServiceMetadata.sql" />
   </ItemGroup>
 </Project>

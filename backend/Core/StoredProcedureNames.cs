@@ -57,5 +57,7 @@ namespace Core
         public const string IncrementOrDecrementAccountBalance = "usp_IncrementOrDecrementAccountBalance";
 
         public const string UpsertSetting = "usp_UpsertSetting";
+
+        public const string UpsertServiceMetadata = "usp_UpsertServiceMetadata";
     }
 }
