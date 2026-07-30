@@ -4,6 +4,7 @@ using Core.Repositories;
 using Core.Streams;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using WebApi.Backgrounds;
 using WebApi.Options;
 
 namespace WebApi
@@ -57,6 +58,8 @@ namespace WebApi
                     { "csv", new CsvStreamifier() },
                 };
             });
+
+            builder.Services.AddHostedService<DummyService>();
 
             return builder;
         }
