@@ -6,7 +6,14 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { calculatePercentageChange, formatCurrency, isCurrentMonth, isLastMonth } from '$lib';
+	import {
+		calculatePercentageChange,
+		formatCurrency,
+		isCurrentMonth,
+		isLastMonth,
+		isToday,
+		isYesterday
+	} from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -131,6 +138,22 @@
 	let expenseChangePercent = $derived(
 		calculatePercentageChange(totalExpenseThisMonth, totalExpenseLastMonth)
 	);
+
+	let totalExpenseToday = $derived(
+		appState.expenses
+			.filter((expense) => isToday(expense.actionedAt ?? expense.createdAt))
+			.reduce((sum, expense) => sum + expense.amount, 0)
+	);
+
+	let totalExpenseYesterday = $derived(
+		appState.expenses
+			.filter((expense) => isYesterday(expense.actionedAt ?? expense.createdAt))
+			.reduce((sum, expense) => sum + expense.amount, 0)
+	);
+	let expenseChangePercentDaily = $derived(
+		calculatePercentageChange(totalExpenseToday, totalExpenseYesterday)
+	);
+
 	function getAverageForMonth(expenses: Expense[], year: number, month: number): number {
 		const filtered = expenses.filter((expense) => {
 			const date = new Date(expense.actionedAt || expense.createdAt);
@@ -279,6 +302,15 @@
 			badgeText="{expenseChangePercent > 0 ? '+' : ''}{expenseChangePercent.toFixed(1)}%"
 			footerText={getTrendDescription(expenseChangePercent, 'last month').text}
 			footerSubText="vs {formatCurrency(totalExpenseLastMonth)} last month"
+		/>
+
+		<StatCard
+			description="Today's spending"
+			value={formatCurrency(totalExpenseToday)}
+			trendDirection={getTrendDescription(expenseChangePercentDaily, 'vs yesterday').direction}
+			badgeText="{expenseChangePercentDaily > 0 ? '+' : ''}{expenseChangePercentDaily.toFixed(1)}%"
+			footerText={getTrendDescription(expenseChangePercentDaily, 'vs yesterday').text}
+			footerSubText="vs {formatCurrency(totalExpenseYesterday)} yesterday"
 		/>
 
 		<StatCard

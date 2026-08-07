@@ -47,6 +47,24 @@ export function isLastMonth(dateString: string): boolean {
 	return date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear();
 }
 
+function isSameDay(a: Date, b: Date): boolean {
+	return (
+		a.getFullYear() === b.getFullYear() &&
+		a.getMonth() === b.getMonth() &&
+		a.getDate() === b.getDate()
+	);
+}
+
+export function isToday(dateString: string): boolean {
+	return isSameDay(new Date(dateString), new Date());
+}
+
+export function isYesterday(dateString: string): boolean {
+	const yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	return isSameDay(new Date(dateString), yesterday);
+}
+
 export function calculatePercentageChange(current: number, previous: number): number {
 	if (previous === 0) return 0;
 	// Divide by |previous| so the sign reflects improvement/decline even when
