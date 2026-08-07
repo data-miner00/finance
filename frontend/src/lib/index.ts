@@ -49,5 +49,8 @@ export function isLastMonth(dateString: string): boolean {
 
 export function calculatePercentageChange(current: number, previous: number): number {
 	if (previous === 0) return 0;
-	return ((current - previous) / previous) * 100;
+	// Divide by |previous| so the sign reflects improvement/decline even when
+	// previous was negative (e.g. an overbudget month) — dividing by a negative
+	// previous flips the sign and reports the direction backwards.
+	return ((current - previous) / Math.abs(previous)) * 100;
 }

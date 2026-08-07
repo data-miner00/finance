@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { formatCurrency } from '$lib';
+	import { calculatePercentageChange, formatCurrency } from '$lib';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
@@ -17,11 +17,6 @@
 		appState.pageTitle = 'Incomes';
 		appState.currentPage = 'income';
 	});
-
-	function calculatePercentageChange(current: number, previous: number): number {
-		if (previous === 0) return 0;
-		return ((current - previous) / previous) * 100;
-	}
 
 	function getTrendDescription(
 		percentChange: number,
