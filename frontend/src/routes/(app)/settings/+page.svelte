@@ -34,6 +34,13 @@
 	let tempPieChartDisplayTop = $state(appState.settings.pieChartDisplayTop);
 	let tempEnableTax = $state(appState.settings.enableTax);
 	let tempEnablePiggyBank = $state(appState.settings.enablePiggyBank);
+
+	// For page hard refresh
+	$effect(() => {
+		tempPieChartDisplayTop = appState.settings.pieChartDisplayTop;
+		tempEnableTax = appState.settings.enableTax;
+		tempEnablePiggyBank = appState.settings.enablePiggyBank;
+	});
 </script>
 
 <h1 class="text-2xl font-bold">General Settings</h1>
