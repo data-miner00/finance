@@ -68,11 +68,15 @@
 				url: '/recurring',
 				icon: InfinityIcon
 			},
-			{
-				title: 'Piggy Bank',
-				url: '/piggy-bank',
-				icon: PigMoney
-			},
+			...(appState.settings.enablePiggyBank
+				? [
+						{
+							title: 'Piggy Bank',
+							url: '/piggy-bank',
+							icon: PigMoney
+						}
+					]
+				: []),
 			...(appState.settings.enableTax
 				? [
 						{

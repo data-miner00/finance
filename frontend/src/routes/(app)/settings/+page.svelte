@@ -15,7 +15,8 @@
 			const updated = await saveSettings({
 				values: toSettingsValues({
 					pieChartDisplayTop: tempPieChartDisplayTop,
-					enableTax: tempEnableTax
+					enableTax: tempEnableTax,
+					enablePiggyBank: tempEnablePiggyBank
 				})
 			});
 			appState.settings = parseSettings(updated);
@@ -32,6 +33,7 @@
 
 	let tempPieChartDisplayTop = $state(appState.settings.pieChartDisplayTop);
 	let tempEnableTax = $state(appState.settings.enableTax);
+	let tempEnablePiggyBank = $state(appState.settings.enablePiggyBank);
 </script>
 
 <h1 class="text-2xl font-bold">General Settings</h1>
@@ -64,6 +66,11 @@
 	<div class="mb-4 flex items-center justify-between">
 		<Label.Root for="enableTax">Enable Tax</Label.Root>
 		<Switch id="enableTax" bind:checked={tempEnableTax} />
+	</div>
+
+	<div class="mb-4 flex items-center justify-between">
+		<Label.Root for="enablePiggyBank">Enable Piggy Bank</Label.Root>
+		<Switch id="enablePiggyBank" bind:checked={tempEnablePiggyBank} />
 	</div>
 
 	<Separator class="my-6 " />

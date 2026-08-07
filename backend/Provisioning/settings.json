@@ -22,7 +22,8 @@
   "Settings": {
     "DefaultValues": {
       "pieChartDisplayTop": "5",
-      "enableTax": "true"
+      "enableTax": "true",
+      "enablePiggyBank": "true"
     }
   }
 }

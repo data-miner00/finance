@@ -3,16 +3,19 @@ import type { Setting } from './types';
 export interface KnownSettings {
 	pieChartDisplayTop: number;
 	enableTax: boolean;
+	enablePiggyBank: boolean;
 }
 
 export const DEFAULT_SETTINGS: KnownSettings = {
 	pieChartDisplayTop: 5,
-	enableTax: true
+	enableTax: true,
+	enablePiggyBank: true
 };
 
 const KEYS = {
 	pieChartDisplayTop: 'pieChartDisplayTop',
-	enableTax: 'enableTax'
+	enableTax: 'enableTax',
+	enablePiggyBank: 'enablePiggyBank'
 } as const;
 
 export function parseSettings(raw: Setting[]): KnownSettings {
@@ -22,7 +25,11 @@ export function parseSettings(raw: Setting[]): KnownSettings {
 			map.get(KEYS.pieChartDisplayTop),
 			DEFAULT_SETTINGS.pieChartDisplayTop
 		),
-		enableTax: parseBoolOrDefault(map.get(KEYS.enableTax), DEFAULT_SETTINGS.enableTax)
+		enableTax: parseBoolOrDefault(map.get(KEYS.enableTax), DEFAULT_SETTINGS.enableTax),
+		enablePiggyBank: parseBoolOrDefault(
+			map.get(KEYS.enablePiggyBank),
+			DEFAULT_SETTINGS.enablePiggyBank
+		)
 	};
 }
 
@@ -33,6 +40,9 @@ export function toSettingsValues(partial: Partial<KnownSettings>): Record<string
 	}
 	if (partial.enableTax !== undefined) {
 		values[KEYS.enableTax] = String(partial.enableTax);
+	}
+	if (partial.enablePiggyBank !== undefined) {
+		values[KEYS.enablePiggyBank] = String(partial.enablePiggyBank);
 	}
 	return values;
 }
