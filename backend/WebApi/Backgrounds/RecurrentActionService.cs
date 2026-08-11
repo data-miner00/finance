@@ -77,17 +77,19 @@ public class RecurrentActionService : BackgroundService
 
                 action.LastExecutedAt = now.DateTime;
 
+                var anchor = action.RecurringAt;
+
                 var nextOccurrenceDate = action.RecurrenceType switch
                 {
-                    RecurrenceType.Daily => now.AddDays(action.IntervalValue),
-                    RecurrenceType.Weekly => now.AddDays(action.IntervalValue * 7),
-                    RecurrenceType.Monthly when action.DayOfMonth.HasValue => now.AddMonths(action.IntervalValue).AddDays(action.DayOfMonth.Value - now.Day),
-                    RecurrenceType.Monthly when !action.DayOfMonth.HasValue => now.AddMonths(action.IntervalValue),
-                    RecurrenceType.Yearly => now.AddYears(action.IntervalValue),
+                    RecurrenceType.Daily => anchor.AddDays(action.IntervalValue),
+                    RecurrenceType.Weekly => anchor.AddDays(action.IntervalValue * 7),
+                    RecurrenceType.Monthly when action.DayOfMonth.HasValue => anchor.AddMonths(action.IntervalValue).AddDays(action.DayOfMonth.Value - anchor.Day),
+                    RecurrenceType.Monthly when !action.DayOfMonth.HasValue => anchor.AddMonths(action.IntervalValue),
+                    RecurrenceType.Yearly => anchor.AddYears(action.IntervalValue),
                     _ => throw new NotSupportedException(),
                 };
 
-                action.RecurringAt = nextOccurrenceDate.DateTime;
+                action.RecurringAt = nextOccurrenceDate;
 
                 await this.expenseRepository.CreateAsync(expense, default);
                 await this.recurringRepository.UpdateAsync(action, default);
