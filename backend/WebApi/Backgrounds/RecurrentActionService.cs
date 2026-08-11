@@ -1,4 +1,4 @@
-﻿using Core.Models;
+using Core.Models;
 using Core.Repositories;
 
 namespace WebApi.Backgrounds;
@@ -46,7 +46,7 @@ public class RecurrentActionService : BackgroundService
                 var recurring = await this.recurringRepository.GetAllAsync(stoppingToken);
 
                 await this.ProcessRecurringExpenses(recurring);
-                // provess recurring income
+                await this.ProcessRecurringIncomes(recurring);
 
                 await this.metadataRepository.UpsertAsync(ServiceMetadata, stoppingToken);
             }
@@ -58,12 +58,12 @@ public class RecurrentActionService : BackgroundService
         this.logger.LogInformation("{ServiceName} is stopping.", ServiceName);
     }
 
-    private async Task ProcessRecurringExpenses(IEnumerable<RecurringAction> recurringExpenses)
+    private async Task ProcessRecurringExpenses(IEnumerable<RecurringAction> recurringActions)
     {
         var now = this.timeProvider.GetUtcNow();
-        var todayExpenseActions = recurringExpenses.Where(x => x.IsActive && x.Type == RecurringType.Expense && x.StartAt.Date <= now.Date && x.RecurringAt.Date == now.Date).ToList();
+        var dueActions = GetDueActions(recurringActions, RecurringType.Expense, now);
 
-        foreach (var action in todayExpenseActions)
+        foreach (var action in dueActions)
         {
             try
             {
@@ -75,33 +75,71 @@ public class RecurrentActionService : BackgroundService
                     ActionedAt = now.DateTime,
                 };
 
-                action.LastExecutedAt = now.DateTime;
-
-                var anchor = action.RecurringAt;
-
-                var nextOccurrenceDate = action.RecurrenceType switch
-                {
-                    RecurrenceType.Daily => anchor.AddDays(action.IntervalValue),
-                    RecurrenceType.Weekly => anchor.AddDays(action.IntervalValue * 7),
-                    RecurrenceType.Monthly when action.DayOfMonth.HasValue => AddMonthsClampedToDay(anchor, action.IntervalValue, action.DayOfMonth.Value),
-                    RecurrenceType.Monthly when !action.DayOfMonth.HasValue => anchor.AddMonths(action.IntervalValue),
-                    RecurrenceType.Yearly => anchor.AddYears(action.IntervalValue),
-                    _ => throw new NotSupportedException(),
-                };
-
-                action.RecurringAt = nextOccurrenceDate;
+                AdvanceAction(action, now);
 
                 await this.expenseRepository.CreateAsync(expense, default);
                 await this.recurringRepository.UpdateAsync(action, default);
-                this.logger.LogInformation("Processed action '{ActionName}'.", action.Name);
+                this.logger.LogInformation("Processed expense action '{ActionName}'.", action.Name);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "Failed to process recurring action '{ActionName}' ({ActionId}).", action.Name, action.Id);
+                this.logger.LogError(ex, "Failed to process recurring expense action '{ActionName}' ({ActionId}).", action.Name, action.Id);
             }
         }
 
-        this.logger.LogInformation("Processed {Count} actions.", todayExpenseActions.Count);
+        this.logger.LogInformation("Processed {Count} expense actions.", dueActions.Count);
+    }
+
+    private async Task ProcessRecurringIncomes(IEnumerable<RecurringAction> recurringActions)
+    {
+        var now = this.timeProvider.GetUtcNow();
+        var dueActions = GetDueActions(recurringActions, RecurringType.Income, now);
+
+        foreach (var action in dueActions)
+        {
+            try
+            {
+                var income = new Income
+                {
+                    Name = action.Name,
+                    Amount = action.Amount,
+                    Description = action.Description,
+                    ActionedAt = now.DateTime,
+                };
+
+                AdvanceAction(action, now);
+
+                await this.incomeRepository.CreateAsync(income, default);
+                await this.recurringRepository.UpdateAsync(action, default);
+                this.logger.LogInformation("Processed income action '{ActionName}'.", action.Name);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Failed to process recurring income action '{ActionName}' ({ActionId}).", action.Name, action.Id);
+            }
+        }
+
+        this.logger.LogInformation("Processed {Count} income actions.", dueActions.Count);
+    }
+
+    private static List<RecurringAction> GetDueActions(IEnumerable<RecurringAction> recurringActions, RecurringType type, DateTimeOffset now) =>
+        recurringActions.Where(x => x.IsActive && x.Type == type && x.StartAt.Date <= now.Date && x.RecurringAt.Date == now.Date).ToList();
+
+    private static void AdvanceAction(RecurringAction action, DateTimeOffset now)
+    {
+        action.LastExecutedAt = now.DateTime;
+
+        var anchor = action.RecurringAt;
+
+        action.RecurringAt = action.RecurrenceType switch
+        {
+            RecurrenceType.Daily => anchor.AddDays(action.IntervalValue),
+            RecurrenceType.Weekly => anchor.AddDays(action.IntervalValue * 7),
+            RecurrenceType.Monthly when action.DayOfMonth.HasValue => AddMonthsClampedToDay(anchor, action.IntervalValue, action.DayOfMonth.Value),
+            RecurrenceType.Monthly when !action.DayOfMonth.HasValue => anchor.AddMonths(action.IntervalValue),
+            RecurrenceType.Yearly => anchor.AddYears(action.IntervalValue),
+            _ => throw new NotSupportedException(),
+        };
     }
 
     private static DateTime AddMonthsClampedToDay(DateTime anchor, int months, int dayOfMonth)
