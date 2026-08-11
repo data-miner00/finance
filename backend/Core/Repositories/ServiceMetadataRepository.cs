@@ -21,9 +21,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = $"SELECT * FROM [dbo].[ServiceMetadata] WHERE [ServiceName] = @Name;";
-            var dto = await this.connection.QueryFirstAsync<ServiceMetadataDto>(query, new { Name = name });
+            var dto = await this.connection.QueryFirstOrDefaultAsync<ServiceMetadataDto>(query, new { Name = name });
 
-            return dto.ToModel();
+            return dto?.ToModel();
         }
 
         public async Task<ServiceMetadata> UpsertAsync(ServiceMetadata serviceMetadata, CancellationToken cancellationToken)
