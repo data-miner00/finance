@@ -65,31 +65,38 @@ public class RecurrentActionService : BackgroundService
 
         foreach (var action in todayExpenseActions)
         {
-            var expense = new Expense
+            try
             {
-                Name = action.Name,
-                Amount = action.Amount,
-                Description = action.Description,
-                ActionedAt = now.DateTime,
-            };
+                var expense = new Expense
+                {
+                    Name = action.Name,
+                    Amount = action.Amount,
+                    Description = action.Description,
+                    ActionedAt = now.DateTime,
+                };
 
-            action.LastExecutedAt = now.DateTime;
+                action.LastExecutedAt = now.DateTime;
 
-            var nextOccurrenceDate = action.RecurrenceType switch
+                var nextOccurrenceDate = action.RecurrenceType switch
+                {
+                    RecurrenceType.Daily => now.AddDays(action.IntervalValue),
+                    RecurrenceType.Weekly => now.AddDays(action.IntervalValue * 7),
+                    RecurrenceType.Monthly when action.DayOfMonth.HasValue => now.AddMonths(action.IntervalValue).AddDays(action.DayOfMonth.Value - now.Day),
+                    RecurrenceType.Monthly when !action.DayOfMonth.HasValue => now.AddMonths(action.IntervalValue),
+                    RecurrenceType.Yearly => now.AddYears(action.IntervalValue),
+                    _ => throw new NotSupportedException(),
+                };
+
+                action.RecurringAt = nextOccurrenceDate.DateTime;
+
+                await this.expenseRepository.CreateAsync(expense, default);
+                await this.recurringRepository.UpdateAsync(action, default);
+                this.logger.LogInformation("Processed action '{ActionName}'.", action.Name);
+            }
+            catch (Exception ex)
             {
-                RecurrenceType.Daily => now.AddDays(action.IntervalValue),
-                RecurrenceType.Weekly => now.AddDays(action.IntervalValue * 7),
-                RecurrenceType.Monthly when action.DayOfMonth.HasValue => now.AddMonths(action.IntervalValue).AddDays(action.DayOfMonth.Value - now.Day),
-                RecurrenceType.Monthly when !action.DayOfMonth.HasValue => now.AddMonths(action.IntervalValue),
-                RecurrenceType.Yearly => now.AddYears(action.IntervalValue),
-                _ => throw new NotSupportedException(),
-            };
-
-            action.RecurringAt = nextOccurrenceDate.DateTime;
-
-            await this.expenseRepository.CreateAsync(expense, default);
-            await this.recurringRepository.UpdateAsync(action, default);
-            this.logger.LogInformation("Processed action '{ActionName}'.", action.Name);
+                this.logger.LogError(ex, "Failed to process recurring action '{ActionName}' ({ActionId}).", action.Name, action.Id);
+            }
         }
 
         this.logger.LogInformation("Processed {Count} actions.", todayExpenseActions.Count);
