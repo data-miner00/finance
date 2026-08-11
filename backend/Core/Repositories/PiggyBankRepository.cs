@@ -10,11 +10,11 @@ namespace Core.Repositories
 {
     public sealed class PiggyBankRepository : IRepository<PiggyBank>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public PiggyBankRepository(IDbConnection connection)
+        public PiggyBankRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<PiggyBank> CreateAsync(PiggyBank entity, CancellationToken cancellationToken)
@@ -28,7 +28,8 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("Deadline", entity.Deadline);
 
-            var createdPiggyBank = await this.connection.QuerySingleOrDefaultAsync<PiggyBankDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var createdPiggyBank = await connection.QuerySingleOrDefaultAsync<PiggyBankDto>(
                 SpNames.AddPiggyBank,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -43,7 +44,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(
                 SpNames.DeletePiggyBank,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -56,7 +58,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 "SELECT * FROM PiggyBanks;");
 
-            var dtos = await this.connection.QueryAsync<PiggyBankDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<PiggyBankDto>(command);
             return dtos.Select(x => x.ToModel());
         }
 
@@ -64,7 +67,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = "SELECT * FROM [dbo].[PiggyBanks] WHERE [Id] = @Id;";
-            var dto = await this.connection.QueryFirstAsync<PiggyBankDto>(query, new { Id = Guid.Parse(id) });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstAsync<PiggyBankDto>(query, new { Id = Guid.Parse(id) });
 
             return dto.ToModel();
         }
@@ -81,7 +86,8 @@ namespace Core.Repositories
             parameters.Add("Deadline", entity.Deadline);
             parameters.Add("Description", entity.Description);
 
-            var updatedPiggyBank = await this.connection.QuerySingleOrDefaultAsync<PiggyBankDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedPiggyBank = await connection.QuerySingleOrDefaultAsync<PiggyBankDto>(
                 SpNames.UpdatePiggyBank,
                 parameters,
                 commandType: CommandType.StoredProcedure);

@@ -10,18 +10,20 @@ namespace Core.Repositories
 {
     public class ServiceMetadataRepository : IServiceMetadataRepository
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public ServiceMetadataRepository(IDbConnection connection)
+        public ServiceMetadataRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<ServiceMetadata?> GetByNameAsync(string name, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = $"SELECT * FROM [dbo].[ServiceMetadata] WHERE [ServiceName] = @Name;";
-            var dto = await this.connection.QueryFirstOrDefaultAsync<ServiceMetadataDto>(query, new { Name = name });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstOrDefaultAsync<ServiceMetadataDto>(query, new { Name = name });
 
             return dto?.ToModel();
         }
@@ -34,7 +36,8 @@ namespace Core.Repositories
             parameters.Add("Name", serviceMetadata.ServiceName);
             parameters.Add("Description", serviceMetadata.Description);
 
-            var metadata = await this.connection.QuerySingleAsync<ServiceMetadataDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var metadata = await connection.QuerySingleAsync<ServiceMetadataDto>(
                 SpNames.UpsertServiceMetadata,
                 parameters,
                 commandType: CommandType.StoredProcedure);

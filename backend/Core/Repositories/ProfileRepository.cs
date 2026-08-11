@@ -8,11 +8,11 @@ namespace Core.Repositories
 {
     public sealed class ProfileRepository : IProfileRepository
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public ProfileRepository(IDbConnection connection)
+        public ProfileRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<Profile?> GetAsync(CancellationToken cancellationToken)
@@ -20,7 +20,9 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var query = "SELECT TOP (1) * FROM [dbo].[Profiles];";
-            var dto = await this.connection.QueryFirstOrDefaultAsync<ProfileDto>(query);
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstOrDefaultAsync<ProfileDto>(query);
 
             return dto?.ToModel();
         }
@@ -29,7 +31,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var existingId = await this.connection.QueryFirstOrDefaultAsync<Guid?>(
+            using var connection = this.connectionFactory.CreateConnection();
+
+            var existingId = await connection.QueryFirstOrDefaultAsync<Guid?>(
                 "SELECT TOP (1) [Id] FROM [dbo].[Profiles];");
 
             var parameters = new DynamicParameters();
@@ -46,7 +50,7 @@ namespace Core.Repositories
 
             if (existingId is null)
             {
-                savedProfile = await this.connection.QuerySingleOrDefaultAsync<ProfileDto>(
+                savedProfile = await connection.QuerySingleOrDefaultAsync<ProfileDto>(
                     SpNames.AddProfile,
                     parameters,
                     commandType: CommandType.StoredProcedure);
@@ -55,7 +59,7 @@ namespace Core.Repositories
             {
                 parameters.Add("Id", existingId.Value, DbType.Guid);
 
-                savedProfile = await this.connection.QuerySingleOrDefaultAsync<ProfileDto>(
+                savedProfile = await connection.QuerySingleOrDefaultAsync<ProfileDto>(
                     SpNames.UpdateProfile,
                     parameters,
                     commandType: CommandType.StoredProcedure);

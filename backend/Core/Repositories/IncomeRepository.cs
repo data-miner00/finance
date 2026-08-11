@@ -10,11 +10,11 @@ namespace Core.Repositories
 {
     public sealed class IncomeRepository : IRepository<Income>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public IncomeRepository(IDbConnection connection)
+        public IncomeRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<Income> CreateAsync(Income entity, CancellationToken cancellationToken)
@@ -30,7 +30,8 @@ namespace Core.Repositories
                 string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
                 DbType.Guid);
 
-            var createdIncome = await this.connection.QuerySingleOrDefaultAsync<IncomeDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var createdIncome = await connection.QuerySingleOrDefaultAsync<IncomeDto>(
                 SpNames.AddIncome,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -45,7 +46,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(
                 SpNames.DeleteIncome,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -58,7 +60,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 $"SELECT * FROM {VwNames.GetAllIncomes} ORDER BY {nameof(Income.ActionedAt)} DESC;");
 
-            var dtos = await this.connection.QueryAsync<IncomeDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<IncomeDto>(command);
             return dtos.Select(x => x.ToModel());
         }
 
@@ -66,7 +69,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = $"SELECT * FROM [dbo].[{VwNames.GetAllIncomes}] WHERE [Id] = @Id;";
-            var dto = await this.connection.QueryFirstAsync<IncomeDto>(query, new { Id = Guid.Parse(id) });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstAsync<IncomeDto>(query, new { Id = Guid.Parse(id) });
 
             return dto.ToModel();
         }
@@ -85,7 +90,8 @@ namespace Core.Repositories
                 string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
                 DbType.Guid);
 
-            var updatedIncome = await this.connection.QuerySingleOrDefaultAsync<IncomeDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedIncome = await connection.QuerySingleOrDefaultAsync<IncomeDto>(
                 SpNames.UpdateIncome,
                 parameters,
                 commandType: CommandType.StoredProcedure);

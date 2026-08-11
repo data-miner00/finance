@@ -10,11 +10,11 @@ namespace Core.Repositories
 {
     public sealed class ExpenseRepository : IRepository<Expense>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public ExpenseRepository(IDbConnection connection)
+        public ExpenseRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<Expense> CreateAsync(Expense entity, CancellationToken cancellationToken)
@@ -33,7 +33,8 @@ namespace Core.Repositories
                 string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
                 DbType.Guid);
 
-            var createdExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var createdExpense = await connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.AddExpenseWithCategoryName,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -48,7 +49,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(
                 SpNames.DeleteExpense,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -66,7 +68,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 $"SELECT * FROM {VwNames.GetAllExpenses} ORDER BY {nameof(Expense.ActionedAt)} DESC;");
 
-            var dtos = await this.connection.QueryAsync<ExpenseDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<ExpenseDto>(command);
             return dtos.Select(x => x.ToModel());
         }
 
@@ -74,7 +77,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = $"SELECT * FROM [dbo].[{VwNames.GetAllExpenses}] WHERE [Id] = @Id;";
-            var dto = await this.connection.QueryFirstAsync<ExpenseDto>(query, new { Id = id });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstAsync<ExpenseDto>(query, new { Id = id });
 
             return dto.ToModel();
         }
@@ -97,7 +102,8 @@ namespace Core.Repositories
                 string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
                 DbType.Guid);
 
-            var updatedExpense = await this.connection.QuerySingleOrDefaultAsync<ExpenseDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedExpense = await connection.QuerySingleOrDefaultAsync<ExpenseDto>(
                 SpNames.UpdateExpenseWithCategoryName,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -108,6 +114,8 @@ namespace Core.Repositories
         public async Task ImportAsync(IEnumerable<ExpenseImportModel> expenseImports, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            using var connection = this.connectionFactory.CreateConnection();
 
             // TODO: Instead of loop, make bulk imports
             foreach (var model in expenseImports)
@@ -124,7 +132,7 @@ namespace Core.Repositories
                 parameters.Add("Location", model.Location);
                 parameters.Add("AgentName", model.AgentName);
 
-                await this.connection.ExecuteAsync(
+                await connection.ExecuteAsync(
                     SpNames.AddExpenseFullParams,
                     parameters,
                     commandType: CommandType.StoredProcedure);

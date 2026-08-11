@@ -2,8 +2,6 @@
 using Core.Models;
 using Core.Repositories;
 using Core.Streams;
-using Microsoft.Data.SqlClient;
-using System.Data;
 using WebApi.Backgrounds;
 using WebApi.Options;
 
@@ -38,9 +36,10 @@ namespace WebApi
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            var connection = new SqlConnection(builder.Configuration.GetConnectionString("SQLServer"));
+            var connectionString = builder.Configuration.GetConnectionString("SQLServer")
+                ?? throw new InvalidOperationException("SQL Server connection string not found.");
 
-            builder.Services.AddSingleton<IDbConnection>(connection);
+            builder.Services.AddSingleton<IDbConnectionFactory>(new SqlConnectionFactory(connectionString));
             builder.Services.AddSingleton<IRepository<Account>, AccountRepository>();
             builder.Services.AddSingleton<ExpenseRepository>();
             builder.Services.AddSingleton<IRepository<Expense>>(sp => sp.GetRequiredService<ExpenseRepository>());

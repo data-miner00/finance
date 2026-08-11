@@ -10,11 +10,11 @@ namespace Core.Repositories
 {
     public sealed class TaxRepository : IRepository<Tax>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public TaxRepository(IDbConnection connection)
+        public TaxRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<Tax> CreateAsync(Tax entity, CancellationToken cancellationToken)
@@ -26,7 +26,8 @@ namespace Core.Repositories
             parameters.Add("Amount", entity.Amount);
             parameters.Add("Description", entity.Description);
 
-            var createdTax = await this.connection.QuerySingleOrDefaultAsync<TaxDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var createdTax = await connection.QuerySingleOrDefaultAsync<TaxDto>(
                 SpNames.AddTax,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -41,7 +42,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(
                 SpNames.DeleteTax,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -54,7 +56,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 "SELECT * FROM Taxes;");
 
-            var dtos = await this.connection.QueryAsync<TaxDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<TaxDto>(command);
             return dtos.Select(x => x.ToModel());
         }
 
@@ -62,7 +65,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = "SELECT * FROM [dbo].[Taxes] WHERE [Id] = @Id;";
-            var dto = await this.connection.QueryFirstAsync<TaxDto>(query, new { Id = Guid.Parse(id) });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstAsync<TaxDto>(query, new { Id = Guid.Parse(id) });
 
             return dto.ToModel();
         }
@@ -77,7 +82,8 @@ namespace Core.Repositories
             parameters.Add("Amount", entity.Amount);
             parameters.Add("Description", entity.Description);
 
-            var updatedTax = await this.connection.QuerySingleOrDefaultAsync<TaxDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedTax = await connection.QuerySingleOrDefaultAsync<TaxDto>(
                 SpNames.UpdateTax,
                 parameters,
                 commandType: CommandType.StoredProcedure);

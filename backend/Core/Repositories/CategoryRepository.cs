@@ -7,11 +7,11 @@ namespace Core.Repositories
 {
     public sealed class CategoryRepository : IRepository<Category>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public CategoryRepository(IDbConnection connection)
+        public CategoryRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<Category> CreateAsync(Category entity, CancellationToken cancellationToken)
@@ -21,7 +21,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
 
-            var created = await this.connection.QuerySingleOrDefaultAsync<CategoryDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var created = await connection.QuerySingleOrDefaultAsync<CategoryDto>(
                 SpNames.AddCategory,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -36,7 +37,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(SpNames.DeleteCategory, parameters, commandType: CommandType.StoredProcedure);
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(SpNames.DeleteCategory, parameters, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken)
@@ -44,7 +46,9 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition("SELECT * FROM Categories;");
-            var dtos = await this.connection.QueryAsync<CategoryDto>(command);
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<CategoryDto>(command);
             return dtos.Select(x => x.ToModel());
         }
 
@@ -52,7 +56,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = "SELECT * FROM [dbo].[Categories] WHERE [Id] = @Id;";
-            var dto = await this.connection.QueryFirstAsync<CategoryDto>(query, new { Id = Guid.Parse(id) });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstAsync<CategoryDto>(query, new { Id = Guid.Parse(id) });
 
             return dto.ToModel();
         }
@@ -65,7 +71,8 @@ namespace Core.Repositories
             parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
             parameters.Add("Name", entity.Name);
 
-            var updatedCategory = await this.connection.QuerySingleOrDefaultAsync<CategoryDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedCategory = await connection.QuerySingleOrDefaultAsync<CategoryDto>(
                 SpNames.UpdateCategory,
                 parameters,
                 commandType: CommandType.StoredProcedure);

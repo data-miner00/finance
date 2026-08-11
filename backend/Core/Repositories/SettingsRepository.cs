@@ -9,11 +9,11 @@ namespace Core.Repositories
 {
     public sealed class SettingsRepository : ISettingsRepository
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public SettingsRepository(IDbConnection connection)
+        public SettingsRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<IEnumerable<Setting>> GetAllAsync(CancellationToken cancellationToken)
@@ -23,7 +23,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 "SELECT * FROM [dbo].[Settings];");
 
-            var dtos = await this.connection.QueryAsync<SettingDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<SettingDto>(command);
             return dtos.Select(x => x.ToModel());
         }
 
@@ -31,16 +32,19 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            foreach (var kvp in values)
+            using (var connection = this.connectionFactory.CreateConnection())
             {
-                var parameters = new DynamicParameters();
-                parameters.Add("Key", kvp.Key);
-                parameters.Add("Value", kvp.Value);
+                foreach (var kvp in values)
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("Key", kvp.Key);
+                    parameters.Add("Value", kvp.Value);
 
-                await this.connection.ExecuteAsync(
-                    SpNames.UpsertSetting,
-                    parameters,
-                    commandType: CommandType.StoredProcedure);
+                    await connection.ExecuteAsync(
+                        SpNames.UpsertSetting,
+                        parameters,
+                        commandType: CommandType.StoredProcedure);
+                }
             }
 
             return await this.GetAllAsync(cancellationToken);

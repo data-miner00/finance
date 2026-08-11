@@ -74,8 +74,17 @@ internal static class ContainerConfig
 
                 return connection;
             })
-            .As<IDbConnection>()
             .AsSelf()
+            .SingleInstance();
+
+        builder.Register(
+            ctx =>
+            {
+                var option = ctx.Resolve<DatabaseOption>();
+
+                return new SqlConnectionFactory(option.ConnectionString);
+            })
+            .As<IDbConnectionFactory>()
             .SingleInstance();
 
         return builder;

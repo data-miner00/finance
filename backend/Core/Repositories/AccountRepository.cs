@@ -10,11 +10,11 @@ namespace Core.Repositories
 {
     public sealed class AccountRepository : IRepository<Account>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public AccountRepository(IDbConnection connection)
+        public AccountRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<Account> CreateAsync(Account entity, CancellationToken cancellationToken)
@@ -27,7 +27,8 @@ namespace Core.Repositories
             parameters.Add("Description", entity.Description);
             parameters.Add("Balance", entity.Balance);
 
-            var createdAccount = await this.connection.QuerySingleOrDefaultAsync<AccountDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var createdAccount = await connection.QuerySingleOrDefaultAsync<AccountDto>(
                 SpNames.AddAccount,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -42,7 +43,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(
                 SpNames.DeleteAccount,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -55,7 +57,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 "SELECT * FROM Accounts;");
 
-            var accounts = await this.connection.QueryAsync<AccountDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var accounts = await connection.QueryAsync<AccountDto>(command);
 
             return accounts.Select(x => x.ToModel());
         }
@@ -64,7 +67,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = "SELECT * FROM [dbo].[Accounts] WHERE [Id] = @Id;";
-            var accountDto = await this.connection.QueryFirstAsync<AccountDto>(query, new { Id = Guid.Parse(id) });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var accountDto = await connection.QueryFirstAsync<AccountDto>(query, new { Id = Guid.Parse(id) });
 
             return accountDto.ToModel();
         }
@@ -80,7 +85,8 @@ namespace Core.Repositories
             parameters.Add("Balance", entity.Balance);
             parameters.Add("Description", entity.Description);
 
-            var updatedAccount = await this.connection.QuerySingleOrDefaultAsync<AccountDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedAccount = await connection.QuerySingleOrDefaultAsync<AccountDto>(
                 SpNames.UpdateAccount,
                 parameters,
                 commandType: CommandType.StoredProcedure);

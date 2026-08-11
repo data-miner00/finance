@@ -10,11 +10,11 @@ namespace Core.Repositories
 {
     public sealed class RecurringActionRepository : IRepository<RecurringAction>
     {
-        private readonly IDbConnection connection;
+        private readonly IDbConnectionFactory connectionFactory;
 
-        public RecurringActionRepository(IDbConnection connection)
+        public RecurringActionRepository(IDbConnectionFactory connectionFactory)
         {
-            this.connection = connection;
+            this.connectionFactory = connectionFactory;
         }
 
         public async Task<RecurringAction> CreateAsync(RecurringAction entity, CancellationToken cancellationToken)
@@ -32,7 +32,8 @@ namespace Core.Repositories
             parameters.Add("IntervalValue", entity.IntervalValue);
             parameters.Add("DayOfMonth", entity.DayOfMonth);
 
-            var createdRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var createdRecurringAction = await connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
                 SpNames.AddRecurring,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -47,7 +48,8 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Id", Guid.Parse(id), DbType.Guid);
 
-            await this.connection.ExecuteAsync(
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(
                 SpNames.DeleteRecurringAction,
                 parameters,
                 commandType: CommandType.StoredProcedure);
@@ -60,7 +62,8 @@ namespace Core.Repositories
             var command = new CommandDefinition(
                 "SELECT * FROM Recurrings;");
 
-            var dtos = await this.connection.QueryAsync<RecurringActionDto>(command);
+            using var connection = this.connectionFactory.CreateConnection();
+            var dtos = await connection.QueryAsync<RecurringActionDto>(command);
             return dtos.Select(d => d.ToModel());
         }
 
@@ -68,7 +71,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var query = "SELECT * FROM [dbo].[Recurrings] WHERE [Id] = @Id;";
-            var dto = await this.connection.QueryFirstAsync<RecurringActionDto>(query, new { Id = Guid.Parse(id) });
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstAsync<RecurringActionDto>(query, new { Id = Guid.Parse(id) });
 
             return dto.ToModel();
         }
@@ -90,7 +95,8 @@ namespace Core.Repositories
             parameters.Add("IntervalValue", entity.IntervalValue);
             parameters.Add("DayOfMonth", entity.DayOfMonth);
 
-            var updatedRecurringAction = await this.connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
+            using var connection = this.connectionFactory.CreateConnection();
+            var updatedRecurringAction = await connection.QuerySingleOrDefaultAsync<RecurringActionDto>(
                 SpNames.UpdateRecurringAction,
                 parameters,
                 commandType: CommandType.StoredProcedure);
