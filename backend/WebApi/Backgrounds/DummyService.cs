@@ -13,20 +13,26 @@ public class DummyService : BackgroundService
     private const string ServiceName = nameof(DummyService);
     private readonly ILogger<DummyService> logger;
     private readonly IServiceMetadataRepository metadataRepository;
+    private readonly TimeProvider timeProvider;
 
-    public DummyService(ILogger<DummyService> logger, IServiceMetadataRepository metadataRepository)
+    public DummyService(
+        ILogger<DummyService> logger,
+        IServiceMetadataRepository metadataRepository,
+        TimeProvider timeProvider)
     {
         this.logger = logger;
         this.metadataRepository = metadataRepository;
+        this.timeProvider = timeProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        this.logger.LogInformation("Background Task is starting.");
+        this.logger.LogInformation("{ServiceName} is starting.", ServiceName);
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            this.logger.LogInformation($"Task executing at: {DateTimeOffset.Now}");
+            var now = this.timeProvider.GetUtcNow();
+            this.logger.LogInformation("Task executing at: {Time}", now);
 
             await this.metadataRepository.UpsertAsync(new ServiceMetadata
             {
@@ -36,6 +42,6 @@ public class DummyService : BackgroundService
             await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
         }
 
-        this.logger.LogInformation("Background Task is stopping.");
+        this.logger.LogInformation("{ServiceName} is stopping.", ServiceName);
     }
 }
