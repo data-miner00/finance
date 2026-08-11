@@ -34,6 +34,7 @@ namespace WebApi
         private static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
         {
             builder.ConfigureCors();
+            builder.ConfigureOptions();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
@@ -42,6 +43,7 @@ namespace WebApi
             builder.Services.AddSingleton<IDbConnection>(connection);
             builder.Services.AddSingleton<IRepository<Account>, AccountRepository>();
             builder.Services.AddSingleton<ExpenseRepository>();
+            builder.Services.AddSingleton<IRepository<Expense>>(sp => sp.GetRequiredService<ExpenseRepository>());
             builder.Services.AddSingleton<IRepository<Income>, IncomeRepository>();
             builder.Services.AddSingleton<IRepository<PiggyBank>, PiggyBankRepository>();
             builder.Services.AddSingleton<IRepository<RecurringAction>, RecurringActionRepository>();
@@ -83,6 +85,16 @@ namespace WebApi
                               .WithMethods(corsOptions.AllowedMethods);
                     });
             });
+
+            return builder;
+        }
+
+        private static WebApplicationBuilder ConfigureOptions(this WebApplicationBuilder builder)
+        {
+            var recurrentOptions = builder.Configuration.GetSection(RecurrentActionServiceOptions.SectionName).Get<RecurrentActionServiceOptions>()
+                ?? throw new InvalidOperationException("Recurrent action service option not found.");
+
+            builder.Services.AddSingleton(recurrentOptions);
 
             return builder;
         }

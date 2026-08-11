@@ -1,5 +1,6 @@
 using Core.Models;
 using Core.Repositories;
+using WebApi.Options;
 
 namespace WebApi.Backgrounds;
 
@@ -13,6 +14,7 @@ public class RecurrentActionService : BackgroundService
     private readonly IRepository<Income> incomeRepository;
     private readonly IRepository<RecurringAction> recurringRepository;
     private readonly TimeProvider timeProvider;
+    private readonly RecurrentActionServiceOptions options;
 
     public RecurrentActionService(
         ILogger<RecurrentActionService> logger,
@@ -20,7 +22,8 @@ public class RecurrentActionService : BackgroundService
         IRepository<Expense> expenseRepository,
         IRepository<Income> incomeRepository,
         IRepository<RecurringAction> recurringRepository,
-        TimeProvider timeProvider)
+        TimeProvider timeProvider,
+        RecurrentActionServiceOptions options)
     {
         this.logger = logger;
         this.metadataRepository = metadataRepository;
@@ -28,6 +31,7 @@ public class RecurrentActionService : BackgroundService
         this.incomeRepository = incomeRepository;
         this.recurringRepository = recurringRepository;
         this.timeProvider = timeProvider;
+        this.options = options;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,9 +54,12 @@ public class RecurrentActionService : BackgroundService
 
                 await this.metadataRepository.UpsertAsync(ServiceMetadata, stoppingToken);
             }
+            else
+            {
+                this.logger.LogInformation("Today's action has already been executed previously.");
+            }
 
-            // Run every hour
-            await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+            await Task.Delay(this.options.ExecutionIntervalTimeSpan, stoppingToken);
         }
 
         this.logger.LogInformation("{ServiceName} is stopping.", ServiceName);
