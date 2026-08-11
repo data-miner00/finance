@@ -83,7 +83,7 @@ public class RecurrentActionService : BackgroundService
                 {
                     RecurrenceType.Daily => anchor.AddDays(action.IntervalValue),
                     RecurrenceType.Weekly => anchor.AddDays(action.IntervalValue * 7),
-                    RecurrenceType.Monthly when action.DayOfMonth.HasValue => anchor.AddMonths(action.IntervalValue).AddDays(action.DayOfMonth.Value - anchor.Day),
+                    RecurrenceType.Monthly when action.DayOfMonth.HasValue => AddMonthsClampedToDay(anchor, action.IntervalValue, action.DayOfMonth.Value),
                     RecurrenceType.Monthly when !action.DayOfMonth.HasValue => anchor.AddMonths(action.IntervalValue),
                     RecurrenceType.Yearly => anchor.AddYears(action.IntervalValue),
                     _ => throw new NotSupportedException(),
@@ -102,5 +102,13 @@ public class RecurrentActionService : BackgroundService
         }
 
         this.logger.LogInformation("Processed {Count} actions.", todayExpenseActions.Count);
+    }
+
+    private static DateTime AddMonthsClampedToDay(DateTime anchor, int months, int dayOfMonth)
+    {
+        var target = anchor.AddMonths(months);
+        var day = Math.Min(dayOfMonth, DateTime.DaysInMonth(target.Year, target.Month));
+
+        return new DateTime(target.Year, target.Month, day, anchor.Hour, anchor.Minute, anchor.Second, anchor.Kind);
     }
 }
