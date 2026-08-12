@@ -57,7 +57,7 @@ BEGIN
 		l.[Id],
 		l.[Name],
 		l.[Description],
-		@CategoryName,
+		@CategoryName AS CategoryName,
 		l.[Amount],
 		l.[Location],
 		l.[ActionedAt],
