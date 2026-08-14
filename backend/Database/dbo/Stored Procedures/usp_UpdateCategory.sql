@@ -6,6 +6,8 @@
 CREATE PROCEDURE [dbo].[usp_UpdateCategory]
     @Id UNIQUEIDENTIFIER,
     @Name NVARCHAR(50),
+    @Color NVARCHAR(20) = NULL,
+    @Icon NVARCHAR(50) = NULL,
     @IsSystemDefault BIT = NULL
 AS
 BEGIN
@@ -15,6 +17,8 @@ BEGIN
     UPDATE [dbo].[Categories]
     SET
         [Name] = @Name,
+        [Color] = @Color,
+        [Icon] = @Icon,
         [IsSystemDefault] = COALESCE(@IsSystemDefault, [IsSystemDefault])
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
@@ -22,6 +26,8 @@ BEGIN
     SELECT
         c.[Id],
         c.[Name],
+        c.[Color],
+        c.[Icon],
         c.[CreatedAt],
         c.[UpdatedAt],
         c.[IsSystemDefault]

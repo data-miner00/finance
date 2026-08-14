@@ -4,6 +4,8 @@
     [CreatedAt]       DATETIME2 (7)    CONSTRAINT [DF_Categories_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]       DATETIME2 (7)    CONSTRAINT [DF_Categories_UpdatedAt] DEFAULT (getdate()) NOT NULL,
     [IsSystemDefault] BIT              CONSTRAINT [DF_Categories_IsSystemDefault] DEFAULT ((0)) NOT NULL,
+    [Color]           NVARCHAR (20)    NULL,
+    [Icon]            NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

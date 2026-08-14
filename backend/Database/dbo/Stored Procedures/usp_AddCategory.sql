@@ -5,6 +5,8 @@
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_AddCategory]
 	@Name NVARCHAR(50),
+	@Color NVARCHAR(20) = NULL,
+	@Icon NVARCHAR(50) = NULL,
 	@IsSystemDefault BIT = 0
 AS
 BEGIN
@@ -14,18 +16,24 @@ BEGIN
     INSERT INTO [dbo].[Categories]
 	(
 		[Name],
+		[Color],
+		[Icon],
 		[IsSystemDefault]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
 	(
 		@Name,
+		@Color,
+		@Icon,
 		@IsSystemDefault
 	);
 
 	SELECT
 		l.[Id],
 		[Name],
+		[Color],
+		[Icon],
 		[IsSystemDefault],
 		[CreatedAt],
 		[UpdatedAt]

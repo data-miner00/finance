@@ -9,12 +9,18 @@ namespace Core.Dtos
     {
         public string Name { get; set; }
 
+        public string? Color { get; set; }
+
+        public string? Icon { get; set; }
+
         public override Category ToModel()
         {
             return new Category
             {
                 Id = Id.ToString(),
                 Name = Name,
+                Color = Color,
+                Icon = Icon,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };
