@@ -36,6 +36,13 @@
 				appState.isAddAccountDialogOpen = true;
 			}
 		},
+		category: {
+			text: 'Create Category',
+			isDisplay: true,
+			action() {
+				appState.isAddCategoryDialogOpen = true;
+			}
+		},
 		recurring: {
 			text: 'Create Recurring',
 			isDisplay: true,

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { type CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
-	import { CheckIcon, ChevronsUpDownIcon } from '@lucide/svelte';
+	import { CheckIcon, ChevronsUpDownIcon, PlusIcon } from '@lucide/svelte';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -14,7 +14,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { createExpense, createIncome } from '$lib/services';
+	import { createCategory, createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
 
@@ -31,6 +31,7 @@
 	let name = $state('');
 	let description = $state<string>();
 	let categoryName = $state('');
+	let categorySearch = $state('');
 	let amount = $state(0);
 	let location = $state('');
 	let actionedAt = $state<CalendarDate>();
@@ -75,9 +76,6 @@
 			agentName = '';
 
 			appState.expenses.push(expense);
-			if (expense.categoryName && !appState.categories.includes(expense.categoryName)) {
-				appState.categories.push(expense.categoryName);
-			}
 		}
 
 		toast.success(`${tab === 'income' ? 'Income' : 'Expense'} created successfully.`);
@@ -86,6 +84,19 @@
 
 	let comboOpen = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
+
+	$effect(() => {
+		if (comboOpen) {
+			categorySearch = categoryName;
+		}
+	});
+
+	async function createNewCategory() {
+		const created = await createCategory({ name: categorySearch.trim() });
+		appState.categories = [...appState.categories, created];
+		categoryName = created.name;
+		closeAndFocusTrigger();
+	}
 
 	let locationComboOpen = $state(false);
 	let locationTriggerRef = $state<HTMLButtonElement>(null!);
@@ -182,22 +193,35 @@
 							</Popover.Trigger>
 							<Popover.Content class="p-0">
 								<Command.Root>
-									<Command.Input placeholder="Category..." bind:value={categoryName} />
+									<Command.Input placeholder="Category..." bind:value={categorySearch} />
 									<Command.List>
-										<Command.Empty>{categoryName}</Command.Empty>
-										<Command.Group value="frameworks">
-											{#each appState.categories as category (category)}
+										<Command.Empty>No matching category.</Command.Empty>
+										<Command.Group value="categories">
+											{#each appState.categories as category (category.id)}
 												<Command.Item
-													value={category}
+													value={category.name}
 													onSelect={() => {
-														categoryName = category;
+														categoryName = category.name;
 														closeAndFocusTrigger();
 													}}
 												>
-													<CheckIcon class={cn(categoryName !== category && 'text-transparent')} />
-													{category}
+													<CheckIcon
+														class={cn(categoryName !== category.name && 'text-transparent')}
+													/>
+													{category.name}
 												</Command.Item>
 											{/each}
+											{#if categorySearch.trim() && !appState.categories.some((category) => category.name.toLowerCase() === categorySearch
+															.trim()
+															.toLowerCase())}
+												<Command.Item
+													value={`create-${categorySearch}`}
+													onSelect={createNewCategory}
+												>
+													<PlusIcon class="opacity-70" />
+													Create "{categorySearch.trim()}"
+												</Command.Item>
+											{/if}
 										</Command.Group>
 									</Command.List>
 								</Command.Root>

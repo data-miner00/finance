@@ -1,6 +1,7 @@
 export * from './api';
 export * from './types';
 export * from './accountService';
+export * from './categoryService';
 export * from './expenseService';
 export * from './incomeService';
 export * from './piggyBankService';

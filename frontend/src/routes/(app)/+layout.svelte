@@ -6,6 +6,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import AddAccountDialog from '$lib/components/custom/add-account-dialog.svelte';
+	import AddCategoryDialog from '$lib/components/custom/add-category-dialog.svelte';
 	import AddPiggyBankDialog from '$lib/components/custom/add-piggy-bank-dialog.svelte';
 	import AddTaxDialog from '$lib/components/custom/add-tax-dialog.svelte';
 	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
@@ -14,6 +15,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import {
 		getAccounts,
+		getCategories,
 		getExpenses,
 		getIncomes,
 		getPiggyBanks,
@@ -38,9 +40,7 @@
 		appState.taxes = await getTaxes();
 		appState.profile = await getProfile();
 		appState.settings = parseSettings(await getSettings());
-		appState.categories = Array.from(
-			new Set(appState.expenses.map((e) => e.categoryName || '').filter((c) => !!c))
-		);
+		appState.categories = await getCategories();
 		appState.knownLocations = Array.from(
 			new Set(appState.expenses.map((e) => e.location || '').filter((l) => !!l))
 		);
@@ -85,5 +85,6 @@
 
 <AddTransactionDialog bind:open={appState.isAddTransactionDialogOpen} />
 <AddAccountDialog bind:open={appState.isAddAccountDialogOpen} />
+<AddCategoryDialog bind:open={appState.isAddCategoryDialogOpen} />
 <AddTaxDialog />
 <AddPiggyBankDialog />

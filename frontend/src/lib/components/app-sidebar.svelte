@@ -9,6 +9,7 @@
 	import PigMoney from '@tabler/icons-svelte/icons/pig-money';
 	import SearchIcon from '@tabler/icons-svelte/icons/search';
 	import SettingsIcon from '@tabler/icons-svelte/icons/settings';
+	import TagIcon from '@tabler/icons-svelte/icons/tag';
 	import Tax from '@tabler/icons-svelte/icons/tax';
 	import type { ComponentProps } from 'svelte';
 
@@ -62,6 +63,11 @@
 				title: 'Accounts',
 				url: '/account',
 				icon: ListDetailsIcon
+			},
+			{
+				title: 'Categories',
+				url: '/category',
+				icon: TagIcon
 			},
 			{
 				title: 'Recurring',

@@ -1,8 +1,10 @@
 import { DEFAULT_SETTINGS, type KnownSettings } from './services/settingsDefaults';
+import type { Category } from './services/types';
 
 export type CurrentPage =
 	| 'dashboard'
 	| 'account'
+	| 'category'
 	| 'piggyBank'
 	| 'income'
 	| 'expense'
@@ -21,12 +23,13 @@ export type AppState = {
 	profile: Awaited<ReturnType<typeof import('./services').getProfile>>;
 	isAddTransactionDialogOpen: boolean;
 	pageTitle: string;
-	categories: string[];
+	categories: Category[];
 	knownLocations: string[];
 	knownAgents: string[];
 	currentPage: CurrentPage;
 	isCommandPaletteOpen: boolean;
 	isAddAccountDialogOpen: boolean;
+	isAddCategoryDialogOpen: boolean;
 	settings: KnownSettings;
 	isAddTaxDialogOpen: boolean;
 	isAddPiggyBankDialogOpen: boolean;
@@ -48,6 +51,7 @@ export const appState = $state<AppState>({
 	knownAgents: [],
 	isCommandPaletteOpen: false,
 	isAddAccountDialogOpen: false,
+	isAddCategoryDialogOpen: false,
 	isAddTaxDialogOpen: false,
 	isAddPiggyBankDialogOpen: false,
 	settings: { ...DEFAULT_SETTINGS }

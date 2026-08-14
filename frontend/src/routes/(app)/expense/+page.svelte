@@ -238,9 +238,9 @@
 	let categoryCountRaw = $derived(
 		appState.categories.map((category) => {
 			const count = filteredExpensesByDateRange.filter(
-				(expense) => expense.categoryName === category
+				(expense) => expense.categoryName === category.name
 			).length;
-			return { category, count };
+			return { category: category.name, count };
 		})
 	);
 
@@ -262,9 +262,9 @@
 	let categoryCostData = $derived.by(() => {
 		const categoryData = appState.categories.map((category) => {
 			const cost = filteredExpensesByDateRange
-				.filter((expense) => expense.categoryName === category)
+				.filter((expense) => expense.categoryName === category.name)
 				.reduce((prev, curr) => prev + curr.amount, 0);
-			return { category, cost };
+			return { category: category.name, cost };
 		});
 
 		categoryData.sort((a, b) => b.cost - a.cost);

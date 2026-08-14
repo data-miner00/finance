@@ -30,6 +30,25 @@ export interface CreateAccountRequest {
 
 export interface UpdateAccountRequest extends CreateAccountRequest {}
 
+export interface Category extends EntityBase {
+	name: string;
+	color?: string | null;
+	icon?: string | null;
+}
+
+export interface CreateCategoryRequest {
+	name: string;
+	color?: string | null;
+	icon?: string | null;
+}
+
+export interface UpdateCategoryRequest extends CreateCategoryRequest {}
+
+export interface MergeCategoriesRequest {
+	sourceCategoryId: string;
+	targetCategoryId: string;
+}
+
 export interface Expense extends EntityBase {
 	categoryName?: string;
 	accountId?: string | null;
