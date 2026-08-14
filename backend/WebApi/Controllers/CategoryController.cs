@@ -1,6 +1,8 @@
-﻿using Core.Models;
+using Core.Models;
 using Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -8,9 +10,11 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly IRepository<Category> repository;
+        private const int SqlForeignKeyViolationErrorNumber = 547;
 
-        public CategoryController(IRepository<Category> repository)
+        private readonly CategoryRepository repository;
+
+        public CategoryController(CategoryRepository repository)
         {
             this.repository = repository;
         }
@@ -23,6 +27,76 @@ namespace WebApi.Controllers
             var categories = await this.repository.GetAllAsync(this.CancellationToken);
 
             return this.Ok(categories);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Category>> GetById(string id)
+        {
+            try
+            {
+                var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
+                return this.Ok(category);
+            }
+            catch
+            {
+                return this.NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Category>> Create(CreateCategoryRequest request)
+        {
+            var category = new Category
+            {
+                Name = request.Name,
+                Color = request.Color,
+                Icon = request.Icon,
+            };
+
+            var created = await this.repository.CreateAsync(category, this.CancellationToken);
+            return this.CreatedAtAction(nameof(this.GetById), new { id = created.Id }, created);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Category>> Update(string id, UpdateCategoryRequest request)
+        {
+            try
+            {
+                var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
+                category.Name = request.Name;
+                category.Color = request.Color;
+                category.Icon = request.Icon;
+
+                var updated = await this.repository.UpdateAsync(category, this.CancellationToken);
+                return this.Ok(updated);
+            }
+            catch
+            {
+                return this.NotFound();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            try
+            {
+                await this.repository.GetByIdAsync(id, this.CancellationToken);
+            }
+            catch
+            {
+                return this.NotFound();
+            }
+
+            try
+            {
+                await this.repository.DeleteByIdAsync(id, this.CancellationToken);
+                return this.NoContent();
+            }
+            catch (SqlException ex) when (ex.Number == SqlForeignKeyViolationErrorNumber)
+            {
+                return this.Conflict("Category is still in use by one or more expenses. Merge it into another category first.");
+            }
         }
     }
 }

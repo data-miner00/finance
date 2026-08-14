@@ -23,13 +23,6 @@ BEGIN
 	FROM [dbo].[Categories]
 	WHERE [Name] = @CategoryName;
 
-	IF @CategoryName IS NOT NULL AND @CategoryId IS NULL
-	BEGIN
-		SET @CategoryId = NEWID();
-		INSERT INTO [dbo].[Categories] ([Id], [Name], [IsSystemDefault])
-		VALUES (@CategoryId, @CategoryName, 0);
-	END
-
     UPDATE [dbo].[Expenses]
     SET
         [Name] = @Name,

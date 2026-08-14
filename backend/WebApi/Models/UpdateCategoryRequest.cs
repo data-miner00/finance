@@ -1,6 +1,6 @@
 namespace WebApi.Models
 {
-    public class CreateCategoryRequest
+    public class UpdateCategoryRequest
     {
         public string Name { get; set; }
 
