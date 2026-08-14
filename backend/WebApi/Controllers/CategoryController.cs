@@ -98,5 +98,22 @@ namespace WebApi.Controllers
                 return this.Conflict("Category is still in use by one or more expenses. Merge it into another category first.");
             }
         }
+
+        [HttpPost("merge")]
+        public async Task<ActionResult> Merge(MergeCategoriesRequest request)
+        {
+            try
+            {
+                await this.repository.GetByIdAsync(request.SourceCategoryId, this.CancellationToken);
+                await this.repository.GetByIdAsync(request.TargetCategoryId, this.CancellationToken);
+            }
+            catch
+            {
+                return this.NotFound();
+            }
+
+            await this.repository.MergeAsync(request.SourceCategoryId, request.TargetCategoryId, this.CancellationToken);
+            return this.NoContent();
+        }
     }
 }

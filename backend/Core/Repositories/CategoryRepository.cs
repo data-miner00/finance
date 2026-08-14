@@ -83,5 +83,17 @@ namespace Core.Repositories
 
             return updatedCategory.ToModel();
         }
+
+        public async Task MergeAsync(string sourceCategoryId, string targetCategoryId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SourceCategoryId", Guid.Parse(sourceCategoryId), DbType.Guid);
+            parameters.Add("TargetCategoryId", Guid.Parse(targetCategoryId), DbType.Guid);
+
+            using var connection = this.connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(SpNames.MergeCategories, parameters, commandType: CommandType.StoredProcedure);
+        }
     }
 }

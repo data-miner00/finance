@@ -37,7 +37,9 @@ namespace Core
         public const string DeleteTax = "usp_DeleteTax";
 
         public const string AddCategory = "usp_AddCategory";
-        
+
+        public const string MergeCategories = "usp_MergeCategories";
+
         public const string UpdateAccount = "usp_UpdateAccount";
 
         public const string UpdateExpenseWithCategoryName = "usp_UpdateExpenseWithCategoryName";

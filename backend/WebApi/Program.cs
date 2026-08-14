@@ -46,7 +46,8 @@ namespace WebApi
             builder.Services.AddSingleton<IRepository<Income>, IncomeRepository>();
             builder.Services.AddSingleton<IRepository<PiggyBank>, PiggyBankRepository>();
             builder.Services.AddSingleton<IRepository<RecurringAction>, RecurringActionRepository>();
-            builder.Services.AddSingleton<IRepository<Category>, CategoryRepository>();
+            builder.Services.AddSingleton<CategoryRepository>();
+            builder.Services.AddSingleton<IRepository<Category>>(sp => sp.GetRequiredService<CategoryRepository>());
             builder.Services.AddSingleton<IRepository<Tax>, TaxRepository>();
             builder.Services.AddSingleton<IProfileRepository, ProfileRepository>();
             builder.Services.AddSingleton<ISettingsRepository, SettingsRepository>();
