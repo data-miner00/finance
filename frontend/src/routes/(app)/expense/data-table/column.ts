@@ -25,11 +25,19 @@ export const columns: ColumnDef<Expense>[] = [
 	},
 	{
 		accessorKey: 'categoryName',
-		header: 'Category'
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Category'
+			})
 	},
 	{
 		accessorKey: 'accountName',
-		header: 'Account',
+		header: ({ column }) =>
+			renderComponent(DataTableSortButton, {
+				onclick: column.getToggleSortingHandler(),
+				title: 'Account'
+			}),
 		cell: ({ row }) => row.original.accountName ?? '—'
 	},
 	{

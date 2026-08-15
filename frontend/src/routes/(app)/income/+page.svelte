@@ -164,10 +164,6 @@
 	});
 </script>
 
-{#snippet dataTableControls()}
-	<div></div>
-{/snippet}
-
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
 		<div class="max-w-4xl space-y-2">
@@ -179,7 +175,7 @@
 	</div>
 
 	<div
-		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
+		class="grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:grid-cols-4 lg:px-6 dark:*:data-[slot=card]:bg-card"
 	>
 		<StatCard
 			description="Average monthly income"
@@ -264,7 +260,7 @@
 
 		<Tabs.Content value="records" class="flex flex-col gap-4">
 			<div class="px-4 lg:px-6">
-				<DataTable data={appState.incomes} {columns} controls={dataTableControls} />
+				<DataTable data={appState.incomes} {columns} />
 			</div>
 		</Tabs.Content>
 

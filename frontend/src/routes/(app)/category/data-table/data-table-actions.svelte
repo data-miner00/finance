@@ -101,17 +101,17 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit category</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
 			<DropdownMenu.Item onclick={openMergeDialog} disabled={otherCategories.length === 0}>
 				Merge into...
 			</DropdownMenu.Item>
 			<DropdownMenu.Item onclick={() => copyText(id, 'ID copied to clipboard')}>
-				Copy category ID
+				Copy ID
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
-			Delete category
+			Delete
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

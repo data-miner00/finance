@@ -14,6 +14,8 @@
 		isToday,
 		isYesterday
 	} from '$lib';
+	import MultiSelectFilter from '$lib/components/custom/table-common/multi-select-filter.svelte';
+	import NumberRangeFilter from '$lib/components/custom/table-common/number-range-filter.svelte';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -229,6 +231,57 @@
 		})
 	);
 
+	// Table-only filters (category, account, amount range) — deliberately kept separate from
+	// filteredExpensesByDateRange so the Visualizations tab charts are unaffected by them.
+	let selectedCategories = $state<string[]>([]);
+	let selectedAccounts = $state<string[]>([]);
+	let minAmount = $state<number | undefined>(undefined);
+	let maxAmount = $state<number | undefined>(undefined);
+
+	// Category/account names aren't guaranteed unique (e.g. duplicate categories from typos), so
+	// dedupe before turning them into filter options — the multi-select filter keys on `value`.
+	let categoryOptions = $derived(
+		Array.from(new Set(appState.categories.map((category) => category.name))).map((name) => ({
+			value: name,
+			label: name
+		}))
+	);
+	let accountOptions = $derived([
+		...Array.from(new Set(appState.accounts.map((account) => account.name))).map((name) => ({
+			value: name,
+			label: name
+		})),
+		{ value: '', label: 'No account' }
+	]);
+
+	let tableExpenses = $derived(
+		filteredExpensesByDateRange.filter((x) => {
+			if (selectedCategories.length && !selectedCategories.includes(x.categoryName ?? '')) {
+				return false;
+			}
+			if (selectedAccounts.length && !selectedAccounts.includes(x.accountName ?? '')) {
+				return false;
+			}
+			if (minAmount !== undefined && x.amount < minAmount) return false;
+			if (maxAmount !== undefined && x.amount > maxAmount) return false;
+			return true;
+		})
+	);
+
+	let hasActiveTableFilters = $derived(
+		selectedCategories.length > 0 ||
+			selectedAccounts.length > 0 ||
+			minAmount !== undefined ||
+			maxAmount !== undefined
+	);
+
+	function resetTableFilters() {
+		selectedCategories = [];
+		selectedAccounts = [];
+		minAmount = undefined;
+		maxAmount = undefined;
+	}
+
 	function formatRange(start: DateValue, end: DateValue) {
 		return formatDateRange(start.toDate(getLocalTimeZone()), end.toDate(getLocalTimeZone()), {
 			includeTime: false
@@ -439,7 +492,15 @@
 
 		<Tabs.Content value="records" class="flex flex-col gap-4">
 			<div class="px-4 lg:px-6">
-				<DataTable data={filteredExpensesByDateRange} {columns} />
+				{#snippet tableControls()}
+					<MultiSelectFilter title="Category" options={categoryOptions} bind:selected={selectedCategories} />
+					<MultiSelectFilter title="Account" options={accountOptions} bind:selected={selectedAccounts} />
+					<NumberRangeFilter title="Amount" bind:min={minAmount} bind:max={maxAmount} />
+					{#if hasActiveTableFilters}
+						<Button variant="ghost" size="sm" onclick={resetTableFilters}>Reset filters</Button>
+					{/if}
+				{/snippet}
+				<DataTable data={tableExpenses} {columns} controls={tableControls} />
 			</div>
 		</Tabs.Content>
 
