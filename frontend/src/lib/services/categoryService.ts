@@ -8,6 +8,13 @@ import type {
 
 const path = '/category';
 
+export function categoryNameExists(categories: Category[], name: string, excludeId?: string): boolean {
+	const normalized = name.trim().toLowerCase();
+	return categories.some(
+		(category) => category.id !== excludeId && category.name.trim().toLowerCase() === normalized
+	);
+}
+
 export async function getCategories(signal?: AbortSignal): Promise<Category[]> {
 	return apiGet<Category[]>(path, signal);
 }

@@ -14,7 +14,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { createCategory, createExpense, createIncome } from '$lib/services';
+	import { categoryNameExists, createCategory, createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
 
@@ -92,10 +92,25 @@
 	});
 
 	async function createNewCategory() {
-		const created = await createCategory({ name: categorySearch.trim() });
-		appState.categories = [...appState.categories, created];
-		categoryName = created.name;
-		closeAndFocusTrigger();
+		const trimmedName = categorySearch.trim();
+		if (categoryNameExists(appState.categories, trimmedName)) {
+			toast.error(`A category named "${trimmedName}" already exists.`);
+			return;
+		}
+
+		try {
+			const created = await createCategory({ name: trimmedName });
+			appState.categories = [...appState.categories, created];
+			categoryName = created.name;
+			closeAndFocusTrigger();
+		} catch (error) {
+			const isDuplicate = error instanceof Error && error.message.includes('409');
+			toast.error(
+				isDuplicate
+					? `A category named "${trimmedName}" already exists.`
+					: 'Failed to create category.'
+			);
+		}
 	}
 
 	let locationComboOpen = $state(false);

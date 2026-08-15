@@ -11,7 +11,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { deleteCategory, mergeCategories, updateCategory } from '$lib/services';
+	import { categoryNameExists, deleteCategory, mergeCategories, updateCategory } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	const defaultColor = '#94a3b8';
@@ -40,12 +40,27 @@
 
 	async function saveCategory(event: Event) {
 		event.preventDefault();
-		const updated = await updateCategory(id, { name, color, icon });
-		appState.categories = appState.categories.map((category) =>
-			category.id === id ? updated : category
-		);
-		isEditDialogOpen = false;
-		toast.success('Category updated successfully.');
+		const trimmedName = name.trim();
+		if (categoryNameExists(appState.categories, trimmedName, id)) {
+			toast.error(`A category named "${trimmedName}" already exists.`);
+			return;
+		}
+
+		try {
+			const updated = await updateCategory(id, { name: trimmedName, color, icon });
+			appState.categories = appState.categories.map((category) =>
+				category.id === id ? updated : category
+			);
+			isEditDialogOpen = false;
+			toast.success('Category updated successfully.');
+		} catch (error) {
+			const isDuplicate = error instanceof Error && error.message.includes('409');
+			toast.error(
+				isDuplicate
+					? `A category named "${trimmedName}" already exists.`
+					: 'Failed to update category.'
+			);
+		}
 	}
 
 	function openMergeDialog() {

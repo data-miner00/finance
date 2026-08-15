@@ -6,7 +6,7 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { createCategory } from '$lib/services';
+	import { categoryNameExists, createCategory } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	const defaultColor = '#94a3b8';
@@ -21,15 +21,30 @@
 	let icon = $state<string | null>(null);
 
 	async function addCategory() {
-		const category = await createCategory({ name, color, icon });
+		const trimmedName = name.trim();
+		if (categoryNameExists(appState.categories, trimmedName)) {
+			toast.error(`A category named "${trimmedName}" already exists.`);
+			return;
+		}
 
-		appState.categories = [...appState.categories, category];
-		name = '';
-		color = defaultColor;
-		icon = null;
-		open = false;
+		try {
+			const category = await createCategory({ name: trimmedName, color, icon });
 
-		toast.success('Category created successfully.');
+			appState.categories = [...appState.categories, category];
+			name = '';
+			color = defaultColor;
+			icon = null;
+			open = false;
+
+			toast.success('Category created successfully.');
+		} catch (error) {
+			const isDuplicate = error instanceof Error && error.message.includes('409');
+			toast.error(
+				isDuplicate
+					? `A category named "${trimmedName}" already exists.`
+					: 'Failed to create category.'
+			);
+		}
 	}
 </script>
 

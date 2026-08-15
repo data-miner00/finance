@@ -11,6 +11,7 @@ namespace WebApi.Controllers
     public class CategoryController : ControllerBase
     {
         private const int SqlForeignKeyViolationErrorNumber = 547;
+        private const int SqlUniqueConstraintViolationErrorNumber = 2627;
 
         private readonly CategoryRepository repository;
 
@@ -46,33 +47,63 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> Create(CreateCategoryRequest request)
         {
+            var name = request.Name?.Trim() ?? string.Empty;
+            var existingCategories = await this.repository.GetAllAsync(this.CancellationToken);
+            if (existingCategories.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return this.Conflict($"A category named \"{name}\" already exists.");
+            }
+
             var category = new Category
             {
-                Name = request.Name,
+                Name = name,
                 Color = request.Color,
                 Icon = request.Icon,
             };
 
-            var created = await this.repository.CreateAsync(category, this.CancellationToken);
-            return this.CreatedAtAction(nameof(this.GetById), new { id = created.Id }, created);
+            try
+            {
+                var created = await this.repository.CreateAsync(category, this.CancellationToken);
+                return this.CreatedAtAction(nameof(this.GetById), new { id = created.Id }, created);
+            }
+            catch (SqlException ex) when (ex.Number == SqlUniqueConstraintViolationErrorNumber)
+            {
+                return this.Conflict($"A category named \"{name}\" already exists.");
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Category>> Update(string id, UpdateCategoryRequest request)
         {
+            Category category;
             try
             {
-                var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
-                category.Name = request.Name;
-                category.Color = request.Color;
-                category.Icon = request.Icon;
-
-                var updated = await this.repository.UpdateAsync(category, this.CancellationToken);
-                return this.Ok(updated);
+                category = await this.repository.GetByIdAsync(id, this.CancellationToken);
             }
             catch
             {
                 return this.NotFound();
+            }
+
+            var name = request.Name?.Trim() ?? string.Empty;
+            var existingCategories = await this.repository.GetAllAsync(this.CancellationToken);
+            if (existingCategories.Any(c => c.Id != id && string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return this.Conflict($"A category named \"{name}\" already exists.");
+            }
+
+            category.Name = name;
+            category.Color = request.Color;
+            category.Icon = request.Icon;
+
+            try
+            {
+                var updated = await this.repository.UpdateAsync(category, this.CancellationToken);
+                return this.Ok(updated);
+            }
+            catch (SqlException ex) when (ex.Number == SqlUniqueConstraintViolationErrorNumber)
+            {
+                return this.Conflict($"A category named \"{name}\" already exists.");
             }
         }
 

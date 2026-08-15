@@ -6,7 +6,8 @@
     [IsSystemDefault] BIT              CONSTRAINT [DF_Categories_IsSystemDefault] DEFAULT ((0)) NOT NULL,
     [Color]           NVARCHAR (20)    NULL,
     [Icon]            NVARCHAR (50)    NULL,
-    CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [UQ_Categories_Name] UNIQUE ([Name])
 );
 
 GO
