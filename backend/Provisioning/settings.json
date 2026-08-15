@@ -7,16 +7,22 @@
   "Expense": {
     "DefaultCategories": [
       "Food", // Protein, drinks, snacks
+      "Groceries", // Rice, salt, sugar, vegetables, fruits, meat
       "Utility", // WiFi, Mobile Phone, Gas, Water, Electricity
       "Transportation", // Fuel, Tolls, Bus Ticket, MRT
       "Housing", // Loan, cleaning, taxes, Solicitors, maintenance
-      "Personal Care",
+      "Personal Care", // Haircut, Spa, Massage, Manicure, Pedicure
       "Health", // Mental, medical checkup, doctor consultation
       "Education", // Online course, student debt
-      "Pets",
-      "Donation",
+      "Pets", // Pet food, vet bills, grooming
+      "Donation", // Charity, Religious, Non-profit
       "Entertainment", // Spotify, Movie
-      "Gift"
+      "Gift", // Birthday, Wedding, Anniversary
+      "Insurance", // Health, Car, Home, Life
+      "Travel", // Flight, Hotel, Visa, Travel Insurance
+      "Shopping", // Clothes, Electronics, Furniture
+      "Investment", // Stocks, Bonds, Mutual Funds, ETFs
+      "Other" // Miscellaneous
     ]
   },
   "Settings": {
