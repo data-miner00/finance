@@ -111,6 +111,7 @@
     <Build Include="dbo\Tables\ServiceMetadata.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpsertServiceMetadata.sql" />
     <Build Include="dbo\Tables\Notifications.sql" />
+    <Build Include="dbo\Views\vw_CategoryMonthlySpend.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddNotification.sql" />
     <Build Include="dbo\Stored Procedures\usp_UpdateNotification.sql" />
     <Build Include="dbo\Stored Procedures\usp_MarkAllNotificationsRead.sql" />

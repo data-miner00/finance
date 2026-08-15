@@ -97,5 +97,15 @@ namespace Core.Repositories
             using var connection = this.connectionFactory.CreateConnection();
             await connection.ExecuteAsync(SpNames.MergeCategories, parameters, commandType: CommandType.StoredProcedure);
         }
+
+        public async Task<CategoryMonthlySpend?> GetMonthlySpendAsync(string categoryName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var query = $"SELECT * FROM [dbo].[{VwNames.GetCategoryMonthlySpend}] WHERE [CategoryName] = @CategoryName;";
+
+            using var connection = this.connectionFactory.CreateConnection();
+            var dto = await connection.QueryFirstOrDefaultAsync<CategoryMonthlySpendDto>(query, new { CategoryName = categoryName });
+            return dto?.ToModel();
+        }
     }
 }
