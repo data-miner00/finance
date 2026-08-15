@@ -55,7 +55,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM Accounts;");
+                "SELECT [Id], [Name], [Description], [Type], [Balance], [CreatedAt], [UpdatedAt] FROM Accounts;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var accounts = await connection.QueryAsync<AccountDto>(command);
@@ -66,7 +66,7 @@ namespace Core.Repositories
         public async Task<Account> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Accounts] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Name], [Description], [Type], [Balance], [CreatedAt], [UpdatedAt] FROM [dbo].[Accounts] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var accountDto = await connection.QueryFirstAsync<AccountDto>(query, new { Id = Guid.Parse(id) });

@@ -52,7 +52,9 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var command = new CommandDefinition("SELECT * FROM Notifications ORDER BY CreatedAt DESC;");
+            var command = new CommandDefinition(
+                "SELECT [Id], [Type], [Title], [Message], [IsRead], [EntityType], [EntityId], [CreatedAt], [UpdatedAt] " +
+                "FROM Notifications ORDER BY CreatedAt DESC;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<NotificationDto>(command);
@@ -62,7 +64,8 @@ namespace Core.Repositories
         public async Task<Notification> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Notifications] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Type], [Title], [Message], [IsRead], [EntityType], [EntityId], [CreatedAt], [UpdatedAt] " +
+                "FROM [dbo].[Notifications] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstAsync<NotificationDto>(query, new { Id = Guid.Parse(id) });

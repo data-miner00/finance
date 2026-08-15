@@ -20,7 +20,7 @@ namespace Core.Repositories
         public async Task<ServiceMetadata?> GetByNameAsync(string name, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = $"SELECT * FROM [dbo].[ServiceMetadata] WHERE [ServiceName] = @Name;";
+            var query = "SELECT [Id], [ServiceName], [Description], [CreatedAt], [UpdatedAt] FROM [dbo].[ServiceMetadata] WHERE [ServiceName] = @Name;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstOrDefaultAsync<ServiceMetadataDto>(query, new { Name = name });

@@ -54,7 +54,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM Taxes;");
+                "SELECT [Id], [Name], [Description], [Amount], [CreatedAt], [UpdatedAt] FROM Taxes;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<TaxDto>(command);
@@ -64,7 +64,7 @@ namespace Core.Repositories
         public async Task<Tax> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Taxes] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Name], [Description], [Amount], [CreatedAt], [UpdatedAt] FROM [dbo].[Taxes] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstAsync<TaxDto>(query, new { Id = Guid.Parse(id) });

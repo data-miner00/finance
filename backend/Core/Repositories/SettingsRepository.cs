@@ -21,7 +21,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM [dbo].[Settings];");
+                "SELECT [Id], [Key], [Value], [CreatedAt], [UpdatedAt] FROM [dbo].[Settings];");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<SettingDto>(command);

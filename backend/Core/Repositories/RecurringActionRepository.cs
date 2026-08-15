@@ -60,7 +60,8 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM Recurrings;");
+                "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
+                "FROM Recurrings;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<RecurringActionDto>(command);
@@ -70,7 +71,8 @@ namespace Core.Repositories
         public async Task<RecurringAction> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Recurrings] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
+                "FROM [dbo].[Recurrings] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstAsync<RecurringActionDto>(query, new { Id = Guid.Parse(id) });

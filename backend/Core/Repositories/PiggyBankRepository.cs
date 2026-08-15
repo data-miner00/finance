@@ -56,7 +56,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT * FROM PiggyBanks;");
+                "SELECT [Id], [Name], [Description], [Amount], [Target], [Deadline], [CreatedAt], [UpdatedAt] FROM PiggyBanks;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<PiggyBankDto>(command);
@@ -66,7 +66,7 @@ namespace Core.Repositories
         public async Task<PiggyBank> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[PiggyBanks] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Name], [Description], [Amount], [Target], [Deadline], [CreatedAt], [UpdatedAt] FROM [dbo].[PiggyBanks] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstAsync<PiggyBankDto>(query, new { Id = Guid.Parse(id) });

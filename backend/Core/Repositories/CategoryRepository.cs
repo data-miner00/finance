@@ -48,7 +48,8 @@ namespace Core.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var command = new CommandDefinition("SELECT * FROM Categories;");
+            var command = new CommandDefinition(
+                "SELECT [Id], [Name], [Color], [Icon], [BudgetAmount], [CreatedAt], [UpdatedAt] FROM Categories;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<CategoryDto>(command);
@@ -58,7 +59,7 @@ namespace Core.Repositories
         public async Task<Category> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = "SELECT * FROM [dbo].[Categories] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Name], [Color], [Icon], [BudgetAmount], [CreatedAt], [UpdatedAt] FROM [dbo].[Categories] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstAsync<CategoryDto>(query, new { Id = Guid.Parse(id) });
@@ -101,7 +102,7 @@ namespace Core.Repositories
         public async Task<CategoryMonthlySpend?> GetMonthlySpendAsync(string categoryName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = $"SELECT * FROM [dbo].[{VwNames.GetCategoryMonthlySpend}] WHERE [CategoryName] = @CategoryName;";
+            var query = $"SELECT [CategoryId], [CategoryName], [BudgetAmount], [SpentThisMonth] FROM [dbo].[{VwNames.GetCategoryMonthlySpend}] WHERE [CategoryName] = @CategoryName;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstOrDefaultAsync<CategoryMonthlySpendDto>(query, new { CategoryName = categoryName });

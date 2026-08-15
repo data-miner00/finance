@@ -58,7 +58,8 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                $"SELECT * FROM {VwNames.GetAllIncomes} ORDER BY {nameof(Income.ActionedAt)} DESC;");
+                $"SELECT [Id], [Name], [Description], [Amount], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
+                $"FROM {VwNames.GetAllIncomes} ORDER BY {nameof(Income.ActionedAt)} DESC;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var dtos = await connection.QueryAsync<IncomeDto>(command);
@@ -68,7 +69,8 @@ namespace Core.Repositories
         public async Task<Income> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = $"SELECT * FROM [dbo].[{VwNames.GetAllIncomes}] WHERE [Id] = @Id;";
+            var query = $"SELECT [Id], [Name], [Description], [Amount], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
+                $"FROM [dbo].[{VwNames.GetAllIncomes}] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var dto = await connection.QueryFirstAsync<IncomeDto>(query, new { Id = Guid.Parse(id) });
