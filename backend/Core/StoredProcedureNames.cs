@@ -34,9 +34,13 @@ namespace Core
 
         public const string DeleteCategory = "usp_DeleteCategory";
 
+        public const string DeleteNotification = "usp_DeleteNotification";
+
         public const string DeleteTax = "usp_DeleteTax";
 
         public const string AddCategory = "usp_AddCategory";
+
+        public const string AddNotification = "usp_AddNotification";
 
         public const string MergeCategories = "usp_MergeCategories";
 
@@ -53,6 +57,10 @@ namespace Core
         public const string UpdateRecurringAction = "usp_UpdateRecurringAction";
 
         public const string UpdateCategory = "usp_UpdateCategory";
+
+        public const string UpdateNotification = "usp_UpdateNotification";
+
+        public const string MarkAllNotificationsRead = "usp_MarkAllNotificationsRead";
 
         public const string UpdateTax = "usp_UpdateTax";
 

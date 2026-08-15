@@ -52,6 +52,7 @@ namespace WebApi
             builder.Services.AddSingleton<IProfileRepository, ProfileRepository>();
             builder.Services.AddSingleton<ISettingsRepository, SettingsRepository>();
             builder.Services.AddSingleton<IServiceMetadataRepository, ServiceMetadataRepository>();
+            builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();
             builder.Services.AddSingleton<IDictionary<string, IDataStreamifier>>((ctx) =>
             {
                 return new Dictionary<string, IDataStreamifier>
