@@ -4,6 +4,7 @@ export * from './accountService';
 export * from './categoryService';
 export * from './expenseService';
 export * from './incomeService';
+export * from './notificationService';
 export * from './piggyBankService';
 export * from './profileService';
 export * from './recurringActionService';

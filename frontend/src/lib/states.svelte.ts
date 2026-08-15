@@ -1,5 +1,5 @@
 import { DEFAULT_SETTINGS, type KnownSettings } from './services/settingsDefaults';
-import type { Category } from './services/types';
+import type { Category, Notification } from './services/types';
 
 export type CurrentPage =
 	| 'dashboard'
@@ -25,6 +25,8 @@ export type AppState = {
 	isAddTransactionDialogOpen: boolean;
 	pageTitle: string;
 	categories: Category[];
+	notifications: Notification[];
+	unreadNotificationCount: number;
 	knownLocations: string[];
 	knownAgents: string[];
 	currentPage: CurrentPage;
@@ -48,6 +50,8 @@ export const appState = $state<AppState>({
 	profile: undefined,
 	isAddTransactionDialogOpen: false,
 	categories: [],
+	notifications: [],
+	unreadNotificationCount: 0,
 	knownLocations: [],
 	knownAgents: [],
 	isCommandPaletteOpen: false,

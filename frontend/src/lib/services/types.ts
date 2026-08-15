@@ -183,6 +183,15 @@ export interface SaveProfileRequest {
 	avatarImage?: string | null;
 }
 
+export interface Notification extends EntityBase {
+	type: string;
+	title: string;
+	message: string;
+	isRead: boolean;
+	entityType?: string | null;
+	entityId?: string | null;
+}
+
 export interface Setting extends EntityBase {
 	key: string;
 	value: string;
