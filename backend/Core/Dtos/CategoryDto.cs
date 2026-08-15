@@ -13,6 +13,8 @@ namespace Core.Dtos
 
         public string? Icon { get; set; }
 
+        public decimal? BudgetAmount { get; set; }
+
         public override Category ToModel()
         {
             return new Category
@@ -21,6 +23,7 @@ namespace Core.Dtos
                 Name = Name,
                 Color = Color,
                 Icon = Icon,
+                BudgetAmount = BudgetAmount,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

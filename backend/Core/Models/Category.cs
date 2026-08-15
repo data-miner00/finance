@@ -11,5 +11,7 @@ namespace Core.Models
         public string? Color { get; set; }
 
         public string? Icon { get; set; }
+
+        public decimal? BudgetAmount { get; set; }
     }
 }

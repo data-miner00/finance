@@ -22,6 +22,7 @@ namespace Core.Repositories
             parameters.Add("Name", entity.Name);
             parameters.Add("Color", entity.Color);
             parameters.Add("Icon", entity.Icon);
+            parameters.Add("BudgetAmount", entity.BudgetAmount);
 
             using var connection = this.connectionFactory.CreateConnection();
             var created = await connection.QuerySingleOrDefaultAsync<CategoryDto>(
@@ -74,6 +75,7 @@ namespace Core.Repositories
             parameters.Add("Name", entity.Name);
             parameters.Add("Color", entity.Color);
             parameters.Add("Icon", entity.Icon);
+            parameters.Add("BudgetAmount", entity.BudgetAmount);
 
             using var connection = this.connectionFactory.CreateConnection();
             var updatedCategory = await connection.QuerySingleOrDefaultAsync<CategoryDto>(

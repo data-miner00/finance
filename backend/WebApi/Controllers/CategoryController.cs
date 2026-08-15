@@ -65,6 +65,7 @@ namespace WebApi.Controllers
                 Name = name,
                 Color = request.Color,
                 Icon = request.Icon,
+                BudgetAmount = request.BudgetAmount,
             };
 
             try
@@ -110,6 +111,7 @@ namespace WebApi.Controllers
             category.Name = name;
             category.Color = request.Color;
             category.Icon = request.Icon;
+            category.BudgetAmount = request.BudgetAmount;
 
             try
             {

@@ -6,6 +6,7 @@
     [IsSystemDefault] BIT              CONSTRAINT [DF_Categories_IsSystemDefault] DEFAULT ((0)) NOT NULL,
     [Color]           NVARCHAR (20)    NULL,
     [Icon]            NVARCHAR (50)    NULL,
+    [BudgetAmount]    MONEY            NULL,
     CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [UQ_Categories_Name] UNIQUE ([Name]),
     CONSTRAINT [CK_Categories_Name_NotEmpty] CHECK (LEN(LTRIM(RTRIM([Name]))) > 0)

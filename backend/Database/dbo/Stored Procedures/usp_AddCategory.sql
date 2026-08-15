@@ -7,7 +7,8 @@ CREATE PROCEDURE [dbo].[usp_AddCategory]
 	@Name NVARCHAR(50),
 	@Color NVARCHAR(20) = NULL,
 	@Icon NVARCHAR(50) = NULL,
-	@IsSystemDefault BIT = 0
+	@IsSystemDefault BIT = 0,
+	@BudgetAmount MONEY = NULL
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -18,7 +19,8 @@ BEGIN
 		[Name],
 		[Color],
 		[Icon],
-		[IsSystemDefault]
+		[IsSystemDefault],
+		[BudgetAmount]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
@@ -26,7 +28,8 @@ BEGIN
 		@Name,
 		@Color,
 		@Icon,
-		@IsSystemDefault
+		@IsSystemDefault,
+		@BudgetAmount
 	);
 
 	SELECT
@@ -35,6 +38,7 @@ BEGIN
 		[Color],
 		[Icon],
 		[IsSystemDefault],
+		[BudgetAmount],
 		[CreatedAt],
 		[UpdatedAt]
 	FROM [dbo].[Categories] l
