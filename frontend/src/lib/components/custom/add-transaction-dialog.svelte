@@ -14,6 +14,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { refreshNotifications } from '$lib/notifications';
 	import { categoryNameExists, createCategory, createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
@@ -76,6 +77,7 @@
 			agentName = '';
 
 			appState.expenses.push(expense);
+			refreshNotifications();
 		}
 
 		toast.success(`${tab === 'income' ? 'Income' : 'Expense'} created successfully.`);

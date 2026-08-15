@@ -14,6 +14,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { refreshNotifications } from '$lib/notifications';
 	import { categoryNameExists, createCategory, deleteExpense, updateExpense } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
@@ -76,6 +77,7 @@
 					}
 				: e
 		);
+		refreshNotifications();
 		toast.success('Expense updated successfully.');
 		isEditDialogOpen = false;
 	}
