@@ -16,18 +16,29 @@
 	import type { Snippet } from 'svelte';
 
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { FlexRender, createSvelteTable } from '$lib/components/ui/data-table/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
 		data: TData[];
 		controls?: Snippet;
+		isPaginated?: boolean;
 	};
 
-	let { data, columns, controls: Controls }: DataTableProps<TData, TValue> = $props();
+	let {
+		data,
+		columns,
+		controls: Controls,
+		isPaginated: isPaginatedProp = true
+	}: DataTableProps<TData, TValue> = $props();
+
+	// svelte-ignore state_referenced_locally
+	let isPaginated = $state(isPaginatedProp);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -129,6 +140,11 @@
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 
+			<div class="flex items-center gap-2">
+				<Checkbox id="is-paginated" bind:checked={isPaginated} />
+				<Label for="is-paginated">Paginate</Label>
+			</div>
+
 			{#if Controls}
 				{@render Controls()}
 			{/if}
@@ -154,7 +170,7 @@
 				{/each}
 			</Table.Header>
 			<Table.Body>
-				{#each table.getRowModel().rows as row (row.id)}
+				{#each (isPaginated ? table.getPaginationRowModel() : table.getSortedRowModel()).rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
 							<Table.Cell>
@@ -171,21 +187,23 @@
 		</Table.Root>
 	</div>
 </div>
-<div class="flex items-center justify-end space-x-2 py-4">
-	<Button
-		variant="outline"
-		size="sm"
-		onclick={() => table.previousPage()}
-		disabled={!table.getCanPreviousPage()}
-	>
-		Previous
-	</Button>
-	<Button
-		variant="outline"
-		size="sm"
-		onclick={() => table.nextPage()}
-		disabled={!table.getCanNextPage()}
-	>
-		Next
-	</Button>
-</div>
+{#if isPaginated}
+	<div class="flex items-center justify-end space-x-2 py-4">
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => table.previousPage()}
+			disabled={!table.getCanPreviousPage()}
+		>
+			Previous
+		</Button>
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => table.nextPage()}
+			disabled={!table.getCanNextPage()}
+		>
+			Next
+		</Button>
+	</div>
+{/if}
