@@ -13,6 +13,7 @@ public class RecurrentActionService : BackgroundService
     private readonly IRepository<Expense> expenseRepository;
     private readonly IRepository<Income> incomeRepository;
     private readonly IRepository<RecurringAction> recurringRepository;
+    private readonly INotificationRepository notificationRepository;
     private readonly TimeProvider timeProvider;
     private readonly RecurrentActionServiceOptions options;
 
@@ -22,6 +23,7 @@ public class RecurrentActionService : BackgroundService
         IRepository<Expense> expenseRepository,
         IRepository<Income> incomeRepository,
         IRepository<RecurringAction> recurringRepository,
+        INotificationRepository notificationRepository,
         TimeProvider timeProvider,
         RecurrentActionServiceOptions options)
     {
@@ -30,6 +32,7 @@ public class RecurrentActionService : BackgroundService
         this.expenseRepository = expenseRepository;
         this.incomeRepository = incomeRepository;
         this.recurringRepository = recurringRepository;
+        this.notificationRepository = notificationRepository;
         this.timeProvider = timeProvider;
         this.options = options;
     }
@@ -84,8 +87,16 @@ public class RecurrentActionService : BackgroundService
 
                 AdvanceAction(action, now);
 
-                await this.expenseRepository.CreateAsync(expense, default);
+                var createdExpense = await this.expenseRepository.CreateAsync(expense, default);
                 await this.recurringRepository.UpdateAsync(action, default);
+                await this.notificationRepository.CreateAsync(new Notification
+                {
+                    Type = "RecurringExpenseProcessed",
+                    Title = "Recurring expense added",
+                    Message = $"Recurring expense \"{action.Name}\" of {action.Amount:C} was added.",
+                    EntityType = "Expense",
+                    EntityId = createdExpense.Id,
+                }, default);
                 this.logger.LogInformation("Processed expense action '{ActionName}'.", action.Name);
             }
             catch (Exception ex)
@@ -116,8 +127,16 @@ public class RecurrentActionService : BackgroundService
 
                 AdvanceAction(action, now);
 
-                await this.incomeRepository.CreateAsync(income, default);
+                var createdIncome = await this.incomeRepository.CreateAsync(income, default);
                 await this.recurringRepository.UpdateAsync(action, default);
+                await this.notificationRepository.CreateAsync(new Notification
+                {
+                    Type = "RecurringIncomeProcessed",
+                    Title = "Recurring income added",
+                    Message = $"Recurring income \"{action.Name}\" of {action.Amount:C} was added.",
+                    EntityType = "Income",
+                    EntityId = createdIncome.Id,
+                }, default);
                 this.logger.LogInformation("Processed income action '{ActionName}'.", action.Name);
             }
             catch (Exception ex)
