@@ -7,6 +7,7 @@
 	import { type CurrentPage, appState } from '$lib/states.svelte';
 
 	import ModeToggleButton from './custom/mode-toggle-button.svelte';
+	import NotificationBell from './custom/notification-bell.svelte';
 
 	type ActionButton = {
 		text: string;
@@ -106,6 +107,7 @@
 		<h1 class="text-base font-medium">{appState.pageTitle}</h1>
 		<div class="ms-auto flex items-center gap-2">
 			<ModeToggleButton />
+			<NotificationBell />
 
 			<Button onclick={actionButton.action}>
 				<PlusIcon />

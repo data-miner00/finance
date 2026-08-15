@@ -13,6 +13,7 @@
 	import CommandPalette from '$lib/components/custom/command-palette.svelte';
 	import SiteHeader from '$lib/components/site-header.svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { refreshNotifications } from '$lib/notifications';
 	import {
 		getAccounts,
 		getCategories,
@@ -47,6 +48,7 @@
 		appState.knownAgents = Array.from(
 			new Set(appState.expenses.map((e) => e.agentName || '').filter((a) => !!a))
 		);
+		await refreshNotifications();
 	});
 
 	function handleKeydown(e: KeyboardEvent) {
