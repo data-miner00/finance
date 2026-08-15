@@ -12,15 +12,27 @@ namespace WebApi.Controllers
     public class ExpenseController : ControllerBase
     {
         private const string DefaultExportFormat = "json";
+        private const string BudgetNearLimitType = "BudgetNearLimit";
+        private const string BudgetOverBudgetType = "BudgetOverBudget";
+        private const decimal NearLimitRatio = 0.8m;
 
         private readonly ExpenseRepository _repository;
+        private readonly CategoryRepository categoryRepository;
+        private readonly INotificationRepository notificationRepository;
+        private readonly ILogger<ExpenseController> logger;
         private readonly IDictionary<string, IDataStreamifier> dataStreamifiers;
 
         public ExpenseController(
             ExpenseRepository repository,
+            CategoryRepository categoryRepository,
+            INotificationRepository notificationRepository,
+            ILogger<ExpenseController> logger,
             IDictionary<string, IDataStreamifier> dataStreamifiers)
         {
             _repository = repository;
+            this.categoryRepository = categoryRepository;
+            this.notificationRepository = notificationRepository;
+            this.logger = logger;
             this.dataStreamifiers = dataStreamifiers;
         }
 
@@ -62,6 +74,7 @@ namespace WebApi.Controllers
             };
 
             var createdExpense = await _repository.CreateAsync(expense, cancellationToken);
+            await this.EvaluateBudgetAlertsAsync(createdExpense.CategoryName, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = createdExpense.Id }, createdExpense);
         }
 
@@ -83,6 +96,7 @@ namespace WebApi.Controllers
                 expense.AgentName = request.AgentName;
 
                 var updated = await _repository.UpdateAsync(expense, cancellationToken);
+                await this.EvaluateBudgetAlertsAsync(updated.CategoryName, cancellationToken);
                 return this.Ok(updated);
             }
             catch
@@ -141,6 +155,51 @@ namespace WebApi.Controllers
             await this._repository.ImportAsync(items, cancellationToken);
 
             return this.NoContent();
+        }
+
+        private async Task EvaluateBudgetAlertsAsync(string? categoryName, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName))
+            {
+                return;
+            }
+
+            try
+            {
+                var status = await this.categoryRepository.GetMonthlySpendAsync(categoryName, cancellationToken);
+                if (status?.BudgetAmount is null || status.BudgetAmount <= 0)
+                {
+                    return;
+                }
+
+                var ratio = status.SpentThisMonth / status.BudgetAmount.Value;
+                string? type = ratio > 1.0m ? BudgetOverBudgetType : ratio >= NearLimitRatio ? BudgetNearLimitType : null;
+                if (type is null)
+                {
+                    return;
+                }
+
+                if (await this.notificationRepository.ExistsForEntityThisMonthAsync("Category", status.CategoryId, type, cancellationToken))
+                {
+                    return;
+                }
+
+                var isOverBudget = type == BudgetOverBudgetType;
+                await this.notificationRepository.CreateAsync(new Notification
+                {
+                    Type = type,
+                    Title = isOverBudget ? "Over budget" : "Near budget limit",
+                    Message = isOverBudget
+                        ? $"You've spent {status.SpentThisMonth:C} in \"{status.CategoryName}\" this month, over your {status.BudgetAmount:C} budget."
+                        : $"You've spent {status.SpentThisMonth:C} of your {status.BudgetAmount:C} budget in \"{status.CategoryName}\" this month.",
+                    EntityType = "Category",
+                    EntityId = status.CategoryId,
+                }, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Failed to evaluate budget alerts for category '{CategoryName}'.", categoryName);
+            }
         }
     }
 }
