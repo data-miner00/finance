@@ -11,6 +11,7 @@ namespace WebApi.Controllers
     public class CategoryController : ControllerBase
     {
         private const int SqlForeignKeyViolationErrorNumber = 547;
+        private const int SqlCheckConstraintViolationErrorNumber = 547;
         private const int SqlUniqueConstraintViolationErrorNumber = 2627;
 
         private readonly CategoryRepository repository;
@@ -48,6 +49,11 @@ namespace WebApi.Controllers
         public async Task<ActionResult<Category>> Create(CreateCategoryRequest request)
         {
             var name = request.Name?.Trim() ?? string.Empty;
+            if (name.Length == 0)
+            {
+                return this.BadRequest("Category name is required.");
+            }
+
             var existingCategories = await this.repository.GetAllAsync(this.CancellationToken);
             if (existingCategories.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
             {
@@ -70,6 +76,10 @@ namespace WebApi.Controllers
             {
                 return this.Conflict($"A category named \"{name}\" already exists.");
             }
+            catch (SqlException ex) when (ex.Number == SqlCheckConstraintViolationErrorNumber)
+            {
+                return this.BadRequest("Category name is required.");
+            }
         }
 
         [HttpPut("{id}")]
@@ -86,6 +96,11 @@ namespace WebApi.Controllers
             }
 
             var name = request.Name?.Trim() ?? string.Empty;
+            if (name.Length == 0)
+            {
+                return this.BadRequest("Category name is required.");
+            }
+
             var existingCategories = await this.repository.GetAllAsync(this.CancellationToken);
             if (existingCategories.Any(c => c.Id != id && string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
             {
@@ -104,6 +119,10 @@ namespace WebApi.Controllers
             catch (SqlException ex) when (ex.Number == SqlUniqueConstraintViolationErrorNumber)
             {
                 return this.Conflict($"A category named \"{name}\" already exists.");
+            }
+            catch (SqlException ex) when (ex.Number == SqlCheckConstraintViolationErrorNumber)
+            {
+                return this.BadRequest("Category name is required.");
             }
         }
 

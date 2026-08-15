@@ -22,6 +22,11 @@
 
 	async function addCategory() {
 		const trimmedName = name.trim();
+		if (!trimmedName) {
+			toast.error('Category name is required.');
+			return;
+		}
+
 		if (categoryNameExists(appState.categories, trimmedName)) {
 			toast.error(`A category named "${trimmedName}" already exists.`);
 			return;

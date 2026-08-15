@@ -7,7 +7,8 @@
     [Color]           NVARCHAR (20)    NULL,
     [Icon]            NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [UQ_Categories_Name] UNIQUE ([Name])
+    CONSTRAINT [UQ_Categories_Name] UNIQUE ([Name]),
+    CONSTRAINT [CK_Categories_Name_NotEmpty] CHECK (LEN(LTRIM(RTRIM([Name]))) > 0)
 );
 
 GO

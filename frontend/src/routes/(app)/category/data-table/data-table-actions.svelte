@@ -41,6 +41,11 @@
 	async function saveCategory(event: Event) {
 		event.preventDefault();
 		const trimmedName = name.trim();
+		if (!trimmedName) {
+			toast.error('Category name is required.');
+			return;
+		}
+
 		if (categoryNameExists(appState.categories, trimmedName, id)) {
 			toast.error(`A category named "${trimmedName}" already exists.`);
 			return;
