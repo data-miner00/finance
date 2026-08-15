@@ -4,18 +4,21 @@ export interface KnownSettings {
 	pieChartDisplayTop: number;
 	enableTax: boolean;
 	enablePiggyBank: boolean;
+	enableBudget: boolean;
 }
 
 export const DEFAULT_SETTINGS: KnownSettings = {
 	pieChartDisplayTop: 5,
 	enableTax: true,
-	enablePiggyBank: true
+	enablePiggyBank: true,
+	enableBudget: true
 };
 
 const KEYS = {
 	pieChartDisplayTop: 'pieChartDisplayTop',
 	enableTax: 'enableTax',
-	enablePiggyBank: 'enablePiggyBank'
+	enablePiggyBank: 'enablePiggyBank',
+	enableBudget: 'enableBudget'
 } as const;
 
 export function parseSettings(raw: Setting[]): KnownSettings {
@@ -29,7 +32,8 @@ export function parseSettings(raw: Setting[]): KnownSettings {
 		enablePiggyBank: parseBoolOrDefault(
 			map.get(KEYS.enablePiggyBank),
 			DEFAULT_SETTINGS.enablePiggyBank
-		)
+		),
+		enableBudget: parseBoolOrDefault(map.get(KEYS.enableBudget), DEFAULT_SETTINGS.enableBudget)
 	};
 }
 
@@ -43,6 +47,9 @@ export function toSettingsValues(partial: Partial<KnownSettings>): Record<string
 	}
 	if (partial.enablePiggyBank !== undefined) {
 		values[KEYS.enablePiggyBank] = String(partial.enablePiggyBank);
+	}
+	if (partial.enableBudget !== undefined) {
+		values[KEYS.enableBudget] = String(partial.enableBudget);
 	}
 	return values;
 }

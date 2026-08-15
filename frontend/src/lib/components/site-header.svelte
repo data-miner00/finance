@@ -64,6 +64,13 @@
 				appState.isAddTaxDialogOpen = true;
 			}
 		},
+		budget: {
+			text: 'Set Budget',
+			isDisplay: true,
+			action() {
+				// noop
+			}
+		},
 		debt: {
 			text: 'Create Debt',
 			isDisplay: true,

@@ -11,6 +11,7 @@ export type CurrentPage =
 	| 'settings'
 	| 'recurring'
 	| 'tax'
+	| 'budget'
 	| 'debt';
 
 export type AppState = {

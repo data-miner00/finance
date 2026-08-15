@@ -34,12 +34,14 @@ export interface Category extends EntityBase {
 	name: string;
 	color?: string | null;
 	icon?: string | null;
+	budgetAmount?: number | null;
 }
 
 export interface CreateCategoryRequest {
 	name: string;
 	color?: string | null;
 	icon?: string | null;
+	budgetAmount?: number | null;
 }
 
 export interface UpdateCategoryRequest extends CreateCategoryRequest {}

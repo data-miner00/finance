@@ -7,6 +7,7 @@
 	import MoneybagMove from '@tabler/icons-svelte/icons/moneybag-move';
 	import MoneybagMoveBack from '@tabler/icons-svelte/icons/moneybag-move-back';
 	import PigMoney from '@tabler/icons-svelte/icons/pig-money';
+	import ReportMoney from '@tabler/icons-svelte/icons/report-money';
 	import SearchIcon from '@tabler/icons-svelte/icons/search';
 	import SettingsIcon from '@tabler/icons-svelte/icons/settings';
 	import TagIcon from '@tabler/icons-svelte/icons/tag';
@@ -89,6 +90,15 @@
 							title: 'Tax',
 							url: '/tax',
 							icon: Tax
+						}
+					]
+				: []),
+			...(appState.settings.enableBudget
+				? [
+						{
+							title: 'Budget',
+							url: '/budget',
+							icon: ReportMoney
 						}
 					]
 				: []),
