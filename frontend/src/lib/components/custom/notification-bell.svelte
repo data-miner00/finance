@@ -71,7 +71,7 @@
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item>
 			{#snippet child({ props })}
-				<a {...props} href="/settings/notification" class="w-full text-center">View all</a>
+				<a {...props} href="/notification" class="w-full text-center">View all</a>
 			{/snippet}
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>

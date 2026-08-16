@@ -104,7 +104,7 @@
 				: []),
 			{
 				title: 'Notifications',
-				url: '/notifications',
+				url: '/notification',
 				icon: Bell
 			}
 		]

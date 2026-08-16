@@ -92,6 +92,13 @@
 			action() {
 				appState.isAddTransactionDialogOpen = true;
 			}
+		},
+		notification: {
+			text: '',
+			isDisplay: false,
+			action() {
+				// noop
+			}
 		}
 	};
 
@@ -109,10 +116,12 @@
 			<ModeToggleButton />
 			<NotificationBell />
 
-			<Button onclick={actionButton.action}>
-				<PlusIcon />
-				{actionButton.text}
-			</Button>
+			{#if actionButton.isDisplay}
+				<Button onclick={actionButton.action}>
+					<PlusIcon />
+					{actionButton.text}
+				</Button>
+			{/if}
 		</div>
 	</div>
 </header>

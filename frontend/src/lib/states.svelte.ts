@@ -12,7 +12,8 @@ export type CurrentPage =
 	| 'recurring'
 	| 'tax'
 	| 'budget'
-	| 'debt';
+	| 'debt'
+	| 'notification';
 
 export type AppState = {
 	accounts: Awaited<ReturnType<typeof import('./services').getAccounts>>;
