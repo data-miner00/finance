@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Provisioning.Options;
 
-namespace Provisioning.Options
+internal class DatabaseOption : ICloneable
 {
-    internal class DatabaseOption
+    public const string SectionName = "Database";
+
+    public string MasterConnectionString { get; set; }
+
+    public string DatabaseName { get; set; }
+
+    public string ConnectionString { get; set; }
+
+    public object Clone()
     {
-        public const string SectionName = "Database";
-
-        public string MasterConnectionString { get; set; }
-
-        public string DatabaseName { get; set; }
-
-        public string ConnectionString { get; set; }
+        return this.MemberwiseClone();
     }
 }
