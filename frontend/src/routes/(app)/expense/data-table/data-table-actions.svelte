@@ -49,8 +49,7 @@
 
 	async function saveExpense(event: Event) {
 		event.preventDefault();
-		const accountName = appState.accounts.find((a) => a.id === accountId)?.name;
-		await updateExpense(id, {
+		const updated = await updateExpense(id, {
 			name,
 			amount,
 			categoryName,
@@ -60,23 +59,7 @@
 			agentName,
 			accountId: accountId || undefined
 		});
-		appState.expenses = appState.expenses.map((e) =>
-			e.id === id
-				? {
-						...e,
-						name,
-						amount,
-						categoryName,
-						actionedAt,
-						location,
-						description,
-						agentName,
-						accountId: accountId || null,
-						accountName,
-						updatedAt: new Date().toISOString()
-					}
-				: e
-		);
+		appState.expenses = appState.expenses.map((e) => (e.id === id ? updated : e));
 		refreshNotifications();
 		toast.success('Expense updated successfully.');
 		isEditDialogOpen = false;
