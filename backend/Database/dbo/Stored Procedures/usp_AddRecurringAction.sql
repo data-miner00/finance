@@ -48,6 +48,7 @@ BEGIN
 		l.[Id],
 		[Name],
 		[Description],
+		[IsActive],
 		[Type],
 		[Amount],
 		[RecurringAt],
