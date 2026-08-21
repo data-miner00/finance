@@ -19,7 +19,7 @@
 	let amount = $state(0);
 
 	function openEditDialog() {
-		const item = appState.incomes.find((i) => i.id === id);
+		const item = appState.taxes.find((i) => i.id === id);
 		if (!item) return;
 		name = item.name;
 		amount = item.amount;
@@ -28,16 +28,14 @@
 
 	async function saveTax(event: Event) {
 		event.preventDefault();
-		await updateTax(id, { name, amount });
-		appState.incomes = appState.incomes.map((i) =>
-			i.id === id ? { ...i, name, amount, updatedAt: new Date().toISOString() } : i
-		);
+		const updated = await updateTax(id, { name, amount });
+		appState.taxes = appState.taxes.map((i) => (i.id === id ? updated : i));
 		isEditDialogOpen = false;
 	}
 
 	async function confirmDelete() {
 		await deleteTax(id);
-		appState.incomes = appState.incomes.filter((i) => i.id !== id);
+		appState.taxes = appState.taxes.filter((i) => i.id !== id);
 		isDeleteDialogOpen = false;
 	}
 </script>
