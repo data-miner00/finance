@@ -1,11 +1,10 @@
 <script lang="ts">
-	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import { toast } from 'svelte-sonner';
 
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
+	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { updateCategory } from '$lib/services';
@@ -66,35 +65,18 @@
 	}
 </script>
 
-<DropdownMenu.Root>
-	<DropdownMenu.Trigger>
-		{#snippet child({ props })}
-			<Button {...props} variant="ghost" size="icon" class="relative size-8 p-0">
-				<span class="sr-only">Open menu</span>
-				<EllipsisIcon />
-			</Button>
-		{/snippet}
-	</DropdownMenu.Trigger>
-	<DropdownMenu.Content>
-		<DropdownMenu.Group>
-			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
-		</DropdownMenu.Group>
-		<DropdownMenu.Separator />
-		<DropdownMenu.Item onclick={() => (isRemoveDialogOpen = true)} variant="destructive">
-			Remove Budget
-		</DropdownMenu.Item>
-	</DropdownMenu.Content>
-</DropdownMenu.Root>
+<RowActionsMenu
+	onEdit={openEditDialog}
+	onDelete={() => (isRemoveDialogOpen = true)}
+	deleteLabel="Remove Budget"
+/>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
 	<form>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
 				<Dialog.Title>Edit Budget</Dialog.Title>
-				<Dialog.Description>
-					Update the monthly budget amount for this category.
-				</Dialog.Description>
+				<Dialog.Description>Update the monthly budget amount for this category.</Dialog.Description>
 			</Dialog.Header>
 			<div class="grid gap-4">
 				<div class="grid gap-3">
@@ -119,19 +101,10 @@
 	</form>
 </Dialog.Root>
 
-<AlertDialog.Root bind:open={isRemoveDialogOpen}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>Remove budget?</AlertDialog.Title>
-			<AlertDialog.Description>
-				This clears the monthly budget for this category. The category itself is not deleted.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel type="button" class={buttonVariants({ variant: 'outline' })}>
-				Cancel
-			</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={confirmRemove}>Remove</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+<ConfirmAlertDialog
+	bind:open={isRemoveDialogOpen}
+	title="Remove budget?"
+	description="This clears the monthly budget for this category. The category itself is not deleted."
+	confirmLabel="Remove"
+	onConfirm={confirmRemove}
+/>

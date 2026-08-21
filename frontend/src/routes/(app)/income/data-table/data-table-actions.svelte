@@ -1,14 +1,11 @@
 <script lang="ts">
-	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
-
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
+	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { copyText } from '$lib';
 	import { deleteIncome, updateIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -43,30 +40,14 @@
 	}
 </script>
 
-<DropdownMenu.Root>
-	<DropdownMenu.Trigger>
-		{#snippet child({ props })}
-			<Button {...props} variant="ghost" size="icon" class="relative size-8 p-0">
-				<span class="sr-only">Open menu</span>
-				<EllipsisIcon />
-			</Button>
-		{/snippet}
-	</DropdownMenu.Trigger>
-	<DropdownMenu.Content>
-		<DropdownMenu.Group>
-			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit income</DropdownMenu.Item>
-
-			<DropdownMenu.Item onclick={() => copyText(id, 'ID copied to clipboard')}>
-				Copy income ID
-			</DropdownMenu.Item>
-		</DropdownMenu.Group>
-		<DropdownMenu.Separator />
-		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
-			Delete income
-		</DropdownMenu.Item>
-	</DropdownMenu.Content>
-</DropdownMenu.Root>
+<RowActionsMenu
+	onEdit={openEditDialog}
+	onDelete={() => (isDeleteDialogOpen = true)}
+	editLabel="Edit income"
+	deleteLabel="Delete income"
+	copyId={id}
+	copyLabel="Copy income ID"
+/>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
 	<form>
@@ -111,17 +92,9 @@
 	</form>
 </Dialog.Root>
 
-<AlertDialog.Root bind:open={isDeleteDialogOpen}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>Delete income?</AlertDialog.Title>
-			<AlertDialog.Description>This action cannot be undone.</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel type="button" class={buttonVariants({ variant: 'outline' })}>
-				Cancel
-			</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={confirmDelete}>Delete</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+<ConfirmAlertDialog
+	bind:open={isDeleteDialogOpen}
+	title="Delete income?"
+	description="This action cannot be undone."
+	onConfirm={confirmDelete}
+/>

@@ -1,17 +1,21 @@
 <script lang="ts">
-	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import { toast } from 'svelte-sonner';
 
-	import { copyText } from '$lib';
 	import IconPicker from '$lib/components/custom/icon-picker.svelte';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
+	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { categoryNameExists, deleteCategory, mergeCategories, updateCategory } from '$lib/services';
+	import {
+		categoryNameExists,
+		deleteCategory,
+		mergeCategories,
+		updateCategory
+	} from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	const defaultColor = '#94a3b8';
@@ -109,32 +113,13 @@
 	}
 </script>
 
-<DropdownMenu.Root>
-	<DropdownMenu.Trigger>
-		{#snippet child({ props })}
-			<Button {...props} variant="ghost" size="icon" class="relative size-8 p-0">
-				<span class="sr-only">Open menu</span>
-				<EllipsisIcon />
-			</Button>
-		{/snippet}
-	</DropdownMenu.Trigger>
-	<DropdownMenu.Content>
-		<DropdownMenu.Group>
-			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={openEditDialog}>Edit</DropdownMenu.Item>
-			<DropdownMenu.Item onclick={openMergeDialog} disabled={otherCategories.length === 0}>
-				Merge into...
-			</DropdownMenu.Item>
-			<DropdownMenu.Item onclick={() => copyText(id, 'ID copied to clipboard')}>
-				Copy ID
-			</DropdownMenu.Item>
-		</DropdownMenu.Group>
-		<DropdownMenu.Separator />
-		<DropdownMenu.Item onclick={() => (isDeleteDialogOpen = true)} variant="destructive">
-			Delete
+<RowActionsMenu onEdit={openEditDialog} onDelete={() => (isDeleteDialogOpen = true)} copyId={id}>
+	{#snippet extraItems()}
+		<DropdownMenu.Item onclick={openMergeDialog} disabled={otherCategories.length === 0}>
+			Merge into...
 		</DropdownMenu.Item>
-	</DropdownMenu.Content>
-</DropdownMenu.Root>
+	{/snippet}
+</RowActionsMenu>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
 	<form>
@@ -210,20 +195,9 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-<AlertDialog.Root bind:open={isDeleteDialogOpen}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>Delete category?</AlertDialog.Title>
-			<AlertDialog.Description>
-				This action cannot be undone. If the category is still used by any expenses, deletion will
-				be blocked — merge it into another category first.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel type="button" class={buttonVariants({ variant: 'outline' })}>
-				Cancel
-			</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={confirmDelete}>Delete</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+<ConfirmAlertDialog
+	bind:open={isDeleteDialogOpen}
+	title="Delete category?"
+	description="This action cannot be undone. If the category is still used by any expenses, deletion will be blocked — merge it into another category first."
+	onConfirm={confirmDelete}
+/>
