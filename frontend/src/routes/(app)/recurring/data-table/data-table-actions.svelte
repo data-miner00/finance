@@ -40,7 +40,7 @@
 
 	async function saveRecurring(event: Event) {
 		event.preventDefault();
-		await updateRecurringAction(id, {
+		const updated = await updateRecurringAction(id, {
 			name,
 			amount,
 			startAt,
@@ -50,22 +50,7 @@
 			description,
 			isActive
 		});
-		appState.recurringActions = appState.recurringActions.map((r) =>
-			r.id === id
-				? {
-						...r,
-						name,
-						amount,
-						startAt,
-						recurrenceType,
-						intervalValue,
-						dayOfMonth,
-						description,
-						isActive,
-						updatedAt: new Date().toISOString()
-					}
-				: r
-		);
+		appState.recurringActions = appState.recurringActions.map((r) => (r.id === id ? updated : r));
 		isEditDialogOpen = false;
 	}
 

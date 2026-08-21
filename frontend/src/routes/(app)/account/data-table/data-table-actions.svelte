@@ -32,12 +32,8 @@
 
 	async function saveAccount(event: Event) {
 		event.preventDefault();
-		await updateAccount(id, { name, accountType, balance });
-		appState.accounts = appState.accounts.map((account) =>
-			account.id === id
-				? { ...account, name, balance, type: accountType, updatedAt: new Date().toISOString() }
-				: account
-		);
+		const updated = await updateAccount(id, { name, accountType, balance });
+		appState.accounts = appState.accounts.map((account) => (account.id === id ? updated : account));
 		isEditDialogOpen = false;
 	}
 

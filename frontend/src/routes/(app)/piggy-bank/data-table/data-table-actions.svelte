@@ -30,10 +30,8 @@
 
 	async function savePiggy(event: Event) {
 		event.preventDefault();
-		await updatePiggyBank(id, { name, amount, target });
-		appState.piggyBanks = appState.piggyBanks.map((p) =>
-			p.id === id ? { ...p, name, amount, target, updatedAt: new Date().toISOString() } : p
-		);
+		const updated = await updatePiggyBank(id, { name, amount, target });
+		appState.piggyBanks = appState.piggyBanks.map((p) => (p.id === id ? updated : p));
 		isEditDialogOpen = false;
 	}
 

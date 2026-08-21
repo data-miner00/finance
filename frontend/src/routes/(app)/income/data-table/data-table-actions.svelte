@@ -31,20 +31,8 @@
 
 	async function saveIncome(event: Event) {
 		event.preventDefault();
-		const accountName = appState.accounts.find((a) => a.id === accountId)?.name;
-		await updateIncome(id, { name, amount, accountId: accountId || undefined });
-		appState.incomes = appState.incomes.map((i) =>
-			i.id === id
-				? {
-						...i,
-						name,
-						amount,
-						accountId: accountId || null,
-						accountName,
-						updatedAt: new Date().toISOString()
-					}
-				: i
-		);
+		const updated = await updateIncome(id, { name, amount, accountId: accountId || undefined });
+		appState.incomes = appState.incomes.map((i) => (i.id === id ? updated : i));
 		isEditDialogOpen = false;
 	}
 
