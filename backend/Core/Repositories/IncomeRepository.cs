@@ -24,6 +24,7 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("Description", entity.Description);
             parameters.Add(
                 "AccountId",
@@ -58,7 +59,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                $"SELECT [Id], [Name], [Description], [Amount], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
+                $"SELECT [Id], [Name], [Description], [Amount], [Currency], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
                 $"FROM {VwNames.GetAllIncomes} ORDER BY {nameof(Income.ActionedAt)} DESC;");
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -69,7 +70,7 @@ namespace Core.Repositories
         public async Task<Income> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = $"SELECT [Id], [Name], [Description], [Amount], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
+            var query = $"SELECT [Id], [Name], [Description], [Amount], [Currency], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
                 $"FROM [dbo].[{VwNames.GetAllIncomes}] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -86,6 +87,7 @@ namespace Core.Repositories
             parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("Description", entity.Description);
             parameters.Add(
                 "AccountId",

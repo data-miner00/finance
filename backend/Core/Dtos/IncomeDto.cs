@@ -13,6 +13,8 @@ namespace Core.Dtos
 
         public decimal Amount { get; set; }
 
+        public string Currency { get; set; }
+
         public DateTime ActionedAt { get; set; }
 
         public Guid? AccountId { get; set; }
@@ -27,6 +29,7 @@ namespace Core.Dtos
                 Name = Name,
                 Description = Description,
                 Amount = Amount,
+                Currency = Currency,
                 ActionedAt = ActionedAt,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,

@@ -19,6 +19,8 @@ namespace Core.Dtos
 
         public decimal Amount { get; set; }
 
+        public string Currency { get; set; }
+
         public string? Location { get; set; }
 
         public DateTime ActionedAt { get; set; }
@@ -36,6 +38,7 @@ namespace Core.Dtos
                 AccountId = AccountId?.ToString(),
                 AccountName = AccountName,
                 Amount = Amount,
+                Currency = Currency,
                 Location = Location,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,

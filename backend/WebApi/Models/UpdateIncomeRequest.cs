@@ -8,6 +8,8 @@ namespace WebApi.Models
 
         public decimal Amount { get; set; }
 
+        public string Currency { get; set; }
+
         public string? AccountId { get; set; }
     }
 }

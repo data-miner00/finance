@@ -45,6 +45,7 @@ namespace WebApi.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 Amount = request.Amount,
+                Currency = request.Currency,
                 AccountId = request.AccountId,
             };
 
@@ -61,6 +62,7 @@ namespace WebApi.Controllers
                 income.Name = request.Name;
                 income.Description = request.Description;
                 income.Amount = request.Amount;
+                income.Currency = request.Currency;
                 income.AccountId = request.AccountId;
 
                 var updated = await _repository.UpdateAsync(income, cancellationToken);

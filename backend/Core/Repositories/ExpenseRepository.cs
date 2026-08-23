@@ -24,6 +24,7 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("CategoryName", entity.CategoryName);
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
@@ -66,7 +67,7 @@ namespace Core.Repositories
              * Hence, the fix is to use Linq in here OR put the ORDER BY clause to the final query below.
              */
             var command = new CommandDefinition(
-                $"SELECT [Id], [Name], [Description], [Amount], [Location], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
+                $"SELECT [Id], [Name], [Description], [Amount], [Currency], [Location], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
                 $"FROM {VwNames.GetAllExpenses} ORDER BY {nameof(Expense.ActionedAt)} DESC;");
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -77,7 +78,7 @@ namespace Core.Repositories
         public async Task<Expense> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = $"SELECT [Id], [Name], [Description], [Amount], [Location], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
+            var query = $"SELECT [Id], [Name], [Description], [Amount], [Currency], [Location], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
                 $"FROM [dbo].[{VwNames.GetAllExpenses}] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -94,6 +95,7 @@ namespace Core.Repositories
             parameters.Add("Id", Guid.Parse(entity.Id), DbType.Guid);
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("CategoryName", entity.CategoryName);
             parameters.Add("Location", entity.Location);
             parameters.Add("Description", entity.Description);
@@ -126,6 +128,7 @@ namespace Core.Repositories
                 parameters.Add("Id", model.Id);
                 parameters.Add("Name", model.Name);
                 parameters.Add("Amount", model.Amount);
+                parameters.Add("Currency", model.Currency ?? "MYR");
                 parameters.Add("Description", model.Description);
                 parameters.Add("ActionedAt", model.ActionedAt);
                 parameters.Add("CreatedAt", model.CreatedAt);
