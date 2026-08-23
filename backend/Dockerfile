@@ -2,6 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
+COPY ["Directory.Packages.props", "./"]
 COPY ["Core/*.csproj", "Core/"]
 COPY ["WebApi/*.csproj", "WebApi/"]
 RUN dotnet restore WebApi

@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="Dapper" Version="2.1.79" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+    <PackageReference Include="Azure.Storage.Blobs" />
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
   </ItemGroup>
 
   <ItemGroup>
