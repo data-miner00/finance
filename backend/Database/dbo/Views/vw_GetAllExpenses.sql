@@ -1,7 +1,7 @@
 ﻿CREATE VIEW dbo.vw_GetAllExpenses
 AS
 SELECT        TOP (100) PERCENT dbo.Expenses.Id, dbo.Expenses.Name, dbo.Expenses.Description, dbo.Expenses.Amount, dbo.Expenses.Currency, dbo.Expenses.Location, dbo.Expenses.ActionedAt, dbo.Expenses.CreatedAt, dbo.Expenses.UpdatedAt,
-                         dbo.Categories.Name AS CategoryName, dbo.Expenses.AgentName, dbo.Expenses.AccountId, dbo.Accounts.Name AS AccountName
+                         dbo.Categories.Name AS CategoryName, dbo.Expenses.AgentName, dbo.Expenses.AccountId, dbo.Accounts.Name AS AccountName, dbo.Expenses.ReceiptImage
 FROM            dbo.Expenses LEFT OUTER JOIN
                          dbo.Categories ON dbo.Expenses.CategoryId = dbo.Categories.Id LEFT OUTER JOIN
                          dbo.Accounts ON dbo.Expenses.AccountId = dbo.Accounts.Id
