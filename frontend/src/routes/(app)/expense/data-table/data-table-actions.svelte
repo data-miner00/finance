@@ -12,6 +12,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { refreshNotifications } from '$lib/notifications';
 	import { categoryNameExists, createCategory, deleteExpense, updateExpense } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
@@ -25,6 +26,7 @@
 	let categoryName = $state('');
 	let categorySearch = $state('');
 	let amount = $state(0);
+	let currency = $state('');
 	let actionedAt = $state('');
 	let location = $state('');
 	let description = $state<string>();
@@ -36,6 +38,7 @@
 		if (!item) return;
 		name = item.name;
 		amount = item.amount;
+		currency = item.currency;
 		categoryName = item.categoryName || '';
 		actionedAt = item.actionedAt;
 		location = item.location || '';
@@ -50,6 +53,7 @@
 		const updated = await updateExpense(id, {
 			name,
 			amount,
+			currency,
 			categoryName,
 			actionedAt,
 			location,
@@ -218,6 +222,21 @@
 						step="0.01"
 						bind:value={amount}
 					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-currency">Currency</Label>
+					<Select.Root type="single" name="currency" bind:value={currency}>
+						<Select.Trigger id="edit-currency" class="w-full">
+							{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+						</Select.Trigger>
+						<Select.Content>
+							{#each CURRENCIES as code (code)}
+								<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+									{CURRENCY_LABELS[code]}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="edit-account">Account</Label>

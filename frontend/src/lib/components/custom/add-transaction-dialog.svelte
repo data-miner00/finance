@@ -14,6 +14,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { refreshNotifications } from '$lib/notifications';
 	import { categoryNameExists, createCategory, createExpense, createIncome } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
@@ -34,6 +35,7 @@
 	let categoryName = $state('');
 	let categorySearch = $state('');
 	let amount = $state(0);
+	let currency = $state(appState.settings.defaultCurrency);
 	let location = $state('');
 	let actionedAt = $state<CalendarDate>();
 	let agentName = $state('');
@@ -47,12 +49,14 @@
 				name,
 				description,
 				amount,
+				currency,
 				accountId: accountId || undefined
 			});
 
 			name = '';
 			description = undefined;
 			amount = 0;
+			currency = appState.settings.defaultCurrency;
 			accountId = '';
 
 			appState.incomes = [...appState.incomes, income];
@@ -62,6 +66,7 @@
 				description,
 				categoryName,
 				amount,
+				currency,
 				location,
 				agentName,
 				accountId: accountId || undefined
@@ -72,6 +77,7 @@
 			categoryName = '';
 			accountId = '';
 			amount = 0;
+			currency = appState.settings.defaultCurrency;
 			location = '';
 			actionedAt = undefined;
 			agentName = '';
@@ -272,6 +278,21 @@
 						/>
 					</div>
 					<div class="grid gap-3">
+						<Label for="currency-1">Currency</Label>
+						<Select.Root type="single" name="currency" bind:value={currency}>
+							<Select.Trigger id="currency-1" class="w-full">
+								{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+							</Select.Trigger>
+							<Select.Content>
+								{#each CURRENCIES as code (code)}
+									<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+										{CURRENCY_LABELS[code]}
+									</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
+					</div>
+					<div class="grid gap-3">
 						<Label for="location-1">Location</Label>
 						<Popover.Root bind:open={locationComboOpen}>
 							<Popover.Trigger bind:ref={locationTriggerRef}>
@@ -414,6 +435,21 @@
 							bind:value={amount}
 							placeholder="e.g. 100.00"
 						/>
+					</div>
+					<div class="grid gap-3">
+						<Label for="currency-2">Currency</Label>
+						<Select.Root type="single" name="currency" bind:value={currency}>
+							<Select.Trigger id="currency-2" class="w-full">
+								{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+							</Select.Trigger>
+							<Select.Content>
+								{#each CURRENCIES as code (code)}
+									<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+										{CURRENCY_LABELS[code]}
+									</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
 					</div>
 					<div class="grid gap-3">
 						<Label for="account-2">Account</Label>
