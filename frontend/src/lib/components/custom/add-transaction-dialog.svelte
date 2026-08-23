@@ -159,7 +159,7 @@
 
 <Dialog.Root bind:open>
 	<form>
-		<Dialog.Content class="sm:max-w-106.25">
+		<Dialog.Content class="max-h-2/3 overflow-y-auto sm:max-w-106.25">
 			<Dialog.Header>
 				<Dialog.Title>{tab === 'expense' ? 'Add Expense' : 'Add Income'}</Dialog.Title>
 				<Dialog.Description>
@@ -277,131 +277,141 @@
 							placeholder="e.g. 100.00"
 						/>
 					</div>
-					<div class="grid gap-3">
-						<Label for="currency-1">Currency</Label>
-						<Select.Root type="single" name="currency" bind:value={currency}>
-							<Select.Trigger id="currency-1" class="w-full">
-								{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
-							</Select.Trigger>
-							<Select.Content>
-								{#each CURRENCIES as code (code)}
-									<Select.Item value={code} label={CURRENCY_LABELS[code]}>
-										{CURRENCY_LABELS[code]}
-									</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					</div>
-					<div class="grid gap-3">
-						<Label for="location-1">Location</Label>
-						<Popover.Root bind:open={locationComboOpen}>
-							<Popover.Trigger bind:ref={locationTriggerRef}>
-								{#snippet child({ props })}
-									<Button
-										{...props}
-										variant="outline"
-										class="justify-between"
-										role="combobox"
-										aria-expanded={locationComboOpen}
-									>
-										{location || 'Select or add a new location'}
-										<ChevronsUpDownIcon class="opacity-50" />
-									</Button>
-								{/snippet}
-							</Popover.Trigger>
-							<Popover.Content class="p-0">
-								<Command.Root>
-									<Command.Input placeholder="e.g. Melaka Supermarket" bind:value={location} />
-									<Command.List>
-										<Command.Empty>{location}</Command.Empty>
-										<Command.Group value="frameworks">
-											{#each appState.knownLocations as locationSuggestion (locationSuggestion)}
-												<Command.Item
-													value={locationSuggestion}
-													onSelect={() => {
-														location = locationSuggestion;
-														closeAndFocusLocationTrigger();
-													}}
-												>
-													<CheckIcon
-														class={cn(location !== locationSuggestion && 'text-transparent')}
-													/>
-													{locationSuggestion}
-												</Command.Item>
-											{/each}
-										</Command.Group>
-									</Command.List>
-								</Command.Root>
-							</Popover.Content>
-						</Popover.Root>
-					</div>
-					<div class="grid gap-3">
-						<Label for={`${id}-date`} class="px-1">Actioned Date</Label>
-						<Popover.Root bind:open={isCalendarPopoverOpen}>
-							<Popover.Trigger id={`${id}-date`}>
-								{#snippet child({ props })}
-									<Button {...props} variant="outline" class="justify-between font-normal">
-										{actionedAt
-											? actionedAt.toDate(getLocalTimeZone()).toLocaleDateString()
-											: 'Select date'}
-										<ChevronDownIcon />
-									</Button>
-								{/snippet}
-							</Popover.Trigger>
-							<Popover.Content class="w-auto overflow-hidden p-0" align="start">
-								<Calendar
-									type="single"
-									bind:value={actionedAt}
-									captionLayout="dropdown"
-									onValueChange={() => {
-										isCalendarPopoverOpen = false;
-									}}
-									maxValue={today(getLocalTimeZone())}
-								/>
-							</Popover.Content>
-						</Popover.Root>
-					</div>
-					<div class="grid gap-3">
-						<Label for="agentName-1">Agent</Label>
-						<Popover.Root bind:open={agentComboOpen}>
-							<Popover.Trigger bind:ref={agentTriggerRef}>
-								{#snippet child({ props })}
-									<Button
-										{...props}
-										variant="outline"
-										class="justify-between"
-										role="combobox"
-										aria-expanded={agentComboOpen}
-									>
-										{agentName || 'Select or add a new agent...'}
-										<ChevronsUpDownIcon class="opacity-50" />
-									</Button>
-								{/snippet}
-							</Popover.Trigger>
-							<Popover.Content class="p-0">
-								<Command.Root>
-									<Command.Input placeholder="e.g. John Doe" bind:value={agentName} />
-									<Command.List>
-										<Command.Empty>{agentName}</Command.Empty>
-										<Command.Group value="frameworks">
-											{#each appState.knownAgents as agent (agent)}
-												<Command.Item
-													value={agent}
-													onSelect={() => {
-														agentName = agent;
-														closeAndFocusAgentTrigger();
-													}}
-												>
-													<CheckIcon class={cn(agentName !== agent && 'text-transparent')} />
-													{agent}
-												</Command.Item>
-											{/each}
-										</Command.Group>
-									</Command.List>
-								</Command.Root>
-							</Popover.Content>
-						</Popover.Root>
-					</div>
+
+					<details>
+						<summary class="mb-2 cursor-pointer text-sm text-muted-foreground">
+							Advanced options
+						</summary>
+
+						<div class="grid gap-4">
+							<div class="grid gap-3">
+								<Label for="currency-1">Currency</Label>
+								<Select.Root type="single" name="currency" bind:value={currency}>
+									<Select.Trigger id="currency-1" class="w-full">
+										{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+									</Select.Trigger>
+									<Select.Content>
+										{#each CURRENCIES as code (code)}
+											<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+												{CURRENCY_LABELS[code]}
+											</Select.Item>
+										{/each}
+									</Select.Content>
+								</Select.Root>
+							</div>
+							<div class="grid gap-3">
+								<Label for="location-1">Location</Label>
+								<Popover.Root bind:open={locationComboOpen}>
+									<Popover.Trigger bind:ref={locationTriggerRef}>
+										{#snippet child({ props })}
+											<Button
+												{...props}
+												variant="outline"
+												class="justify-between"
+												role="combobox"
+												aria-expanded={locationComboOpen}
+											>
+												{location || 'Select or add a new location'}
+												<ChevronsUpDownIcon class="opacity-50" />
+											</Button>
+										{/snippet}
+									</Popover.Trigger>
+									<Popover.Content class="p-0">
+										<Command.Root>
+											<Command.Input placeholder="e.g. Melaka Supermarket" bind:value={location} />
+											<Command.List>
+												<Command.Empty>{location}</Command.Empty>
+												<Command.Group value="frameworks">
+													{#each appState.knownLocations as locationSuggestion (locationSuggestion)}
+														<Command.Item
+															value={locationSuggestion}
+															onSelect={() => {
+																location = locationSuggestion;
+																closeAndFocusLocationTrigger();
+															}}
+														>
+															<CheckIcon
+																class={cn(location !== locationSuggestion && 'text-transparent')}
+															/>
+															{locationSuggestion}
+														</Command.Item>
+													{/each}
+												</Command.Group>
+											</Command.List>
+										</Command.Root>
+									</Popover.Content>
+								</Popover.Root>
+							</div>
+
+							<div class="grid gap-3">
+								<Label for={`${id}-date`}>Actioned Date</Label>
+								<Popover.Root bind:open={isCalendarPopoverOpen}>
+									<Popover.Trigger id={`${id}-date`}>
+										{#snippet child({ props })}
+											<Button {...props} variant="outline" class="justify-between font-normal">
+												{actionedAt
+													? actionedAt.toDate(getLocalTimeZone()).toLocaleDateString()
+													: 'Select date'}
+												<ChevronDownIcon />
+											</Button>
+										{/snippet}
+									</Popover.Trigger>
+									<Popover.Content class="w-auto overflow-hidden p-0" align="start">
+										<Calendar
+											type="single"
+											bind:value={actionedAt}
+											captionLayout="dropdown"
+											onValueChange={() => {
+												isCalendarPopoverOpen = false;
+											}}
+											maxValue={today(getLocalTimeZone())}
+										/>
+									</Popover.Content>
+								</Popover.Root>
+							</div>
+							<div class="grid gap-3">
+								<Label for="agentName-1">Agent</Label>
+								<Popover.Root bind:open={agentComboOpen}>
+									<Popover.Trigger bind:ref={agentTriggerRef}>
+										{#snippet child({ props })}
+											<Button
+												{...props}
+												variant="outline"
+												class="justify-between"
+												role="combobox"
+												aria-expanded={agentComboOpen}
+											>
+												{agentName || 'Select or add a new agent...'}
+												<ChevronsUpDownIcon class="opacity-50" />
+											</Button>
+										{/snippet}
+									</Popover.Trigger>
+									<Popover.Content class="p-0">
+										<Command.Root>
+											<Command.Input placeholder="e.g. John Doe" bind:value={agentName} />
+											<Command.List>
+												<Command.Empty>{agentName}</Command.Empty>
+												<Command.Group value="frameworks">
+													{#each appState.knownAgents as agent (agent)}
+														<Command.Item
+															value={agent}
+															onSelect={() => {
+																agentName = agent;
+																closeAndFocusAgentTrigger();
+															}}
+														>
+															<CheckIcon class={cn(agentName !== agent && 'text-transparent')} />
+															{agent}
+														</Command.Item>
+													{/each}
+												</Command.Group>
+											</Command.List>
+										</Command.Root>
+									</Popover.Content>
+								</Popover.Root>
+							</div>
+						</div>
+					</details>
 				</Tabs.Content>
 
 				<Tabs.Content value="income" class="grid gap-4">
