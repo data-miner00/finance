@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { type RowSelectionState } from '@tanstack/table-core';
 	import { onMount } from 'svelte';
 
 	import { calculatePercentageChange, formatCurrency } from '$lib';
@@ -11,6 +12,7 @@
 	import MonthlyDistribution from './charts/monthly-distribution.svelte';
 	import MonthlyNetIncome from './charts/monthly-net-income.svelte';
 	import SavingsRate from './charts/savings-rate.svelte';
+	import BulkActionsToolbar from './data-table/bulk-actions-toolbar.svelte';
 	import { columns } from './data-table/column';
 
 	onMount(() => {
@@ -162,6 +164,13 @@
 				return { month: bucket.month, cumulative: Math.round(running * 100) / 100 };
 			});
 	});
+
+	let rowSelection = $state<RowSelectionState>({});
+	let selectedIncomeIds = $derived(
+		Object.entries(rowSelection)
+			.filter(([, selected]) => selected)
+			.map(([id]) => id)
+	);
 </script>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
@@ -260,7 +269,14 @@
 
 		<Tabs.Content value="records" class="flex flex-col gap-4">
 			<div class="px-4 lg:px-6">
-				<DataTable data={appState.incomes} {columns} />
+				<BulkActionsToolbar selectedIds={selectedIncomeIds} onCleared={() => (rowSelection = {})} />
+				<DataTable
+					data={appState.incomes}
+					{columns}
+					enableRowSelection
+					getRowId={(income) => income.id}
+					bind:rowSelection
+				/>
 			</div>
 		</Tabs.Content>
 

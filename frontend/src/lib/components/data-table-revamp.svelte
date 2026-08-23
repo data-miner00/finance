@@ -1,11 +1,11 @@
 <script lang="ts" generics="TData, TValue">
 	import ChevronDownIcon from '@tabler/icons-svelte/icons/chevron-down';
 	import LayoutColumnsIcon from '@tabler/icons-svelte/icons/layout-columns';
-	import PlusIcon from '@tabler/icons-svelte/icons/plus';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
 		type PaginationState,
+		type RowSelectionState,
 		type SortingState,
 		type VisibilityState,
 		getCoreRowModel,
@@ -17,24 +17,36 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { FlexRender, createSvelteTable } from '$lib/components/ui/data-table/index.js';
+	import {
+		FlexRender,
+		createSvelteTable,
+		renderComponent
+	} from '$lib/components/ui/data-table/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+
+	import DataTableCheckbox from './data-table-checkbox.svelte';
 
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
 		data: TData[];
 		controls?: Snippet;
 		isPaginated?: boolean;
+		enableRowSelection?: boolean;
+		getRowId?: (row: TData) => string;
+		rowSelection?: RowSelectionState;
 	};
 
 	let {
 		data,
 		columns,
 		controls: Controls,
-		isPaginated: isPaginatedProp = true
+		isPaginated: isPaginatedProp = true,
+		enableRowSelection = false,
+		getRowId,
+		rowSelection = $bindable({})
 	}: DataTableProps<TData, TValue> = $props();
 
 	// svelte-ignore state_referenced_locally
@@ -44,12 +56,41 @@
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 
+	// Selecting all filtered rows (not just the current page) keeps behavior consistent whether
+	// or not pagination is toggled on for a given table.
+	const selectColumn: ColumnDef<TData, TValue> = {
+		id: 'select',
+		header: ({ table }) =>
+			renderComponent(DataTableCheckbox, {
+				checked: table.getIsAllRowsSelected(),
+				indeterminate: table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected(),
+				onCheckedChange: (value: boolean) => table.toggleAllRowsSelected(!!value),
+				'aria-label': 'Select all'
+			}),
+		cell: ({ row }) =>
+			renderComponent(DataTableCheckbox, {
+				checked: row.getIsSelected(),
+				onCheckedChange: (value: boolean) => row.toggleSelected(!!value),
+				'aria-label': 'Select row'
+			}),
+		enableSorting: false,
+		enableHiding: false
+	};
+
+	// svelte-ignore state_referenced_locally
+	let effectiveColumns = enableRowSelection ? [selectColumn, ...columns] : columns;
+
 	const table = createSvelteTable({
 		get data() {
 			return data;
 		},
-		// svelte-ignore state_referenced_locally
-		columns,
+		columns: effectiveColumns,
+		get getRowId() {
+			return getRowId;
+		},
+		get enableRowSelection() {
+			return enableRowSelection;
+		},
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -66,6 +107,9 @@
 			},
 			get columnFilters() {
 				return columnFilters;
+			},
+			get rowSelection() {
+				return rowSelection;
 			}
 		},
 		onSortingChange: (updater) => {
@@ -94,6 +138,13 @@
 				columnVisibility = updater(columnVisibility);
 			} else {
 				columnVisibility = updater;
+			}
+		},
+		onRowSelectionChange: (updater) => {
+			if (typeof updater === 'function') {
+				rowSelection = updater(rowSelection);
+			} else {
+				rowSelection = updater;
 			}
 		}
 	});

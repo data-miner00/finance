@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { type DateValue, getLocalTimeZone, today } from '@internationalized/date';
 	import { ArrowBigLeft, ArrowBigRight, ChevronDownIcon, RefreshCcw, X } from '@lucide/svelte';
+	import { type RowSelectionState } from '@tanstack/table-core';
 	import { type DateRange } from 'bits-ui';
 	import { formatDateRange } from 'little-date';
 	import { onMount } from 'svelte';
@@ -31,6 +32,7 @@
 	import CategoryCount from './charts/category-count.svelte';
 	import DailySpending from './charts/daily-spending.svelte';
 	import TotalByMonth from './charts/total-month.svelte';
+	import BulkActionsToolbar from './data-table/bulk-actions-toolbar.svelte';
 	import { columns } from './data-table/column';
 
 	const id = $props.id();
@@ -282,6 +284,13 @@
 		maxAmount = undefined;
 	}
 
+	let rowSelection = $state<RowSelectionState>({});
+	let selectedExpenseIds = $derived(
+		Object.entries(rowSelection)
+			.filter(([, selected]) => selected)
+			.map(([id]) => id)
+	);
+
 	function formatRange(start: DateValue, end: DateValue) {
 		return formatDateRange(start.toDate(getLocalTimeZone()), end.toDate(getLocalTimeZone()), {
 			includeTime: false
@@ -493,14 +502,33 @@
 		<Tabs.Content value="records" class="flex flex-col gap-4">
 			<div class="px-4 lg:px-6">
 				{#snippet tableControls()}
-					<MultiSelectFilter title="Category" options={categoryOptions} bind:selected={selectedCategories} />
-					<MultiSelectFilter title="Account" options={accountOptions} bind:selected={selectedAccounts} />
+					<MultiSelectFilter
+						title="Category"
+						options={categoryOptions}
+						bind:selected={selectedCategories}
+					/>
+					<MultiSelectFilter
+						title="Account"
+						options={accountOptions}
+						bind:selected={selectedAccounts}
+					/>
 					<NumberRangeFilter title="Amount" bind:min={minAmount} bind:max={maxAmount} />
 					{#if hasActiveTableFilters}
 						<Button variant="ghost" size="sm" onclick={resetTableFilters}>Reset filters</Button>
 					{/if}
 				{/snippet}
-				<DataTable data={tableExpenses} {columns} controls={tableControls} />
+				<BulkActionsToolbar
+					selectedIds={selectedExpenseIds}
+					onCleared={() => (rowSelection = {})}
+				/>
+				<DataTable
+					data={tableExpenses}
+					{columns}
+					controls={tableControls}
+					enableRowSelection
+					getRowId={(expense) => expense.id}
+					bind:rowSelection
+				/>
 			</div>
 		</Tabs.Content>
 
