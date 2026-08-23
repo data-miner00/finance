@@ -1,6 +1,9 @@
 
+using Azure.Storage.Blobs;
+using Core;
 using Core.Models;
 using Core.Repositories;
+using Core.Storage;
 using Core.Streams;
 using WebApi.Backgrounds;
 using WebApi.Options;
@@ -11,11 +14,14 @@ namespace WebApi
     {
         private static readonly string CorsPolicyName = "FinanceCorsPolicy";
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var app = WebApplication.CreateBuilder(args)
                 .ConfigureServices()
                 .Build();
+
+            var blobServiceClient = app.Services.GetRequiredService<BlobServiceClient>();
+            await blobServiceClient.GetBlobContainerClient(BlobContainerNames.Receipts).CreateIfNotExistsAsync();
 
             app.MapOpenApi();
             app.UseSwaggerUI(opt =>
@@ -26,7 +32,7 @@ namespace WebApi
             app.UseCors(CorsPolicyName);
             app.UseAuthorization();
             app.MapControllers();
-            app.Run();
+            await app.RunAsync();
         }
 
         private static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
@@ -40,6 +46,12 @@ namespace WebApi
                 ?? throw new InvalidOperationException("SQL Server connection string not found.");
 
             builder.Services.AddSingleton<IDbConnectionFactory>(new SqlConnectionFactory(connectionString));
+
+            var blobStorageConnectionString = builder.Configuration.GetConnectionString("AzureBlobStorage")
+                ?? throw new InvalidOperationException("Azure Blob Storage connection string not found.");
+
+            builder.Services.AddSingleton(new BlobServiceClient(blobStorageConnectionString));
+            builder.Services.AddSingleton<IReceiptStorage, BlobReceiptStorage>();
             builder.Services.AddSingleton<IRepository<Account>, AccountRepository>();
             builder.Services.AddSingleton<ExpenseRepository>();
             builder.Services.AddSingleton<IRepository<Expense>>(sp => sp.GetRequiredService<ExpenseRepository>());

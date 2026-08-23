@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Repositories;
+using Core.Storage;
 using WebApi.Models;
 using Core.Streams;
 using System.Text.Json;
@@ -15,10 +16,18 @@ namespace WebApi.Controllers
         private const string BudgetNearLimitType = "BudgetNearLimit";
         private const string BudgetOverBudgetType = "BudgetOverBudget";
         private const decimal NearLimitRatio = 0.8m;
+        private const long MaxReceiptSizeBytes = 10 * 1024 * 1024;
+        private static readonly HashSet<string> AllowedReceiptContentTypes = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "image/jpeg",
+            "image/png",
+            "application/pdf",
+        };
 
         private readonly ExpenseRepository _repository;
         private readonly CategoryRepository categoryRepository;
         private readonly INotificationRepository notificationRepository;
+        private readonly IReceiptStorage receiptStorage;
         private readonly ILogger<ExpenseController> logger;
         private readonly IDictionary<string, IDataStreamifier> dataStreamifiers;
 
@@ -26,12 +35,14 @@ namespace WebApi.Controllers
             ExpenseRepository repository,
             CategoryRepository categoryRepository,
             INotificationRepository notificationRepository,
+            IReceiptStorage receiptStorage,
             ILogger<ExpenseController> logger,
             IDictionary<string, IDataStreamifier> dataStreamifiers)
         {
             _repository = repository;
             this.categoryRepository = categoryRepository;
             this.notificationRepository = notificationRepository;
+            this.receiptStorage = receiptStorage;
             this.logger = logger;
             this.dataStreamifiers = dataStreamifiers;
         }
@@ -118,6 +129,95 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPost("{id}/receipt")]
+        public async Task<ActionResult<Expense>> UploadReceipt(string id, IFormFile file, CancellationToken cancellationToken)
+        {
+            Expense expense;
+            try
+            {
+                expense = await _repository.GetByIdAsync(id, cancellationToken);
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            if (file.Length > MaxReceiptSizeBytes)
+            {
+                return BadRequest("Receipt file is too large. Maximum size is 10MB.");
+            }
+
+            if (!AllowedReceiptContentTypes.Contains(file.ContentType))
+            {
+                return BadRequest("Receipt must be a JPEG, PNG, or PDF file.");
+            }
+
+            if (!string.IsNullOrEmpty(expense.ReceiptImage))
+            {
+                await this.receiptStorage.DeleteAsync(expense.ReceiptImage, cancellationToken);
+            }
+
+            using (var stream = file.OpenReadStream())
+            {
+                expense.ReceiptImage = await this.receiptStorage.UploadAsync(id, file.FileName, stream, file.ContentType, cancellationToken);
+            }
+
+            var updated = await _repository.UpdateAsync(expense, cancellationToken);
+            return Ok(updated);
+        }
+
+        [HttpGet("{id}/receipt")]
+        public async Task<ActionResult> GetReceipt(string id, CancellationToken cancellationToken)
+        {
+            Expense expense;
+            try
+            {
+                expense = await _repository.GetByIdAsync(id, cancellationToken);
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(expense.ReceiptImage))
+            {
+                return NotFound();
+            }
+
+            var (content, contentType) = await this.receiptStorage.OpenReadAsync(expense.ReceiptImage, cancellationToken);
+            return File(content, contentType);
+        }
+
+        [HttpDelete("{id}/receipt")]
+        public async Task<ActionResult<Expense>> DeleteReceipt(string id, CancellationToken cancellationToken)
+        {
+            Expense expense;
+            try
+            {
+                expense = await _repository.GetByIdAsync(id, cancellationToken);
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(expense.ReceiptImage))
+            {
+                return Ok(expense);
+            }
+
+            await this.receiptStorage.DeleteAsync(expense.ReceiptImage, cancellationToken);
+            expense.ReceiptImage = null;
+
+            var updated = await _repository.UpdateAsync(expense, cancellationToken);
+            return Ok(updated);
         }
 
         [HttpGet("export")]
