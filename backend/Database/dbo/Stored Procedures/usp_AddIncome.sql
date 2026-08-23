@@ -6,6 +6,7 @@
 CREATE PROCEDURE [dbo].[usp_AddIncome]
 	@Name NVARCHAR(50),
 	@Amount MONEY,
+	@Currency NCHAR(3),
 	@Description NVARCHAR(255) = NULL,
 	@AccountId UNIQUEIDENTIFIER = NULL
 AS
@@ -17,6 +18,7 @@ BEGIN
 	(
 		[Name],
 		[Amount],
+		[Currency],
 		[Description],
 		[AccountId]
 	)
@@ -25,6 +27,7 @@ BEGIN
 	(
 		@Name,
 		@Amount,
+		@Currency,
 		@Description,
 		@AccountId
 	);
@@ -34,6 +37,7 @@ BEGIN
 		l.[Name],
 		l.[Description],
 		l.[Amount],
+		l.[Currency],
 		l.[ActionedAt],
 		l.[CreatedAt],
 		l.[UpdatedAt],

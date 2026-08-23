@@ -5,6 +5,7 @@
     [Name]        NVARCHAR (255)   NOT NULL,
     [Description] NVARCHAR (255)   NULL,
     [Amount]      MONEY            NOT NULL,
+    [Currency]    NCHAR (3)        CONSTRAINT [DF_Expenses_Currency] DEFAULT ('MYR') NOT NULL,
     [Location]    NVARCHAR (255)   NULL,
     [ActionedAt]  DATETIME2 (7)    CONSTRAINT [DF_Expenses_ActionedAt] DEFAULT (getdate()) NOT NULL,
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Expenses_CreatedAt] DEFAULT (getdate()) NOT NULL,

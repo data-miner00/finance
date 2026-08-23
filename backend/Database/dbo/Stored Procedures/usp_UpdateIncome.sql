@@ -7,6 +7,7 @@ CREATE PROCEDURE [dbo].[usp_UpdateIncome]
     @Id UNIQUEIDENTIFIER,
     @Name NVARCHAR(50),
     @Amount MONEY,
+    @Currency NCHAR(3),
     @Description NVARCHAR(255) = NULL,
     @AccountId UNIQUEIDENTIFIER = NULL
 AS
@@ -18,6 +19,7 @@ BEGIN
     SET
         [Name] = @Name,
         [Amount] = @Amount,
+        [Currency] = @Currency,
         [Description] = @Description,
         [AccountId] = @AccountId
     OUTPUT inserted.Id INTO @OutputTable
@@ -28,6 +30,7 @@ BEGIN
         i.[Name],
         i.[Description],
         i.[Amount],
+        i.[Currency],
         i.[ActionedAt],
         i.[CreatedAt],
         i.[UpdatedAt],
