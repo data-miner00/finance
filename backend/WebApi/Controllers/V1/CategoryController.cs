@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using WebApi.Models;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.V1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class CategoryController : ControllerBase
     {
         private const int SqlForeignKeyViolationErrorNumber = 547;

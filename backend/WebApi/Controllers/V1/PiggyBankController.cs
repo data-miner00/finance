@@ -3,10 +3,10 @@ using Core.Models;
 using Core.Repositories;
 using WebApi.Models;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.V1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class PiggyBankController : ControllerBase
     {
         private readonly IRepository<PiggyBank> _repository;

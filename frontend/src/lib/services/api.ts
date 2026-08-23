@@ -1,6 +1,6 @@
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const apiBase = PUBLIC_API_BASE_URL + '/api';
+export const apiBase = PUBLIC_API_BASE_URL + '/api/v1';
 
 export async function handleResponse<T>(response: Response): Promise<T> {
 	if (!response.ok) {

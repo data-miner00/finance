@@ -6,10 +6,10 @@ using WebApi.Models;
 using Core.Streams;
 using System.Text.Json;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.V1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class ExpenseController : ControllerBase
     {
         private const string DefaultExportFormat = "json";

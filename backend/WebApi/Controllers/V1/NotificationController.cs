@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Core.Models;
 using Core.Repositories;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.V1
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationRepository repository;

@@ -3,10 +3,10 @@ using Core.Models;
 using Core.Repositories;
 using WebApi.Models;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.V1
 {
     [ApiController]
-    [Route("api/recurring")]
+    [Route("api/v1/recurring")]
     public class RecurringActionController : ControllerBase
     {
         private readonly IRepository<RecurringAction> _repository;
