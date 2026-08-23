@@ -23,6 +23,8 @@ namespace Core.Dtos
 
         public string? Location { get; set; }
 
+        public string? ReceiptImage { get; set; }
+
         public DateTime ActionedAt { get; set; }
 
         public string? AgentName { get; set; }
@@ -40,6 +42,7 @@ namespace Core.Dtos
                 Amount = Amount,
                 Currency = Currency,
                 Location = Location,
+                ReceiptImage = ReceiptImage,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
                 ActionedAt = ActionedAt,

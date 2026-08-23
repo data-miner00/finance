@@ -33,6 +33,7 @@ namespace Core.Repositories
                 "AccountId",
                 string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
                 DbType.Guid);
+            parameters.Add("ReceiptImage", entity.ReceiptImage);
 
             using var connection = this.connectionFactory.CreateConnection();
             var createdExpense = await connection.QuerySingleOrDefaultAsync<ExpenseDto>(
@@ -67,7 +68,7 @@ namespace Core.Repositories
              * Hence, the fix is to use Linq in here OR put the ORDER BY clause to the final query below.
              */
             var command = new CommandDefinition(
-                $"SELECT [Id], [Name], [Description], [Amount], [Currency], [Location], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
+                $"SELECT [Id], [Name], [Description], [Amount], [Currency], [Location], [ReceiptImage], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
                 $"FROM {VwNames.GetAllExpenses} ORDER BY {nameof(Expense.ActionedAt)} DESC;");
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -78,7 +79,7 @@ namespace Core.Repositories
         public async Task<Expense> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var query = $"SELECT [Id], [Name], [Description], [Amount], [Currency], [Location], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
+            var query = $"SELECT [Id], [Name], [Description], [Amount], [Currency], [Location], [ReceiptImage], [ActionedAt], [CreatedAt], [UpdatedAt], [CategoryName], [AgentName], [AccountId], [AccountName] " +
                 $"FROM [dbo].[{VwNames.GetAllExpenses}] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -105,6 +106,7 @@ namespace Core.Repositories
                 "AccountId",
                 string.IsNullOrEmpty(entity.AccountId) ? (Guid?)null : Guid.Parse(entity.AccountId),
                 DbType.Guid);
+            parameters.Add("ReceiptImage", entity.ReceiptImage);
 
             using var connection = this.connectionFactory.CreateConnection();
             var updatedExpense = await connection.QuerySingleOrDefaultAsync<ExpenseDto>(
