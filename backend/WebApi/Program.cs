@@ -1,4 +1,5 @@
 
+using System.Threading.RateLimiting;
 using Azure.Storage.Blobs;
 using Core;
 using Core.Models;
@@ -30,6 +31,7 @@ namespace WebApi
             });
             app.UseHttpsRedirection();
             app.UseCors(CorsPolicyName);
+            app.UseRateLimiter();
             app.UseAuthorization();
             app.MapControllers();
             await app.RunAsync();
@@ -38,6 +40,7 @@ namespace WebApi
         private static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
         {
             builder.ConfigureCors();
+            builder.ConfigureRateLimiting();
             builder.ConfigureOptions();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
@@ -97,6 +100,42 @@ namespace WebApi
                               .WithHeaders(corsOptions.AllowedHeaders)
                               .WithMethods(corsOptions.AllowedMethods);
                     });
+            });
+
+            return builder;
+        }
+
+        private static WebApplicationBuilder ConfigureRateLimiting(this WebApplicationBuilder builder)
+        {
+            var rateLimitingOptions = builder.Configuration.GetSection(RateLimitingOptions.SectionName).Get<RateLimitingOptions>()
+                ?? throw new InvalidOperationException("Rate limiting option not found.");
+
+            builder.Services.AddRateLimiter(opt =>
+            {
+                opt.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                opt.OnRejected = async (context, cancellationToken) =>
+                {
+                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    {
+                        context.HttpContext.Response.Headers.RetryAfter = ((int)retryAfter.TotalSeconds).ToString();
+                    }
+
+                    await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", cancellationToken);
+                };
+
+                opt.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                {
+                    var partitionKey = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = rateLimitingOptions.PermitLimit,
+                        Window = TimeSpan.FromSeconds(rateLimitingOptions.WindowSeconds),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = rateLimitingOptions.QueueLimit,
+                    });
+                });
             });
 
             return builder;
