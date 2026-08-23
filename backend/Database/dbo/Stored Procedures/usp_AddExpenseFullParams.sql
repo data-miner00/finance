@@ -72,7 +72,7 @@ BEGIN
 		l.[Id],
 		l.[Name],
 		l.[Description],
-		@CategoryName,
+		@CategoryName CategoryName,
 		l.[Amount],
 		l.[Currency],
 		l.[Location],
