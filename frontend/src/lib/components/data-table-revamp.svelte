@@ -26,6 +26,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { appState } from '$lib/states.svelte';
 
 	import DataTableCheckbox from './data-table-checkbox.svelte';
 
@@ -43,14 +44,14 @@
 		data,
 		columns,
 		controls: Controls,
-		isPaginated: isPaginatedProp = true,
+		isPaginated: isPaginatedProp,
 		enableRowSelection = false,
 		getRowId,
 		rowSelection = $bindable({})
 	}: DataTableProps<TData, TValue> = $props();
 
 	// svelte-ignore state_referenced_locally
-	let isPaginated = $state(isPaginatedProp);
+	let isPaginated = $state(isPaginatedProp ?? appState.settings.enableTablePagination);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);

@@ -19,7 +19,8 @@
 					pieChartDisplayTop: tempPieChartDisplayTop,
 					enableTax: tempEnableTax,
 					enablePiggyBank: tempEnablePiggyBank,
-					defaultCurrency: tempDefaultCurrency
+					defaultCurrency: tempDefaultCurrency,
+					enableTablePagination: tempEnableTablePagination
 				})
 			});
 			appState.settings = parseSettings(updated);
@@ -38,6 +39,7 @@
 	let tempEnableTax = $state(appState.settings.enableTax);
 	let tempEnablePiggyBank = $state(appState.settings.enablePiggyBank);
 	let tempDefaultCurrency = $state(appState.settings.defaultCurrency);
+	let tempEnableTablePagination = $state(appState.settings.enableTablePagination);
 
 	// For page hard refresh
 	$effect(() => {
@@ -45,6 +47,7 @@
 		tempEnableTax = appState.settings.enableTax;
 		tempEnablePiggyBank = appState.settings.enablePiggyBank;
 		tempDefaultCurrency = appState.settings.defaultCurrency;
+		tempEnableTablePagination = appState.settings.enableTablePagination;
 	});
 </script>
 
@@ -83,6 +86,11 @@
 			{/each}
 		</Select.Content>
 	</Select.Root>
+
+	<div class="mb-4 flex items-center justify-between">
+		<Label.Root for="enableTablePagination">Paginate Tables by Default</Label.Root>
+		<Switch id="enableTablePagination" bind:checked={tempEnableTablePagination} />
+	</div>
 
 	<Separator class="my-6 " />
 

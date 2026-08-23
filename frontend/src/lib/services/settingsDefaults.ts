@@ -8,6 +8,7 @@ export interface KnownSettings {
 	enablePiggyBank: boolean;
 	enableBudget: boolean;
 	defaultCurrency: string;
+	enableTablePagination: boolean;
 }
 
 export const DEFAULT_SETTINGS: KnownSettings = {
@@ -15,7 +16,8 @@ export const DEFAULT_SETTINGS: KnownSettings = {
 	enableTax: true,
 	enablePiggyBank: true,
 	enableBudget: true,
-	defaultCurrency: DEFAULT_CURRENCY
+	defaultCurrency: DEFAULT_CURRENCY,
+	enableTablePagination: true
 };
 
 const KEYS = {
@@ -23,7 +25,8 @@ const KEYS = {
 	enableTax: 'enableTax',
 	enablePiggyBank: 'enablePiggyBank',
 	enableBudget: 'enableBudget',
-	defaultCurrency: 'defaultCurrency'
+	defaultCurrency: 'defaultCurrency',
+	enableTablePagination: 'enableTablePagination'
 } as const;
 
 export function parseSettings(raw: Setting[]): KnownSettings {
@@ -39,7 +42,11 @@ export function parseSettings(raw: Setting[]): KnownSettings {
 			DEFAULT_SETTINGS.enablePiggyBank
 		),
 		enableBudget: parseBoolOrDefault(map.get(KEYS.enableBudget), DEFAULT_SETTINGS.enableBudget),
-		defaultCurrency: map.get(KEYS.defaultCurrency) ?? DEFAULT_SETTINGS.defaultCurrency
+		defaultCurrency: map.get(KEYS.defaultCurrency) ?? DEFAULT_SETTINGS.defaultCurrency,
+		enableTablePagination: parseBoolOrDefault(
+			map.get(KEYS.enableTablePagination),
+			DEFAULT_SETTINGS.enableTablePagination
+		)
 	};
 }
 
@@ -59,6 +66,9 @@ export function toSettingsValues(partial: Partial<KnownSettings>): Record<string
 	}
 	if (partial.defaultCurrency !== undefined) {
 		values[KEYS.defaultCurrency] = partial.defaultCurrency;
+	}
+	if (partial.enableTablePagination !== undefined) {
+		values[KEYS.enableTablePagination] = String(partial.enableTablePagination);
 	}
 	return values;
 }
