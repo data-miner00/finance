@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { calculatePercentageChange, isCurrentMonth, isLastMonth } from '$lib';
+	import { calculatePercentageChange, formatCurrency, isCurrentMonth, isLastMonth } from '$lib';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { AccountType } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
@@ -69,12 +69,8 @@
 		return { icon: 'up', text: 'No change this month' };
 	}
 
-	// Helper function to format currency
-	function formatCurrency(amount: number): string {
-		return new Intl.NumberFormat('en-MY', {
-			style: 'currency',
-			currency: 'MYR'
-		}).format(amount);
+	function fmt(amount: number): string {
+		return formatCurrency(amount, appState.settings.defaultCurrency);
 	}
 </script>
 
@@ -83,23 +79,23 @@
 >
 	<StatCard
 		description="Income"
-		value={formatCurrency(totalIncomeThisMonth)}
+		value={fmt(totalIncomeThisMonth)}
 		trendDirection={getTrendDescription(incomeChangePercent).icon}
 		badgeText="{incomeChangePercent > 0 ? '+' : ''}{incomeChangePercent.toFixed(1)}%"
 		footerText={getTrendDescription(incomeChangePercent).text}
-		footerSubText="vs {formatCurrency(totalIncomeLastMonth)} last month"
+		footerSubText="vs {fmt(totalIncomeLastMonth)} last month"
 	/>
 	<StatCard
 		description="Spending"
-		value={formatCurrency(totalExpenseThisMonth)}
+		value={fmt(totalExpenseThisMonth)}
 		trendDirection={getTrendDescription(expenseChangePercent).icon}
 		badgeText="{expenseChangePercent > 0 ? '+' : ''}{expenseChangePercent.toFixed(1)}%"
 		footerText={getTrendDescription(expenseChangePercent).text}
-		footerSubText="vs {formatCurrency(totalExpenseLastMonth)} last month"
+		footerSubText="vs {fmt(totalExpenseLastMonth)} last month"
 	/>
 	<StatCard
 		description="Savings"
-		value={formatCurrency(totalAccumulatedSavings)}
+		value={fmt(totalAccumulatedSavings)}
 		trendDirection="up"
 		badgeText="Current Total"
 		footerText="Accumulated over time"
@@ -107,10 +103,10 @@
 	/>
 	<StatCard
 		description="Left to Spend"
-		value={formatCurrency(leftToSpend)}
+		value={fmt(leftToSpend)}
 		trendDirection={getTrendDescription(leftToSpendChangePercent).icon}
 		badgeText="{leftToSpendChangePercent > 0 ? '+' : ''}{leftToSpendChangePercent.toFixed(1)}%"
 		footerText={getTrendDescription(leftToSpendChangePercent).text}
-		footerSubText="vs {formatCurrency(leftToSpendLastMonth)} last month"
+		footerSubText="vs {fmt(leftToSpendLastMonth)} last month"
 	/>
 </div>

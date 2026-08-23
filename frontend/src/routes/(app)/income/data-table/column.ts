@@ -2,6 +2,7 @@ import type { ColumnDef } from '@tanstack/table-core';
 
 import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
+import { formatCurrency } from '$lib/index';
 import type { Income } from '$lib/services/types';
 
 import DataTableActions from './data-table-actions.svelte';
@@ -31,7 +32,7 @@ export const columns: ColumnDef<Income>[] = [
 				title: 'Amount'
 			}),
 		cell: ({ row }) => {
-			return row.original.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
+			return formatCurrency(row.original.amount, row.original.currency);
 		}
 	},
 	{

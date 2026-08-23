@@ -1,10 +1,10 @@
 // place files you want to import through the `$lib` alias in this folder.
 import { toast } from 'svelte-sonner';
 
-export function formatCurrency(amount: number): string {
+export function formatCurrency(amount: number, currency: string = 'MYR'): string {
 	return new Intl.NumberFormat('en-MY', {
 		style: 'currency',
-		currency: 'MYR'
+		currency
 	}).format(amount);
 }
 
