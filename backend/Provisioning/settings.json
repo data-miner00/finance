@@ -30,7 +30,8 @@
       "pieChartDisplayTop": "5",
       "enableTax": "true",
       "enablePiggyBank": "true",
-      "enableBudget": "true"
+      "enableBudget": "true",
+      "defaultCurrency": "MYR"
     }
   }
 }
