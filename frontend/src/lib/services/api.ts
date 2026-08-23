@@ -106,3 +106,21 @@ export async function apiUploadFile(path: string, formData: FormData): Promise<v
 		body: formData
 	});
 }
+
+export async function apiUploadFileForJson<T>(path: string, formData: FormData): Promise<T> {
+	const response = await fetch(`${apiBase}${path}`, {
+		method: 'POST',
+		body: formData
+	});
+
+	return handleResponse<T>(response);
+}
+
+export async function apiDeleteForJson<T>(path: string, signal?: AbortSignal): Promise<T> {
+	const response = await fetch(`${apiBase}${path}`, {
+		method: 'DELETE',
+		signal
+	});
+
+	return handleResponse<T>(response);
+}

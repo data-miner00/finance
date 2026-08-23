@@ -1,4 +1,13 @@
-import { apiDelete, apiDownloadFile, apiGet, apiPost, apiPut, apiUploadFile } from './api';
+import {
+	apiDelete,
+	apiDeleteForJson,
+	apiDownloadFile,
+	apiGet,
+	apiPost,
+	apiPut,
+	apiUploadFile,
+	apiUploadFileForJson
+} from './api';
 import type { CreateExpenseRequest, Expense, UpdateExpenseRequest } from './types';
 
 const path = '/expense';
@@ -43,4 +52,15 @@ export async function importExpenses(jsonFile: File, signal?: AbortSignal) {
 	formData.append('file', jsonFile);
 
 	return apiUploadFile(`${path}/import`, formData);
+}
+
+export async function uploadExpenseReceipt(id: string, file: File): Promise<Expense> {
+	const formData = new FormData();
+	formData.append('file', file);
+
+	return apiUploadFileForJson<Expense>(`${path}/${id}/receipt`, formData);
+}
+
+export async function deleteExpenseReceipt(id: string, signal?: AbortSignal): Promise<Expense> {
+	return apiDeleteForJson<Expense>(`${path}/${id}/receipt`, signal);
 }

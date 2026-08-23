@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CheckIcon, ChevronsUpDownIcon, PlusIcon } from '@lucide/svelte';
+	import { CheckIcon, ChevronsUpDownIcon, PaperclipIcon, PlusIcon, XIcon } from '@lucide/svelte';
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -8,13 +8,22 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { refreshNotifications } from '$lib/notifications';
-	import { categoryNameExists, createCategory, deleteExpense, updateExpense } from '$lib/services';
+	import {
+		apiBase,
+		categoryNameExists,
+		createCategory,
+		deleteExpense,
+		deleteExpenseReceipt,
+		updateExpense,
+		uploadExpenseReceipt
+	} from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 	import { cn } from '$lib/utils';
 
@@ -32,6 +41,11 @@
 	let description = $state<string>();
 	let agentName = $state('');
 	let accountId = $state('');
+	let receiptImage = $state<string | null>(null);
+	let receiptFiles = $state<FileList | undefined>();
+	let isUploadingReceipt = $state(false);
+
+	let receiptImageForRow = $derived(appState.expenses.find((e) => e.id === id)?.receiptImage);
 
 	function openEditDialog() {
 		const item = appState.expenses.find((e) => e.id === id);
@@ -45,26 +59,62 @@
 		description = item.description || undefined;
 		agentName = item.agentName || '';
 		accountId = item.accountId ?? '';
+		receiptImage = item.receiptImage || null;
+		receiptFiles = undefined;
 		isEditDialogOpen = true;
+	}
+
+	async function handleReceiptFileChange() {
+		const file = receiptFiles?.[0];
+		if (!file) return;
+
+		isUploadingReceipt = true;
+		try {
+			const updated = await uploadExpenseReceipt(id, file);
+			appState.expenses = appState.expenses.map((e) => (e.id === id ? updated : e));
+			receiptImage = updated.receiptImage || null;
+			toast.success('Receipt uploaded successfully.');
+		} catch (error) {
+			toast.error('Failed to upload receipt. ' + error);
+		} finally {
+			isUploadingReceipt = false;
+			receiptFiles = undefined;
+		}
+	}
+
+	async function removeReceipt() {
+		try {
+			const updated = await deleteExpenseReceipt(id);
+			appState.expenses = appState.expenses.map((e) => (e.id === id ? updated : e));
+			receiptImage = null;
+			toast.success('Receipt removed.');
+		} catch (error) {
+			toast.error('Failed to remove receipt. ' + error);
+		}
 	}
 
 	async function saveExpense(event: Event) {
 		event.preventDefault();
-		const updated = await updateExpense(id, {
-			name,
-			amount,
-			currency,
-			categoryName,
-			actionedAt,
-			location,
-			description,
-			agentName,
-			accountId: accountId || undefined
-		});
-		appState.expenses = appState.expenses.map((e) => (e.id === id ? updated : e));
-		refreshNotifications();
-		toast.success('Expense updated successfully.');
-		isEditDialogOpen = false;
+		try {
+			const updated = await updateExpense(id, {
+				name,
+				amount,
+				currency,
+				categoryName,
+				actionedAt,
+				location,
+				description,
+				agentName,
+				accountId: accountId || undefined,
+				receiptImage
+			});
+			appState.expenses = appState.expenses.map((e) => (e.id === id ? updated : e));
+			refreshNotifications();
+			toast.success('Expense updated successfully.');
+			isEditDialogOpen = false;
+		} catch (error) {
+			toast.error('Failed to update expense. ' + error);
+		}
 	}
 
 	async function confirmDelete() {
@@ -138,7 +188,16 @@
 	}
 </script>
 
-<RowActionsMenu onEdit={openEditDialog} onDelete={() => (isDeleteDialogOpen = true)} copyId={id} />
+<RowActionsMenu onEdit={openEditDialog} onDelete={() => (isDeleteDialogOpen = true)} copyId={id}>
+	{#snippet extraItems()}
+		{#if receiptImageForRow}
+			<DropdownMenu.Item onclick={() => window.open(`${apiBase}/expense/${id}/receipt`, '_blank')}>
+				<PaperclipIcon />
+				View receipt
+			</DropdownMenu.Item>
+		{/if}
+	{/snippet}
+</RowActionsMenu>
 
 <Dialog.Root bind:open={isEditDialogOpen}>
 	<form>
@@ -337,6 +396,35 @@
 							</Command.Root>
 						</Popover.Content>
 					</Popover.Root>
+				</div>
+				<div class="grid gap-3">
+					<Label for="receipt-1">Receipt</Label>
+					{#if receiptImage}
+						<div class="flex items-center gap-2">
+							<Button
+								variant="outline"
+								size="sm"
+								type="button"
+								onclick={() => window.open(`${apiBase}/expense/${id}/receipt`, '_blank')}
+							>
+								<PaperclipIcon />
+								View receipt
+							</Button>
+							<Button variant="ghost" size="icon" type="button" onclick={removeReceipt}>
+								<XIcon />
+								<span class="sr-only">Remove receipt</span>
+							</Button>
+						</div>
+					{:else}
+						<Input
+							id="receipt-1"
+							type="file"
+							accept="image/jpeg,image/png,application/pdf"
+							bind:files={receiptFiles}
+							disabled={isUploadingReceipt}
+							onchange={handleReceiptFileChange}
+						/>
+					{/if}
 				</div>
 			</div>
 			<Dialog.Footer>
