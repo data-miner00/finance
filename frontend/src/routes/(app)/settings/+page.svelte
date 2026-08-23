@@ -5,8 +5,10 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import * as Label from '$lib/components/ui/label/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Switch } from '$lib/components/ui/switch';
+	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { parseSettings, saveSettings, toSettingsValues } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -16,7 +18,8 @@
 				values: toSettingsValues({
 					pieChartDisplayTop: tempPieChartDisplayTop,
 					enableTax: tempEnableTax,
-					enablePiggyBank: tempEnablePiggyBank
+					enablePiggyBank: tempEnablePiggyBank,
+					defaultCurrency: tempDefaultCurrency
 				})
 			});
 			appState.settings = parseSettings(updated);
@@ -34,12 +37,14 @@
 	let tempPieChartDisplayTop = $state(appState.settings.pieChartDisplayTop);
 	let tempEnableTax = $state(appState.settings.enableTax);
 	let tempEnablePiggyBank = $state(appState.settings.enablePiggyBank);
+	let tempDefaultCurrency = $state(appState.settings.defaultCurrency);
 
 	// For page hard refresh
 	$effect(() => {
 		tempPieChartDisplayTop = appState.settings.pieChartDisplayTop;
 		tempEnableTax = appState.settings.enableTax;
 		tempEnablePiggyBank = appState.settings.enablePiggyBank;
+		tempDefaultCurrency = appState.settings.defaultCurrency;
 	});
 </script>
 
@@ -63,6 +68,21 @@
 		type="number"
 		class="mb-4"
 	/>
+
+	<Label.Root class="mb-3" for="defaultCurrency">Default Currency</Label.Root>
+
+	<Select.Root type="single" name="defaultCurrency" bind:value={tempDefaultCurrency}>
+		<Select.Trigger id="defaultCurrency" class="mb-4 w-full">
+			{CURRENCY_LABELS[tempDefaultCurrency as CurrencyCode] ?? tempDefaultCurrency}
+		</Select.Trigger>
+		<Select.Content>
+			{#each CURRENCIES as code (code)}
+				<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+					{CURRENCY_LABELS[code]}
+				</Select.Item>
+			{/each}
+		</Select.Content>
+	</Select.Root>
 
 	<Separator class="my-6 " />
 

@@ -58,7 +58,7 @@ export interface Expense extends EntityBase {
 	name: string;
 	description?: string | null;
 	amount: number;
-	currency?: string | null;
+	currency: string;
 	location?: string | null;
 	receiptImage?: string | null;
 	actionedAt: string;
@@ -71,7 +71,7 @@ export interface CreateExpenseRequest {
 	name: string;
 	description?: string | null;
 	amount: number;
-	currency?: string | null;
+	currency: string;
 	location?: string | null;
 	receiptImage?: string | null;
 	agentName?: string;
@@ -87,6 +87,7 @@ export interface Income extends EntityBase {
 	name: string;
 	description?: string | null;
 	amount: number;
+	currency: string;
 	actionedAt: string;
 }
 
@@ -94,6 +95,7 @@ export interface CreateIncomeRequest {
 	name: string;
 	description?: string | null;
 	amount: number;
+	currency: string;
 	accountId?: string | null;
 }
 

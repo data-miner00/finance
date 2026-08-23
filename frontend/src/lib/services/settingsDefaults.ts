@@ -1,3 +1,5 @@
+import { DEFAULT_CURRENCY } from '$lib/constants/currencies';
+
 import type { Setting } from './types';
 
 export interface KnownSettings {
@@ -5,20 +7,23 @@ export interface KnownSettings {
 	enableTax: boolean;
 	enablePiggyBank: boolean;
 	enableBudget: boolean;
+	defaultCurrency: string;
 }
 
 export const DEFAULT_SETTINGS: KnownSettings = {
 	pieChartDisplayTop: 5,
 	enableTax: true,
 	enablePiggyBank: true,
-	enableBudget: true
+	enableBudget: true,
+	defaultCurrency: DEFAULT_CURRENCY
 };
 
 const KEYS = {
 	pieChartDisplayTop: 'pieChartDisplayTop',
 	enableTax: 'enableTax',
 	enablePiggyBank: 'enablePiggyBank',
-	enableBudget: 'enableBudget'
+	enableBudget: 'enableBudget',
+	defaultCurrency: 'defaultCurrency'
 } as const;
 
 export function parseSettings(raw: Setting[]): KnownSettings {
@@ -33,7 +38,8 @@ export function parseSettings(raw: Setting[]): KnownSettings {
 			map.get(KEYS.enablePiggyBank),
 			DEFAULT_SETTINGS.enablePiggyBank
 		),
-		enableBudget: parseBoolOrDefault(map.get(KEYS.enableBudget), DEFAULT_SETTINGS.enableBudget)
+		enableBudget: parseBoolOrDefault(map.get(KEYS.enableBudget), DEFAULT_SETTINGS.enableBudget),
+		defaultCurrency: map.get(KEYS.defaultCurrency) ?? DEFAULT_SETTINGS.defaultCurrency
 	};
 }
 
@@ -50,6 +56,9 @@ export function toSettingsValues(partial: Partial<KnownSettings>): Record<string
 	}
 	if (partial.enableBudget !== undefined) {
 		values[KEYS.enableBudget] = String(partial.enableBudget);
+	}
+	if (partial.defaultCurrency !== undefined) {
+		values[KEYS.defaultCurrency] = partial.defaultCurrency;
 	}
 	return values;
 }
