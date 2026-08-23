@@ -13,17 +13,17 @@ services:
       - mssql-data:/var/opt/mssql
     restart: unless-stopped
 
-  # azurite:
-  #   image: mcr.microsoft.com/azure-storage/azurite
-  #   container_name: finance-azurite-dev
-  #   hostname: finance-azurite-dev
-  #   restart: "unless-stopped"
-  #   ports:
-  #     - 10003:10000
-  #     - 10001:10001
-  #     - 10002:10002
-  #   volumes:
-  #     - azurite-data:/data
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: finance-azurite-dev
+    hostname: finance-azurite-dev
+    restart: "unless-stopped"
+    ports:
+      - 10003:10000
+      - 10001:10001
+      - 10002:10002
+    volumes:
+      - azurite-data:/data
 
 volumes:
   mssql-data:
