@@ -81,7 +81,6 @@ namespace WebApi
             });
             builder.Services.AddSingleton(TimeProvider.System);
 
-            builder.Services.AddHostedService<DummyService>();
             builder.Services.AddHostedService<RecurrentActionService>();
 
             return builder;
