@@ -4,6 +4,7 @@ using Azure.Storage.Blobs;
 using Core;
 using Core.Models;
 using Core.Repositories;
+using Core.Services;
 using Core.Storage;
 using Core.Streams;
 using WebApi.Backgrounds;
@@ -68,6 +69,7 @@ namespace WebApi
             builder.Services.AddSingleton<ISettingsRepository, SettingsRepository>();
             builder.Services.AddSingleton<IServiceMetadataRepository, ServiceMetadataRepository>();
             builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();
+            builder.Services.AddSingleton<IBudgetAlertService, BudgetAlertService>();
             builder.Services.AddSingleton<IDictionary<string, IDataStreamifier>>((ctx) =>
             {
                 return new Dictionary<string, IDataStreamifier>
