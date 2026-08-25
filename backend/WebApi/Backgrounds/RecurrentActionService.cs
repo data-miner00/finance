@@ -72,32 +72,48 @@ public class RecurrentActionService : BackgroundService
     {
         var now = this.timeProvider.GetUtcNow();
         var dueActions = GetDueActions(recurringActions, RecurringType.Expense, now);
+        var processedCount = 0;
 
         foreach (var action in dueActions)
         {
             try
             {
-                var expense = new Expense
+                while (action.RecurringAt.Date <= now.Date)
                 {
-                    Name = action.Name,
-                    Amount = action.Amount,
-                    Description = action.Description,
-                    ActionedAt = now.DateTime,
-                };
+                    var occurrenceDate = action.RecurringAt;
+                    var previousRecurringAt = action.RecurringAt;
 
-                AdvanceAction(action, now);
+                    AdvanceAction(action, now);
 
-                var createdExpense = await this.expenseRepository.CreateAsync(expense, default);
-                await this.recurringRepository.UpdateAsync(action, default);
-                await this.notificationRepository.CreateAsync(new Notification
-                {
-                    Type = "RecurringExpenseProcessed",
-                    Title = "Recurring expense added",
-                    Message = $"Recurring expense \"{action.Name}\" of {action.Amount:C} was added.",
-                    EntityType = "Expense",
-                    EntityId = createdExpense.Id,
-                }, default);
-                this.logger.LogInformation("Processed expense action '{ActionName}'.", action.Name);
+                    if (action.RecurringAt <= previousRecurringAt)
+                    {
+                        this.logger.LogError(
+                            "Recurring expense action '{ActionName}' ({ActionId}) did not advance past {RecurringAt} (IntervalValue={IntervalValue}); stopping catch-up to avoid an infinite loop.",
+                            action.Name, action.Id, action.RecurringAt, action.IntervalValue);
+                        break;
+                    }
+
+                    var expense = new Expense
+                    {
+                        Name = action.Name,
+                        Amount = action.Amount,
+                        Description = action.Description,
+                        ActionedAt = occurrenceDate,
+                    };
+
+                    var createdExpense = await this.expenseRepository.CreateAsync(expense, default);
+                    await this.recurringRepository.UpdateAsync(action, default);
+                    await this.notificationRepository.CreateAsync(new Notification
+                    {
+                        Type = "RecurringExpenseProcessed",
+                        Title = "Recurring expense added",
+                        Message = $"Recurring expense \"{action.Name}\" of {action.Amount:C} was added for {occurrenceDate:d}.",
+                        EntityType = "Expense",
+                        EntityId = createdExpense.Id,
+                    }, default);
+                    this.logger.LogInformation("Processed expense action '{ActionName}' for {OccurrenceDate}.", action.Name, occurrenceDate);
+                    processedCount++;
+                }
             }
             catch (Exception ex)
             {
@@ -105,39 +121,55 @@ public class RecurrentActionService : BackgroundService
             }
         }
 
-        this.logger.LogInformation("Processed {Count} expense actions.", dueActions.Count);
+        this.logger.LogInformation("Processed {Count} expense actions.", processedCount);
     }
 
     private async Task ProcessRecurringIncomes(IEnumerable<RecurringAction> recurringActions)
     {
         var now = this.timeProvider.GetUtcNow();
         var dueActions = GetDueActions(recurringActions, RecurringType.Income, now);
+        var processedCount = 0;
 
         foreach (var action in dueActions)
         {
             try
             {
-                var income = new Income
+                while (action.RecurringAt.Date <= now.Date)
                 {
-                    Name = action.Name,
-                    Amount = action.Amount,
-                    Description = action.Description,
-                    ActionedAt = now.DateTime,
-                };
+                    var occurrenceDate = action.RecurringAt;
+                    var previousRecurringAt = action.RecurringAt;
 
-                AdvanceAction(action, now);
+                    AdvanceAction(action, now);
 
-                var createdIncome = await this.incomeRepository.CreateAsync(income, default);
-                await this.recurringRepository.UpdateAsync(action, default);
-                await this.notificationRepository.CreateAsync(new Notification
-                {
-                    Type = "RecurringIncomeProcessed",
-                    Title = "Recurring income added",
-                    Message = $"Recurring income \"{action.Name}\" of {action.Amount:C} was added.",
-                    EntityType = "Income",
-                    EntityId = createdIncome.Id,
-                }, default);
-                this.logger.LogInformation("Processed income action '{ActionName}'.", action.Name);
+                    if (action.RecurringAt <= previousRecurringAt)
+                    {
+                        this.logger.LogError(
+                            "Recurring income action '{ActionName}' ({ActionId}) did not advance past {RecurringAt} (IntervalValue={IntervalValue}); stopping catch-up to avoid an infinite loop.",
+                            action.Name, action.Id, action.RecurringAt, action.IntervalValue);
+                        break;
+                    }
+
+                    var income = new Income
+                    {
+                        Name = action.Name,
+                        Amount = action.Amount,
+                        Description = action.Description,
+                        ActionedAt = occurrenceDate,
+                    };
+
+                    var createdIncome = await this.incomeRepository.CreateAsync(income, default);
+                    await this.recurringRepository.UpdateAsync(action, default);
+                    await this.notificationRepository.CreateAsync(new Notification
+                    {
+                        Type = "RecurringIncomeProcessed",
+                        Title = "Recurring income added",
+                        Message = $"Recurring income \"{action.Name}\" of {action.Amount:C} was added for {occurrenceDate:d}.",
+                        EntityType = "Income",
+                        EntityId = createdIncome.Id,
+                    }, default);
+                    this.logger.LogInformation("Processed income action '{ActionName}' for {OccurrenceDate}.", action.Name, occurrenceDate);
+                    processedCount++;
+                }
             }
             catch (Exception ex)
             {
@@ -145,11 +177,11 @@ public class RecurrentActionService : BackgroundService
             }
         }
 
-        this.logger.LogInformation("Processed {Count} income actions.", dueActions.Count);
+        this.logger.LogInformation("Processed {Count} income actions.", processedCount);
     }
 
     private static List<RecurringAction> GetDueActions(IEnumerable<RecurringAction> recurringActions, RecurringType type, DateTimeOffset now) =>
-        recurringActions.Where(x => x.IsActive && x.Type == type && x.StartAt.Date <= now.Date && x.RecurringAt.Date == now.Date).ToList();
+        recurringActions.Where(x => x.IsActive && x.Type == type && x.StartAt.Date <= now.Date && x.RecurringAt.Date <= now.Date).ToList();
 
     private static void AdvanceAction(RecurringAction action, DateTimeOffset now)
     {
