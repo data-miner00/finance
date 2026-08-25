@@ -118,10 +118,15 @@
 	}
 
 	async function confirmDelete() {
-		await deleteExpense(id);
-		appState.expenses = appState.expenses.filter((e) => e.id !== id);
-		isDeleteDialogOpen = false;
-		toast.success('Expense deleted successfully.');
+		try {
+			await deleteExpense(id);
+			appState.expenses = appState.expenses.filter((e) => e.id !== id);
+			toast.success('Expense deleted successfully.');
+		} catch (error) {
+			toast.error('Failed to delete expense. ' + error);
+		} finally {
+			isDeleteDialogOpen = false;
+		}
 	}
 
 	let categoryComboOpen = $state(false);

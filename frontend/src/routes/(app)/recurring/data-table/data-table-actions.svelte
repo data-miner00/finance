@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
 	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -38,24 +40,35 @@
 
 	async function saveRecurring(event: Event) {
 		event.preventDefault();
-		const updated = await updateRecurringAction(id, {
-			name,
-			amount,
-			startAt,
-			recurrenceType,
-			intervalValue,
-			dayOfMonth,
-			description,
-			isActive
-		});
-		appState.recurringActions = appState.recurringActions.map((r) => (r.id === id ? updated : r));
-		isEditDialogOpen = false;
+		try {
+			const updated = await updateRecurringAction(id, {
+				name,
+				amount,
+				startAt,
+				recurrenceType,
+				intervalValue,
+				dayOfMonth,
+				description,
+				isActive
+			});
+			appState.recurringActions = appState.recurringActions.map((r) => (r.id === id ? updated : r));
+			isEditDialogOpen = false;
+			toast.success('Recurring action updated successfully.');
+		} catch (error) {
+			toast.error('Failed to update recurring action. ' + error);
+		}
 	}
 
 	async function confirmDelete() {
-		await deleteRecurringAction(id);
-		appState.recurringActions = appState.recurringActions.filter((r) => r.id !== id);
-		isDeleteDialogOpen = false;
+		try {
+			await deleteRecurringAction(id);
+			appState.recurringActions = appState.recurringActions.filter((r) => r.id !== id);
+			toast.success('Recurring action deleted successfully.');
+		} catch (error) {
+			toast.error('Failed to delete recurring action. ' + error);
+		} finally {
+			isDeleteDialogOpen = false;
+		}
 	}
 </script>
 

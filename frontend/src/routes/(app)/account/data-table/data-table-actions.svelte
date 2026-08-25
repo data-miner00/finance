@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
 	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -29,15 +31,28 @@
 
 	async function saveAccount(event: Event) {
 		event.preventDefault();
-		const updated = await updateAccount(id, { name, accountType, balance });
-		appState.accounts = appState.accounts.map((account) => (account.id === id ? updated : account));
-		isEditDialogOpen = false;
+		try {
+			const updated = await updateAccount(id, { name, accountType, balance });
+			appState.accounts = appState.accounts.map((account) =>
+				account.id === id ? updated : account
+			);
+			isEditDialogOpen = false;
+			toast.success('Account updated successfully.');
+		} catch (error) {
+			toast.error('Failed to update account. ' + error);
+		}
 	}
 
 	async function confirmDelete() {
-		await deleteAccount(id);
-		appState.accounts = appState.accounts.filter((account) => account.id !== id);
-		isDeleteDialogOpen = false;
+		try {
+			await deleteAccount(id);
+			appState.accounts = appState.accounts.filter((account) => account.id !== id);
+			toast.success('Account deleted successfully.');
+		} catch (error) {
+			toast.error('Failed to delete account. ' + error);
+		} finally {
+			isDeleteDialogOpen = false;
+		}
 	}
 </script>
 

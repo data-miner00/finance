@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -13,21 +15,27 @@
 	let deadline = $state('');
 
 	async function addPiggyBank() {
-		const piggyBank = await createPiggyBank({
-			name,
-			amount,
-			target,
-			description: description || undefined,
-			deadline: deadline || undefined
-		});
+		try {
+			const piggyBank = await createPiggyBank({
+				name,
+				amount,
+				target,
+				description: description || undefined,
+				deadline: deadline || undefined
+			});
 
-		appState.piggyBanks = [...appState.piggyBanks, piggyBank];
-		appState.isAddPiggyBankDialogOpen = false;
-		name = '';
-		amount = 0;
-		target = 0;
-		description = '';
-		deadline = '';
+			appState.piggyBanks = [...appState.piggyBanks, piggyBank];
+			appState.isAddPiggyBankDialogOpen = false;
+			name = '';
+			amount = 0;
+			target = 0;
+			description = '';
+			deadline = '';
+
+			toast.success('Piggy bank created successfully.');
+		} catch (error) {
+			toast.error('Failed to create piggy bank. ' + error);
+		}
 	}
 </script>
 

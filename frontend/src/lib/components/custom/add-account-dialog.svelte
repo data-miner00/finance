@@ -19,15 +19,19 @@
 	let accountType = $state<AccountType>(0);
 
 	async function addAccount() {
-		const account = await createAccount({ name, accountType, balance });
+		try {
+			const account = await createAccount({ name, accountType, balance });
 
-		appState.accounts = [...appState.accounts, account];
-		name = '';
-		balance = 0;
-		accountType = 0;
-		open = false;
+			appState.accounts = [...appState.accounts, account];
+			name = '';
+			balance = 0;
+			accountType = 0;
+			open = false;
 
-		toast.success('Account created successfully.');
+			toast.success('Account created successfully.');
+		} catch (error) {
+			toast.error('Failed to create account. ' + error);
+		}
 	}
 </script>
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
 	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -25,15 +27,26 @@
 
 	async function saveTax(event: Event) {
 		event.preventDefault();
-		const updated = await updateTax(id, { name, amount });
-		appState.taxes = appState.taxes.map((i) => (i.id === id ? updated : i));
-		isEditDialogOpen = false;
+		try {
+			const updated = await updateTax(id, { name, amount });
+			appState.taxes = appState.taxes.map((i) => (i.id === id ? updated : i));
+			isEditDialogOpen = false;
+			toast.success('Tax updated successfully.');
+		} catch (error) {
+			toast.error('Failed to update tax. ' + error);
+		}
 	}
 
 	async function confirmDelete() {
-		await deleteTax(id);
-		appState.taxes = appState.taxes.filter((i) => i.id !== id);
-		isDeleteDialogOpen = false;
+		try {
+			await deleteTax(id);
+			appState.taxes = appState.taxes.filter((i) => i.id !== id);
+			toast.success('Tax deleted successfully.');
+		} catch (error) {
+			toast.error('Failed to delete tax. ' + error);
+		} finally {
+			isDeleteDialogOpen = false;
+		}
 	}
 </script>
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
 	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -31,20 +33,31 @@
 
 	async function saveIncome(event: Event) {
 		event.preventDefault();
-		const updated = await updateIncome(id, {
-			name,
-			amount,
-			currency,
-			accountId: accountId || undefined
-		});
-		appState.incomes = appState.incomes.map((i) => (i.id === id ? updated : i));
-		isEditDialogOpen = false;
+		try {
+			const updated = await updateIncome(id, {
+				name,
+				amount,
+				currency,
+				accountId: accountId || undefined
+			});
+			appState.incomes = appState.incomes.map((i) => (i.id === id ? updated : i));
+			isEditDialogOpen = false;
+			toast.success('Income updated successfully.');
+		} catch (error) {
+			toast.error('Failed to update income. ' + error);
+		}
 	}
 
 	async function confirmDelete() {
-		await deleteIncome(id);
-		appState.incomes = appState.incomes.filter((i) => i.id !== id);
-		isDeleteDialogOpen = false;
+		try {
+			await deleteIncome(id);
+			appState.incomes = appState.incomes.filter((i) => i.id !== id);
+			toast.success('Income deleted successfully.');
+		} catch (error) {
+			toast.error('Failed to delete income. ' + error);
+		} finally {
+			isDeleteDialogOpen = false;
+		}
 	}
 </script>
 

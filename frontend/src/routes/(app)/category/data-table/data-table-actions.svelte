@@ -85,15 +85,19 @@
 		const target = appState.categories.find((category) => category.id === mergeTargetId);
 		if (!source || !target) return;
 
-		await mergeCategories({ sourceCategoryId: id, targetCategoryId: mergeTargetId });
+		try {
+			await mergeCategories({ sourceCategoryId: id, targetCategoryId: mergeTargetId });
 
-		appState.expenses = appState.expenses.map((expense) =>
-			expense.categoryName === source.name ? { ...expense, categoryName: target.name } : expense
-		);
-		appState.categories = appState.categories.filter((category) => category.id !== id);
+			appState.expenses = appState.expenses.map((expense) =>
+				expense.categoryName === source.name ? { ...expense, categoryName: target.name } : expense
+			);
+			appState.categories = appState.categories.filter((category) => category.id !== id);
 
-		isMergeDialogOpen = false;
-		toast.success(`Merged "${source.name}" into "${target.name}".`);
+			isMergeDialogOpen = false;
+			toast.success(`Merged "${source.name}" into "${target.name}".`);
+		} catch (error) {
+			toast.error(`Failed to merge "${source.name}" into "${target.name}". ` + error);
+		}
 	}
 
 	async function confirmDelete() {

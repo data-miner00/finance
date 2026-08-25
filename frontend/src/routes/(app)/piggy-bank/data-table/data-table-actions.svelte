@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import ConfirmAlertDialog from '$lib/components/custom/table-common/confirm-alert-dialog.svelte';
 	import RowActionsMenu from '$lib/components/custom/table-common/row-actions-menu.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -27,15 +29,26 @@
 
 	async function savePiggy(event: Event) {
 		event.preventDefault();
-		const updated = await updatePiggyBank(id, { name, amount, target });
-		appState.piggyBanks = appState.piggyBanks.map((p) => (p.id === id ? updated : p));
-		isEditDialogOpen = false;
+		try {
+			const updated = await updatePiggyBank(id, { name, amount, target });
+			appState.piggyBanks = appState.piggyBanks.map((p) => (p.id === id ? updated : p));
+			isEditDialogOpen = false;
+			toast.success('Piggy bank updated successfully.');
+		} catch (error) {
+			toast.error('Failed to update piggy bank. ' + error);
+		}
 	}
 
 	async function confirmDelete() {
-		await deletePiggyBank(id);
-		appState.piggyBanks = appState.piggyBanks.filter((p) => p.id !== id);
-		isDeleteDialogOpen = false;
+		try {
+			await deletePiggyBank(id);
+			appState.piggyBanks = appState.piggyBanks.filter((p) => p.id !== id);
+			toast.success('Piggy bank deleted successfully.');
+		} catch (error) {
+			toast.error('Failed to delete piggy bank. ' + error);
+		} finally {
+			isDeleteDialogOpen = false;
+		}
 	}
 </script>
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
+
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -11,17 +13,23 @@
 	let description = $state('');
 
 	async function addTax() {
-		const tax = await createTax({
-			name,
-			amount,
-			description: description || undefined
-		});
+		try {
+			const tax = await createTax({
+				name,
+				amount,
+				description: description || undefined
+			});
 
-		appState.taxes = [...appState.taxes, tax];
-		appState.isAddTaxDialogOpen = false;
-		name = '';
-		amount = 0;
-		description = '';
+			appState.taxes = [...appState.taxes, tax];
+			appState.isAddTaxDialogOpen = false;
+			name = '';
+			amount = 0;
+			description = '';
+
+			toast.success('Tax created successfully.');
+		} catch (error) {
+			toast.error('Failed to create tax. ' + error);
+		}
 	}
 </script>
 

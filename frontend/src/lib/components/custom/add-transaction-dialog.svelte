@@ -44,50 +44,54 @@
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
 
-		if (tab === 'income') {
-			const income = await createIncome({
-				name,
-				description,
-				amount,
-				currency,
-				accountId: accountId || undefined
-			});
+		try {
+			if (tab === 'income') {
+				const income = await createIncome({
+					name,
+					description,
+					amount,
+					currency,
+					accountId: accountId || undefined
+				});
 
-			name = '';
-			description = undefined;
-			amount = 0;
-			currency = appState.settings.defaultCurrency;
-			accountId = '';
+				name = '';
+				description = undefined;
+				amount = 0;
+				currency = appState.settings.defaultCurrency;
+				accountId = '';
 
-			appState.incomes = [...appState.incomes, income];
-		} else {
-			const expense = await createExpense({
-				name,
-				description,
-				categoryName,
-				amount,
-				currency,
-				location,
-				agentName,
-				accountId: accountId || undefined
-			});
+				appState.incomes = [...appState.incomes, income];
+			} else {
+				const expense = await createExpense({
+					name,
+					description,
+					categoryName,
+					amount,
+					currency,
+					location,
+					agentName,
+					accountId: accountId || undefined
+				});
 
-			name = '';
-			description = undefined;
-			categoryName = '';
-			accountId = '';
-			amount = 0;
-			currency = appState.settings.defaultCurrency;
-			location = '';
-			actionedAt = undefined;
-			agentName = '';
+				name = '';
+				description = undefined;
+				categoryName = '';
+				accountId = '';
+				amount = 0;
+				currency = appState.settings.defaultCurrency;
+				location = '';
+				actionedAt = undefined;
+				agentName = '';
 
-			appState.expenses.push(expense);
-			refreshNotifications();
+				appState.expenses.push(expense);
+				refreshNotifications();
+			}
+
+			toast.success(`${tab === 'income' ? 'Income' : 'Expense'} created successfully.`);
+			open = false;
+		} catch (error) {
+			toast.error(`Failed to create ${tab === 'income' ? 'income' : 'expense'}. ` + error);
 		}
-
-		toast.success(`${tab === 'income' ? 'Income' : 'Expense'} created successfully.`);
-		open = false;
 	}
 
 	let comboOpen = $state(false);

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PlusIcon } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
@@ -24,28 +25,34 @@
 	let description = $state('');
 
 	async function addRecurringAction() {
-		const response = await createRecurringAction({
-			name,
-			amount,
-			startAt,
-			recurrenceType: Number(recurrenceType),
-			intervalValue,
-			dayOfMonth: dayOfMonth || undefined,
-			type: Number(type),
-			description: description || undefined,
-			isActive: true
-		});
+		try {
+			const response = await createRecurringAction({
+				name,
+				amount,
+				startAt,
+				recurrenceType: Number(recurrenceType),
+				intervalValue,
+				dayOfMonth: dayOfMonth || undefined,
+				type: Number(type),
+				description: description || undefined,
+				isActive: true
+			});
 
-		appState.recurringActions = [...appState.recurringActions, response];
-		isDialogOpen = false;
-		name = '';
-		amount = 0;
-		startAt = '';
-		recurrenceType = '2';
-		intervalValue = 1;
-		dayOfMonth = null;
-		type = '0';
-		description = '';
+			appState.recurringActions = [...appState.recurringActions, response];
+			isDialogOpen = false;
+			name = '';
+			amount = 0;
+			startAt = '';
+			recurrenceType = '2';
+			intervalValue = 1;
+			dayOfMonth = null;
+			type = '0';
+			description = '';
+
+			toast.success('Recurring action created successfully.');
+		} catch (error) {
+			toast.error('Failed to create recurring action. ' + error);
+		}
 	}
 
 	onMount(() => {
