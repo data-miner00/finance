@@ -206,7 +206,11 @@ namespace WebApi.Controllers.V1
         public async Task<ActionResult> ExportAll([FromQuery] string? format, CancellationToken cancellationToken)
         {
             format ??= DefaultExportFormat;
-            var streamifier = this.dataStreamifiers[format]!;
+            if (!this.dataStreamifiers.TryGetValue(format, out var streamifier))
+            {
+                return BadRequest($"Unsupported export format \"{format}\". Supported formats: {string.Join(", ", this.dataStreamifiers.Keys)}.");
+            }
+
             var expenses = await _repository.GetAllAsync(cancellationToken);
             var stream = await streamifier.StreamifyAsync(expenses, cancellationToken);
             
