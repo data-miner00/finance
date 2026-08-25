@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MergeIcon from '@lucide/svelte/icons/merge';
 	import { toast } from 'svelte-sonner';
 
 	import IconPicker from '$lib/components/custom/icon-picker.svelte';
@@ -116,6 +117,7 @@
 <RowActionsMenu onEdit={openEditDialog} onDelete={() => (isDeleteDialogOpen = true)} copyId={id}>
 	{#snippet extraItems()}
 		<DropdownMenu.Item onclick={openMergeDialog} disabled={otherCategories.length === 0}>
+			<MergeIcon />
 			Merge into...
 		</DropdownMenu.Item>
 	{/snippet}

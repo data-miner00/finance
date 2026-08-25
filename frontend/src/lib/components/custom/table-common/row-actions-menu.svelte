@@ -1,5 +1,8 @@
 <script lang="ts">
+	import CopyIcon from '@lucide/svelte/icons/copy';
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
+	import PencilIcon from '@lucide/svelte/icons/pencil';
+	import Trash2Icon from '@lucide/svelte/icons/trash-2';
 	import type { Snippet } from 'svelte';
 
 	import { copyText } from '$lib';
@@ -36,19 +39,24 @@
 			</Button>
 		{/snippet}
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content>
+	<DropdownMenu.Content class="w-36" align="end" sideOffset={4}>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Actions</DropdownMenu.Label>
-			<DropdownMenu.Item onclick={onEdit}>{editLabel}</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={onEdit}>
+				<PencilIcon />
+				{editLabel}
+			</DropdownMenu.Item>
 			{@render extraItems?.()}
 			{#if copyId}
 				<DropdownMenu.Item onclick={() => copyText(copyId, 'ID copied to clipboard')}>
+					<CopyIcon />
 					{copyLabel}
 				</DropdownMenu.Item>
 			{/if}
 		</DropdownMenu.Group>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item onclick={onDelete} variant="destructive">
+			<Trash2Icon />
 			{deleteLabel}
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
