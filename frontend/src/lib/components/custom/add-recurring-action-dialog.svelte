@@ -33,7 +33,7 @@
 			});
 
 			appState.recurringActions = [...appState.recurringActions, response];
-			appState.isAddRecurringActionDialogOpen = false;
+			appState.openAddDialog = null;
 			name = '';
 			amount = 0;
 			startAt = '';
@@ -50,7 +50,12 @@
 	}
 </script>
 
-<Dialog.Root bind:open={appState.isAddRecurringActionDialogOpen}>
+<Dialog.Root
+	bind:open={
+		() => appState.openAddDialog === 'recurringAction',
+		(v) => (appState.openAddDialog = v ? 'recurringAction' : null)
+	}
+>
 	<form>
 		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>

@@ -25,7 +25,7 @@
 			});
 
 			appState.piggyBanks = [...appState.piggyBanks, piggyBank];
-			appState.isAddPiggyBankDialogOpen = false;
+			appState.openAddDialog = null;
 			name = '';
 			amount = 0;
 			target = 0;
@@ -39,7 +39,12 @@
 	}
 </script>
 
-<Dialog.Root bind:open={appState.isAddPiggyBankDialogOpen}>
+<Dialog.Root
+	bind:open={
+		() => appState.openAddDialog === 'piggyBank',
+		(v) => (appState.openAddDialog = v ? 'piggyBank' : null)
+	}
+>
 	<form>
 		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>

@@ -21,7 +21,7 @@
 			});
 
 			appState.taxes = [...appState.taxes, tax];
-			appState.isAddTaxDialogOpen = false;
+			appState.openAddDialog = null;
 			name = '';
 			amount = 0;
 			description = '';
@@ -33,7 +33,11 @@
 	}
 </script>
 
-<Dialog.Root bind:open={appState.isAddTaxDialogOpen}>
+<Dialog.Root
+	bind:open={
+		() => appState.openAddDialog === 'tax', (v) => (appState.openAddDialog = v ? 'tax' : null)
+	}
+>
 	<form>
 		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>

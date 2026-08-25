@@ -20,17 +20,17 @@
 	}
 
 	function openCreateExpenseDialog() {
-		appState.isAddTransactionDialogOpen = true;
+		appState.openAddDialog = 'transaction';
 		isOpen = false;
 	}
 
 	function openCreateAccountDialog() {
-		appState.isAddAccountDialogOpen = true;
+		appState.openAddDialog = 'account';
 		isOpen = false;
 	}
 
 	function openCreateTaxDialog() {
-		appState.isAddTaxDialogOpen = true;
+		appState.openAddDialog = 'tax';
 		isOpen = false;
 	}
 </script>

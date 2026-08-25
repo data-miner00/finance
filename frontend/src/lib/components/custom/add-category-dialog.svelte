@@ -11,11 +11,6 @@
 
 	const defaultColor = '#94a3b8';
 
-	type Props = {
-		open: boolean;
-	};
-
-	let { open = $bindable(false) }: Props = $props();
 	let name = $state('');
 	let color = $state(defaultColor);
 	let icon = $state<string | null>(null);
@@ -39,7 +34,7 @@
 			name = '';
 			color = defaultColor;
 			icon = null;
-			open = false;
+			appState.openAddDialog = null;
 
 			toast.success('Category created successfully.');
 		} catch (error) {
@@ -53,7 +48,12 @@
 	}
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root
+	bind:open={
+		() => appState.openAddDialog === 'category',
+		(v) => (appState.openAddDialog = v ? 'category' : null)
+	}
+>
 	<form>
 		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>

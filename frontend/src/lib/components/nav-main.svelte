@@ -5,7 +5,7 @@
 	import { appState } from '$lib/states.svelte';
 
 	function toggleAddTransactionDialog() {
-		appState.isAddTransactionDialogOpen = !appState.isAddTransactionDialogOpen;
+		appState.openAddDialog = appState.openAddDialog === 'transaction' ? null : 'transaction';
 	}
 </script>
 

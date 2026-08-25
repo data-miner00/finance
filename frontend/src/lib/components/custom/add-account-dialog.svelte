@@ -9,11 +9,6 @@
 	import { type AccountType, createAccount } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
-	type Props = {
-		open: boolean;
-	};
-
-	let { open = $bindable(false) }: Props = $props();
 	let name = $state('');
 	let balance = $state(0);
 	let accountType = $state<AccountType>(0);
@@ -26,7 +21,7 @@
 			name = '';
 			balance = 0;
 			accountType = 0;
-			open = false;
+			appState.openAddDialog = null;
 
 			toast.success('Account created successfully.');
 		} catch (error) {
@@ -35,7 +30,12 @@
 	}
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root
+	bind:open={
+		() => appState.openAddDialog === 'account',
+		(v) => (appState.openAddDialog = v ? 'account' : null)
+	}
+>
 	<form>
 		<Dialog.Content class="sm:max-w-106.25">
 			<Dialog.Header>

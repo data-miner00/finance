@@ -22,11 +22,6 @@
 
 	const id = $props.id();
 
-	type Props = {
-		open: boolean;
-	};
-
-	let { open = $bindable(false) }: Props = $props();
 	let tab = $state<'expense' | 'income'>('expense');
 
 	let isCalendarPopoverOpen = $state(false);
@@ -88,7 +83,7 @@
 			}
 
 			toast.success(`${tab === 'income' ? 'Income' : 'Expense'} created successfully.`);
-			open = false;
+			appState.openAddDialog = null;
 		} catch (error) {
 			toast.error(`Failed to create ${tab === 'income' ? 'income' : 'expense'}. ` + error);
 		}
@@ -161,7 +156,12 @@
 	}
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root
+	bind:open={
+		() => appState.openAddDialog === 'transaction',
+		(v) => (appState.openAddDialog = v ? 'transaction' : null)
+	}
+>
 	<form>
 		<Dialog.Content class="max-h-2/3 overflow-y-auto sm:max-w-106.25">
 			<Dialog.Header>
@@ -216,7 +216,7 @@
 										variant="outline"
 										class="justify-between"
 										role="combobox"
-										aria-expanded={open}
+										aria-expanded={comboOpen}
 									>
 										{categoryName || 'Select or add a new category...'}
 										<ChevronsUpDownIcon class="opacity-50" />

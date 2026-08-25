@@ -86,9 +86,9 @@
 	</Sidebar.Inset>
 </Sidebar.Provider>
 
-<AddTransactionDialog bind:open={appState.isAddTransactionDialogOpen} />
-<AddAccountDialog bind:open={appState.isAddAccountDialogOpen} />
-<AddCategoryDialog bind:open={appState.isAddCategoryDialogOpen} />
+<AddTransactionDialog />
+<AddAccountDialog />
+<AddCategoryDialog />
 <AddTaxDialog />
 <AddPiggyBankDialog />
 <AddRecurringActionDialog />

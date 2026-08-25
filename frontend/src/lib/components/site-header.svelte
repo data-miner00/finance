@@ -20,49 +20,49 @@
 			text: 'Create Expense',
 			isDisplay: true,
 			action() {
-				appState.isAddTransactionDialogOpen = true;
+				appState.openAddDialog = 'transaction';
 			}
 		},
 		income: {
 			text: 'Create Income',
 			isDisplay: true,
 			action() {
-				appState.isAddTransactionDialogOpen = true;
+				appState.openAddDialog = 'transaction';
 			}
 		},
 		account: {
 			text: 'Create Account',
 			isDisplay: true,
 			action() {
-				appState.isAddAccountDialogOpen = true;
+				appState.openAddDialog = 'account';
 			}
 		},
 		category: {
 			text: 'Create Category',
 			isDisplay: true,
 			action() {
-				appState.isAddCategoryDialogOpen = true;
+				appState.openAddDialog = 'category';
 			}
 		},
 		recurring: {
 			text: 'Create Recurring',
 			isDisplay: true,
 			action() {
-				appState.isAddRecurringActionDialogOpen = true;
+				appState.openAddDialog = 'recurringAction';
 			}
 		},
 		piggyBank: {
 			text: 'Create Piggy Bank',
 			isDisplay: true,
 			action() {
-				appState.isAddPiggyBankDialogOpen = true;
+				appState.openAddDialog = 'piggyBank';
 			}
 		},
 		tax: {
 			text: 'Create Tax',
 			isDisplay: true,
 			action() {
-				appState.isAddTaxDialogOpen = true;
+				appState.openAddDialog = 'tax';
 			}
 		},
 		budget: {
@@ -83,14 +83,14 @@
 			text: 'Create Expense',
 			isDisplay: true,
 			action() {
-				appState.isAddTransactionDialogOpen = true;
+				appState.openAddDialog = 'transaction';
 			}
 		},
 		dashboard: {
 			text: 'Create Expense',
 			isDisplay: true,
 			action() {
-				appState.isAddTransactionDialogOpen = true;
+				appState.openAddDialog = 'transaction';
 			}
 		},
 		notification: {
