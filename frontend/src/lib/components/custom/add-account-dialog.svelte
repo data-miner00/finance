@@ -12,15 +12,22 @@
 	let name = $state('');
 	let balance = $state(0);
 	let accountType = $state<AccountType>(0);
+	let annualSpendTarget = $state<number | null>(null);
 
 	async function addAccount() {
 		try {
-			const account = await createAccount({ name, accountType, balance });
+			const account = await createAccount({
+				name,
+				accountType,
+				balance,
+				annualSpendTarget: annualSpendTarget || undefined
+			});
 
 			appState.accounts = [...appState.accounts, account];
 			name = '';
 			balance = 0;
 			accountType = 0;
+			annualSpendTarget = null;
 			appState.openAddDialog = null;
 
 			toast.success('Account created successfully.');
@@ -85,6 +92,18 @@
 						type="number"
 						step="0.01"
 						bind:value={balance}
+					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="annual-spend-target-1">Annual Spend Target (Optional)</Label>
+					<Input
+						id="annual-spend-target-1"
+						name="annualSpendTarget"
+						placeholder="e.g. 12000.00"
+						type="number"
+						step="0.01"
+						min="0"
+						bind:value={annualSpendTarget}
 					/>
 				</div>
 			</div>

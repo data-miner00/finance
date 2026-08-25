@@ -7,7 +7,8 @@ CREATE PROCEDURE [dbo].[usp_AddAccount]
 	@Name NVARCHAR(50),
 	@Type NVARCHAR(50),
 	@Description NVARCHAR(255) = NULL,
-	@Balance MONEY = 0.00
+	@Balance MONEY = 0.00,
+	@AnnualSpendTarget MONEY = NULL
 AS
 BEGIN
 	DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -18,7 +19,8 @@ BEGIN
 		[Name],
 		[Type],
 		[Description],
-		[Balance]
+		[Balance],
+		[AnnualSpendTarget]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
 	VALUES
@@ -26,7 +28,8 @@ BEGIN
 		@Name,
 		@Type,
 		@Description,
-		@Balance
+		@Balance,
+		@AnnualSpendTarget
 	);
 
 	SELECT
@@ -35,6 +38,7 @@ BEGIN
 		[Description],
 		[Type],
 		[Balance],
+		[AnnualSpendTarget],
 		[CreatedAt],
 		[UpdatedAt]
 	FROM [dbo].[Accounts] l

@@ -8,7 +8,8 @@ CREATE PROCEDURE [dbo].[usp_UpdateAccount]
     @Name NVARCHAR(50),
     @Type NVARCHAR(50),
     @Balance MONEY,
-    @Description NVARCHAR(255) = NULL
+    @Description NVARCHAR(255) = NULL,
+    @AnnualSpendTarget MONEY = NULL
 AS
 BEGIN
     DECLARE @OutputTable TABLE (Id UNIQUEIDENTIFIER);
@@ -19,7 +20,8 @@ BEGIN
         [Name] = @Name,
         [Type] = @Type,
         [Balance] = @Balance,
-        [Description] = @Description
+        [Description] = @Description,
+        [AnnualSpendTarget] = @AnnualSpendTarget
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
 
@@ -29,6 +31,7 @@ BEGIN
         a.[Description],
         a.[Type],
         a.[Balance],
+        a.[AnnualSpendTarget],
         a.[CreatedAt],
         a.[UpdatedAt]
     FROM [dbo].[Accounts] a

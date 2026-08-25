@@ -15,6 +15,8 @@ namespace Core.Dtos
 
         public decimal Balance { get; set; }
 
+        public decimal? AnnualSpendTarget { get; set; }
+
         public override Account ToModel()
         {
             return new Account
@@ -24,6 +26,7 @@ namespace Core.Dtos
                 Description = Description,
                 Type = Enum.Parse<AccountType>(Type),
                 Balance = Balance,
+                AnnualSpendTarget = AnnualSpendTarget,
                 CreatedAt = CreatedAt,
                 UpdatedAt = UpdatedAt,
             };

@@ -18,6 +18,7 @@
 	let name = $state('');
 	let balance = $state(0);
 	let accountType = $state<AccountType>(0);
+	let annualSpendTarget = $state<number | null>(null);
 
 	function openEditDialog() {
 		const account = appState.accounts.find((item) => item.id === id);
@@ -26,13 +27,19 @@
 		name = account.name;
 		balance = account.balance;
 		accountType = account.type;
+		annualSpendTarget = account.annualSpendTarget ?? null;
 		isEditDialogOpen = true;
 	}
 
 	async function saveAccount(event: Event) {
 		event.preventDefault();
 		try {
-			const updated = await updateAccount(id, { name, accountType, balance });
+			const updated = await updateAccount(id, {
+				name,
+				accountType,
+				balance,
+				annualSpendTarget: annualSpendTarget || undefined
+			});
 			appState.accounts = appState.accounts.map((account) =>
 				account.id === id ? updated : account
 			);
@@ -119,6 +126,18 @@
 						type="number"
 						step="0.01"
 						bind:value={balance}
+					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-annual-spend-target">Annual Spend Target (Optional)</Label>
+					<Input
+						id="edit-annual-spend-target"
+						name="annualSpendTarget"
+						placeholder="e.g. 12000.00"
+						type="number"
+						step="0.01"
+						min="0"
+						bind:value={annualSpendTarget}
 					/>
 				</div>
 			</div>

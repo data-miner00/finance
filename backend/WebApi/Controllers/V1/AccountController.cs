@@ -45,6 +45,7 @@ namespace WebApi.Controllers.V1
                 Type = (AccountType)request.AccountType,
                 Balance = request.Balance,
                 Currency = request.Currency,
+                AnnualSpendTarget = request.AnnualSpendTarget,
             };
 
             var createdAccount = await _repository.CreateAsync(account, cancellationToken);
@@ -65,6 +66,7 @@ namespace WebApi.Controllers.V1
             account.Type = (AccountType)request.AccountType;
             account.Balance = request.Balance;
             account.Currency = request.Currency;
+            account.AnnualSpendTarget = request.AnnualSpendTarget;
 
             var updated = await _repository.UpdateAsync(account, cancellationToken);
             return this.Ok(updated);

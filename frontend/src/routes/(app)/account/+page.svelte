@@ -7,7 +7,7 @@
 	import { AccountType } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
-	import { columns } from './data-table/column';
+	import { type AccountRow, columns } from './data-table/column';
 
 	onMount(() => {
 		appState.pageTitle = 'Accounts';
@@ -25,11 +25,29 @@
 			.filter((account) => account.type === AccountType.CreditCard)
 			.reduce((sum, account) => sum + account.balance, 0)
 	);
-</script>
 
-{#snippet dataTableControls()}
-	<div></div>
-{/snippet}
+	function getYearToDateSpend(accountId: string): number {
+		const currentYear = new Date().getFullYear();
+		return appState.expenses
+			.filter(
+				(expense) =>
+					expense.accountId === accountId &&
+					new Date(expense.actionedAt ?? expense.createdAt).getFullYear() === currentYear
+			)
+			.reduce((sum, expense) => sum + expense.amount, 0);
+	}
+
+	let accountRows = $derived<AccountRow[]>(
+		appState.accounts.map((account) => {
+			const spentThisYear = getYearToDateSpend(account.id);
+			const annualSpendProgress =
+				account.annualSpendTarget != null && account.annualSpendTarget > 0
+					? (spentThisYear / account.annualSpendTarget) * 100
+					: null;
+			return { ...account, spentThisYear, annualSpendProgress };
+		})
+	);
+</script>
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<div class="px-4 lg:px-6">
@@ -42,7 +60,7 @@
 	</div>
 
 	<div
-		class="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card"
+		class="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card"
 	>
 		<StatCard
 			description="Savings"
@@ -73,6 +91,6 @@
 	</div>
 
 	<div class="px-4 lg:px-6">
-		<DataTable data={appState.accounts} {columns} controls={dataTableControls} />
+		<DataTable data={accountRows} {columns} />
 	</div>
 </div>
