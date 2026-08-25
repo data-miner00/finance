@@ -27,9 +27,9 @@ namespace Core.Repositories
             return Task.FromResult<IEnumerable<T>>(values);
         }
 
-        public Task<T> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            return Task.FromResult(this.values.First(x => x.Id == id));
+            return Task.FromResult(this.values.FirstOrDefault(x => x.Id == id));
         }
 
         public Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)

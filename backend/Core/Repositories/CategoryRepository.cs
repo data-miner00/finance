@@ -56,15 +56,21 @@ namespace Core.Repositories
             return dtos.Select(x => x.ToModel());
         }
 
-        public async Task<Category> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Category?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+
             var query = "SELECT [Id], [Name], [Color], [Icon], [BudgetAmount], [CreatedAt], [UpdatedAt] FROM [dbo].[Categories] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
-            var dto = await connection.QueryFirstAsync<CategoryDto>(query, new { Id = Guid.Parse(id) });
+            var dto = await connection.QueryFirstOrDefaultAsync<CategoryDto>(query, new { Id = guid });
 
-            return dto.ToModel();
+            return dto?.ToModel();
         }
 
         public async Task<Category> UpdateAsync(Category entity, CancellationToken cancellationToken)

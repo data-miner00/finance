@@ -26,15 +26,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<Income>> GetById(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var income = await _repository.GetByIdAsync(id, cancellationToken);
-                return Ok(income);
-            }
-            catch
+            var income = await _repository.GetByIdAsync(id, cancellationToken);
+            if (income is null)
             {
                 return NotFound();
             }
+
+            return Ok(income);
         }
 
         [HttpPost]
@@ -56,37 +54,33 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<Income>> Update(string id, UpdateIncomeRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var income = await _repository.GetByIdAsync(id, cancellationToken);
-                income.Name = request.Name;
-                income.Description = request.Description;
-                income.Amount = request.Amount;
-                income.Currency = request.Currency;
-                income.AccountId = request.AccountId;
-
-                var updated = await _repository.UpdateAsync(income, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var income = await _repository.GetByIdAsync(id, cancellationToken);
+            if (income is null)
             {
                 return this.NotFound();
             }
+
+            income.Name = request.Name;
+            income.Description = request.Description;
+            income.Amount = request.Amount;
+            income.Currency = request.Currency;
+            income.AccountId = request.AccountId;
+
+            var updated = await _repository.UpdateAsync(income, cancellationToken);
+            return this.Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _repository.GetByIdAsync(id, cancellationToken);
-                await _repository.DeleteByIdAsync(id, cancellationToken);
-                return NoContent();
-            }
-            catch
+            var income = await _repository.GetByIdAsync(id, cancellationToken);
+            if (income is null)
             {
                 return NotFound();
             }
+
+            await _repository.DeleteByIdAsync(id, cancellationToken);
+            return NoContent();
         }
     }
 }

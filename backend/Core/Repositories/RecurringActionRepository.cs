@@ -68,16 +68,22 @@ namespace Core.Repositories
             return dtos.Select(d => d.ToModel());
         }
 
-        public async Task<RecurringAction> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<RecurringAction?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+
             var query = "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
                 "FROM [dbo].[Recurrings] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
-            var dto = await connection.QueryFirstAsync<RecurringActionDto>(query, new { Id = Guid.Parse(id) });
+            var dto = await connection.QueryFirstOrDefaultAsync<RecurringActionDto>(query, new { Id = guid });
 
-            return dto.ToModel();
+            return dto?.ToModel();
         }
 
         public async Task<RecurringAction> UpdateAsync(RecurringAction entity, CancellationToken cancellationToken)

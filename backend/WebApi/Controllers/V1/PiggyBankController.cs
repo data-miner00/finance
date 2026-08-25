@@ -26,15 +26,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<PiggyBank>> GetById(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var piggyBank = await _repository.GetByIdAsync(id, cancellationToken);
-                return Ok(piggyBank);
-            }
-            catch
+            var piggyBank = await _repository.GetByIdAsync(id, cancellationToken);
+            if (piggyBank is null)
             {
                 return NotFound();
             }
+
+            return Ok(piggyBank);
         }
 
         [HttpPost]
@@ -57,38 +55,34 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<PiggyBank>> Update(string id, UpdatePiggyBankRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var piggyBank = await _repository.GetByIdAsync(id, cancellationToken);
-                piggyBank.Name = request.Name;
-                piggyBank.Description = request.Description;
-                piggyBank.Amount = request.Amount;
-                piggyBank.Target = request.Target;
-                piggyBank.Currency = request.Currency;
-                piggyBank.Deadline = request.Deadline;
-
-                var updated = await _repository.UpdateAsync(piggyBank, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var piggyBank = await _repository.GetByIdAsync(id, cancellationToken);
+            if (piggyBank is null)
             {
                 return this.NotFound();
             }
+
+            piggyBank.Name = request.Name;
+            piggyBank.Description = request.Description;
+            piggyBank.Amount = request.Amount;
+            piggyBank.Target = request.Target;
+            piggyBank.Currency = request.Currency;
+            piggyBank.Deadline = request.Deadline;
+
+            var updated = await _repository.UpdateAsync(piggyBank, cancellationToken);
+            return this.Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _repository.GetByIdAsync(id, cancellationToken);
-                await _repository.DeleteByIdAsync(id, cancellationToken);
-                return NoContent();
-            }
-            catch
+            var piggyBank = await _repository.GetByIdAsync(id, cancellationToken);
+            if (piggyBank is null)
             {
                 return NotFound();
             }
+
+            await _repository.DeleteByIdAsync(id, cancellationToken);
+            return NoContent();
         }
     }
 }

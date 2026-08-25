@@ -57,15 +57,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<Expense>> GetById(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var expense = await _repository.GetByIdAsync(id, cancellationToken);
-                return Ok(expense);
-            }
-            catch
+            var expense = await _repository.GetByIdAsync(id, cancellationToken);
+            if (expense is null)
             {
                 return NotFound();
             }
+
+            return Ok(expense);
         }
 
         [HttpPost]
@@ -92,54 +90,46 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<Expense>> Update(string id, UpdateExpenseRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var expense = await _repository.GetByIdAsync(id, cancellationToken);
-                expense.CategoryName = request.CategoryName;
-                expense.AccountId = request.AccountId;
-                expense.Name = request.Name;
-                expense.Description = request.Description;
-                expense.Amount = request.Amount;
-                expense.Currency = request.Currency;
-                expense.Location = request.Location;
-                expense.ReceiptImage = request.ReceiptImage;
-                expense.ActionedAt = request.ActionedAt;
-                expense.AgentName = request.AgentName;
-
-                var updated = await _repository.UpdateAsync(expense, cancellationToken);
-                await this.EvaluateBudgetAlertsAsync(updated.CategoryName, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var expense = await _repository.GetByIdAsync(id, cancellationToken);
+            if (expense is null)
             {
                 return NotFound();
             }
+
+            expense.CategoryName = request.CategoryName;
+            expense.AccountId = request.AccountId;
+            expense.Name = request.Name;
+            expense.Description = request.Description;
+            expense.Amount = request.Amount;
+            expense.Currency = request.Currency;
+            expense.Location = request.Location;
+            expense.ReceiptImage = request.ReceiptImage;
+            expense.ActionedAt = request.ActionedAt;
+            expense.AgentName = request.AgentName;
+
+            var updated = await _repository.UpdateAsync(expense, cancellationToken);
+            await this.EvaluateBudgetAlertsAsync(updated.CategoryName, cancellationToken);
+            return this.Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _repository.GetByIdAsync(id, cancellationToken);
-                await _repository.DeleteByIdAsync(id, cancellationToken);
-                return NoContent();
-            }
-            catch
+            var expense = await _repository.GetByIdAsync(id, cancellationToken);
+            if (expense is null)
             {
                 return NotFound();
             }
+
+            await _repository.DeleteByIdAsync(id, cancellationToken);
+            return NoContent();
         }
 
         [HttpPost("{id}/receipt")]
         public async Task<ActionResult<Expense>> UploadReceipt(string id, IFormFile file, CancellationToken cancellationToken)
         {
-            Expense expense;
-            try
-            {
-                expense = await _repository.GetByIdAsync(id, cancellationToken);
-            }
-            catch
+            var expense = await _repository.GetByIdAsync(id, cancellationToken);
+            if (expense is null)
             {
                 return NotFound();
             }
@@ -176,12 +166,8 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}/receipt")]
         public async Task<ActionResult> GetReceipt(string id, CancellationToken cancellationToken)
         {
-            Expense expense;
-            try
-            {
-                expense = await _repository.GetByIdAsync(id, cancellationToken);
-            }
-            catch
+            var expense = await _repository.GetByIdAsync(id, cancellationToken);
+            if (expense is null)
             {
                 return NotFound();
             }
@@ -198,12 +184,8 @@ namespace WebApi.Controllers.V1
         [HttpDelete("{id}/receipt")]
         public async Task<ActionResult<Expense>> DeleteReceipt(string id, CancellationToken cancellationToken)
         {
-            Expense expense;
-            try
-            {
-                expense = await _repository.GetByIdAsync(id, cancellationToken);
-            }
-            catch
+            var expense = await _repository.GetByIdAsync(id, cancellationToken);
+            if (expense is null)
             {
                 return NotFound();
             }

@@ -34,15 +34,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetById(string id)
         {
-            try
-            {
-                var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
-                return this.Ok(category);
-            }
-            catch
+            var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
+            if (category is null)
             {
                 return this.NotFound();
             }
+
+            return this.Ok(category);
         }
 
         [HttpPost]
@@ -86,12 +84,8 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<Category>> Update(string id, UpdateCategoryRequest request)
         {
-            Category category;
-            try
-            {
-                category = await this.repository.GetByIdAsync(id, this.CancellationToken);
-            }
-            catch
+            var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
+            if (category is null)
             {
                 return this.NotFound();
             }
@@ -131,11 +125,8 @@ namespace WebApi.Controllers.V1
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            try
-            {
-                await this.repository.GetByIdAsync(id, this.CancellationToken);
-            }
-            catch
+            var category = await this.repository.GetByIdAsync(id, this.CancellationToken);
+            if (category is null)
             {
                 return this.NotFound();
             }
@@ -154,12 +145,9 @@ namespace WebApi.Controllers.V1
         [HttpPost("merge")]
         public async Task<ActionResult> Merge(MergeCategoriesRequest request)
         {
-            try
-            {
-                await this.repository.GetByIdAsync(request.SourceCategoryId, this.CancellationToken);
-                await this.repository.GetByIdAsync(request.TargetCategoryId, this.CancellationToken);
-            }
-            catch
+            var sourceCategory = await this.repository.GetByIdAsync(request.SourceCategoryId, this.CancellationToken);
+            var targetCategory = await this.repository.GetByIdAsync(request.TargetCategoryId, this.CancellationToken);
+            if (sourceCategory is null || targetCategory is null)
             {
                 return this.NotFound();
             }

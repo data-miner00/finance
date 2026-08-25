@@ -63,15 +63,21 @@ namespace Core.Repositories
             return accounts.Select(x => x.ToModel());
         }
 
-        public async Task<Account> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Account?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+
             var query = "SELECT [Id], [Name], [Description], [Type], [Balance], [CreatedAt], [UpdatedAt] FROM [dbo].[Accounts] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
-            var accountDto = await connection.QueryFirstAsync<AccountDto>(query, new { Id = Guid.Parse(id) });
+            var accountDto = await connection.QueryFirstOrDefaultAsync<AccountDto>(query, new { Id = guid });
 
-            return accountDto.ToModel();
+            return accountDto?.ToModel();
         }
 
         public async Task<Account> UpdateAsync(Account entity, CancellationToken cancellationToken)

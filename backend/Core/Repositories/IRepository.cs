@@ -21,8 +21,8 @@ public interface IRepository<T>
     /// </summary>
     /// <param name="id">The Id for <typeparamref name="T"/>.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The found <typeparamref name="T"/>.</returns>
-    Task<T> GetByIdAsync(string id, CancellationToken cancellationToken);
+    /// <returns>The found <typeparamref name="T"/>, or <see langword="null"/> if no entity with that Id exists.</returns>
+    Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Creates a new <typeparamref name="T"/> entry.

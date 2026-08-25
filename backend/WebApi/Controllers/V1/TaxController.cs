@@ -26,15 +26,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<Tax>> GetById(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var expense = await _repository.GetByIdAsync(id, cancellationToken);
-                return Ok(expense);
-            }
-            catch
+            var tax = await _repository.GetByIdAsync(id, cancellationToken);
+            if (tax is null)
             {
                 return NotFound();
             }
+
+            return Ok(tax);
         }
 
         [HttpPost]
@@ -54,35 +52,31 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<Tax>> Update(string id, UpdateTaxRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var expense = await _repository.GetByIdAsync(id, cancellationToken);
-                expense.Name = request.Name;
-                expense.Description = request.Description;
-                expense.Amount = request.Amount;
-
-                var updated = await _repository.UpdateAsync(expense, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var tax = await _repository.GetByIdAsync(id, cancellationToken);
+            if (tax is null)
             {
                 return NotFound();
             }
+
+            tax.Name = request.Name;
+            tax.Description = request.Description;
+            tax.Amount = request.Amount;
+
+            var updated = await _repository.UpdateAsync(tax, cancellationToken);
+            return this.Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _repository.GetByIdAsync(id, cancellationToken);
-                await _repository.DeleteByIdAsync(id, cancellationToken);
-                return NoContent();
-            }
-            catch
+            var tax = await _repository.GetByIdAsync(id, cancellationToken);
+            if (tax is null)
             {
                 return NotFound();
             }
+
+            await _repository.DeleteByIdAsync(id, cancellationToken);
+            return NoContent();
         }
     }
 }

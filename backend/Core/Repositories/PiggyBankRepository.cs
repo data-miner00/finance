@@ -63,15 +63,21 @@ namespace Core.Repositories
             return dtos.Select(x => x.ToModel());
         }
 
-        public async Task<PiggyBank> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<PiggyBank?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+
             var query = "SELECT [Id], [Name], [Description], [Amount], [Target], [Deadline], [CreatedAt], [UpdatedAt] FROM [dbo].[PiggyBanks] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
-            var dto = await connection.QueryFirstAsync<PiggyBankDto>(query, new { Id = Guid.Parse(id) });
+            var dto = await connection.QueryFirstOrDefaultAsync<PiggyBankDto>(query, new { Id = guid });
 
-            return dto.ToModel();
+            return dto?.ToModel();
         }
 
         public async Task<PiggyBank> UpdateAsync(PiggyBank entity, CancellationToken cancellationToken)

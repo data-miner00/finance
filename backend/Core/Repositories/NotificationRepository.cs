@@ -61,16 +61,22 @@ namespace Core.Repositories
             return dtos.Select(x => x.ToModel());
         }
 
-        public async Task<Notification> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Notification?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+
             var query = "SELECT [Id], [Type], [Title], [Message], [IsRead], [EntityType], [EntityId], [CreatedAt], [UpdatedAt] " +
                 "FROM [dbo].[Notifications] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
-            var dto = await connection.QueryFirstAsync<NotificationDto>(query, new { Id = Guid.Parse(id) });
+            var dto = await connection.QueryFirstOrDefaultAsync<NotificationDto>(query, new { Id = guid });
 
-            return dto.ToModel();
+            return dto?.ToModel();
         }
 
         public async Task<Notification> UpdateAsync(Notification entity, CancellationToken cancellationToken)

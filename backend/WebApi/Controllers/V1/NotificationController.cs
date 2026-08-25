@@ -34,12 +34,8 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}/read")]
         public async Task<ActionResult<Notification>> MarkRead(string id)
         {
-            Notification notification;
-            try
-            {
-                notification = await this.repository.GetByIdAsync(id, this.CancellationToken);
-            }
-            catch
+            var notification = await this.repository.GetByIdAsync(id, this.CancellationToken);
+            if (notification is null)
             {
                 return this.NotFound();
             }

@@ -118,15 +118,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<RecurringAction>> GetById(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
-                return Ok(recurringAction);
-            }
-            catch
+            var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
+            if (recurringAction is null)
             {
                 return NotFound();
             }
+
+            return Ok(recurringAction);
         }
 
         [HttpPost]
@@ -155,60 +153,54 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<RecurringAction>> Update(string id, UpdateRecurringActionRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
-                recurringAction.Name = request.Name;
-                recurringAction.Description = request.Description;
-                recurringAction.Amount = request.Amount;
-                recurringAction.IsActive = request.IsActive;
-                recurringAction.StartAt = request.StartAt;
-                recurringAction.RecurrenceType = request.RecurrenceType;
-                recurringAction.IntervalValue = request.IntervalValue;
-                recurringAction.DayOfMonth = request.DayOfMonth;
-
-                // Recalculate next execution date based on updated properties
-                recurringAction.RecurringAt = CalculateNextExecutionDate(request.StartAt, request.RecurrenceType, request.IntervalValue, request.DayOfMonth);
-
-                var updated = await _repository.UpdateAsync(recurringAction, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
+            if (recurringAction is null)
             {
                 return this.NotFound();
             }
+
+            recurringAction.Name = request.Name;
+            recurringAction.Description = request.Description;
+            recurringAction.Amount = request.Amount;
+            recurringAction.IsActive = request.IsActive;
+            recurringAction.StartAt = request.StartAt;
+            recurringAction.RecurrenceType = request.RecurrenceType;
+            recurringAction.IntervalValue = request.IntervalValue;
+            recurringAction.DayOfMonth = request.DayOfMonth;
+
+            // Recalculate next execution date based on updated properties
+            recurringAction.RecurringAt = CalculateNextExecutionDate(request.StartAt, request.RecurrenceType, request.IntervalValue, request.DayOfMonth);
+
+            var updated = await _repository.UpdateAsync(recurringAction, cancellationToken);
+            return this.Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _repository.GetByIdAsync(id, cancellationToken);
-                await _repository.DeleteByIdAsync(id, cancellationToken);
-                return NoContent();
-            }
-            catch
+            var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
+            if (recurringAction is null)
             {
                 return NotFound();
             }
+
+            await _repository.DeleteByIdAsync(id, cancellationToken);
+            return NoContent();
         }
 
         [HttpPatch("{id}/toggle")]
         public async Task<ActionResult<RecurringAction>> ToggleActive(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
-                recurringAction.IsActive = !recurringAction.IsActive;
-
-                var updated = await _repository.UpdateAsync(recurringAction, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var recurringAction = await _repository.GetByIdAsync(id, cancellationToken);
+            if (recurringAction is null)
             {
                 return this.NotFound();
             }
+
+            recurringAction.IsActive = !recurringAction.IsActive;
+
+            var updated = await _repository.UpdateAsync(recurringAction, cancellationToken);
+            return this.Ok(updated);
         }
     }
 }

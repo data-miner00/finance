@@ -26,15 +26,13 @@ namespace WebApi.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<Account>> GetById(string id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var account = await _repository.GetByIdAsync(id, cancellationToken);
-                return Ok(account);
-            }
-            catch
+            var account = await _repository.GetByIdAsync(id, cancellationToken);
+            if (account is null)
             {
                 return NotFound();
             }
+
+            return this.Ok(account);
         }
 
         [HttpPost]
@@ -56,37 +54,33 @@ namespace WebApi.Controllers.V1
         [HttpPut("{id}")]
         public async Task<ActionResult<Account>> Update(string id, UpdateAccountRequest request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var account = await _repository.GetByIdAsync(id, cancellationToken);
-                account.Name = request.Name;
-                account.Description = request.Description;
-                account.Type = (AccountType)request.AccountType;
-                account.Balance = request.Balance;
-                account.Currency = request.Currency;
-
-                var updated = await _repository.UpdateAsync(account, cancellationToken);
-                return this.Ok(updated);
-            }
-            catch
+            var account = await _repository.GetByIdAsync(id, cancellationToken);
+            if (account is null)
             {
                 return this.NotFound();
             }
+
+            account.Name = request.Name;
+            account.Description = request.Description;
+            account.Type = (AccountType)request.AccountType;
+            account.Balance = request.Balance;
+            account.Currency = request.Currency;
+
+            var updated = await _repository.UpdateAsync(account, cancellationToken);
+            return this.Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id, CancellationToken cancellationToken)
         {
-            try
+            var account = await _repository.GetByIdAsync(id, cancellationToken);
+            if (account is null)
             {
-                await _repository.GetByIdAsync(id, cancellationToken);
-                await _repository.DeleteByIdAsync(id, cancellationToken);
-                return NoContent();
+                return this.NotFound();
             }
-            catch
-            {
-                return NotFound();
-            }
+
+            await _repository.DeleteByIdAsync(id, cancellationToken);
+            return this.NoContent();
         }
     }
 }

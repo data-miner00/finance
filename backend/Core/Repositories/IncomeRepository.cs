@@ -67,16 +67,22 @@ namespace Core.Repositories
             return dtos.Select(x => x.ToModel());
         }
 
-        public async Task<Income> GetByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<Income?> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+
             var query = $"SELECT [Id], [Name], [Description], [Amount], [Currency], [ActionedAt], [CreatedAt], [UpdatedAt], [AccountId], [AccountName] " +
                 $"FROM [dbo].[{VwNames.GetAllIncomes}] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
-            var dto = await connection.QueryFirstAsync<IncomeDto>(query, new { Id = Guid.Parse(id) });
+            var dto = await connection.QueryFirstOrDefaultAsync<IncomeDto>(query, new { Id = guid });
 
-            return dto.ToModel();
+            return dto?.ToModel();
         }
 
         public async Task<Income> UpdateAsync(Income entity, CancellationToken cancellationToken)
