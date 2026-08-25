@@ -37,6 +37,7 @@ export type AppState = {
 	settings: KnownSettings;
 	isAddTaxDialogOpen: boolean;
 	isAddPiggyBankDialogOpen: boolean;
+	isAddRecurringActionDialogOpen: boolean;
 };
 
 export const appState = $state<AppState>({
@@ -60,5 +61,6 @@ export const appState = $state<AppState>({
 	isAddCategoryDialogOpen: false,
 	isAddTaxDialogOpen: false,
 	isAddPiggyBankDialogOpen: false,
+	isAddRecurringActionDialogOpen: false,
 	settings: { ...DEFAULT_SETTINGS }
 });

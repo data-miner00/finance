@@ -8,6 +8,7 @@
 	import AddAccountDialog from '$lib/components/custom/add-account-dialog.svelte';
 	import AddCategoryDialog from '$lib/components/custom/add-category-dialog.svelte';
 	import AddPiggyBankDialog from '$lib/components/custom/add-piggy-bank-dialog.svelte';
+	import AddRecurringActionDialog from '$lib/components/custom/add-recurring-action-dialog.svelte';
 	import AddTaxDialog from '$lib/components/custom/add-tax-dialog.svelte';
 	import AddTransactionDialog from '$lib/components/custom/add-transaction-dialog.svelte';
 	import CommandPalette from '$lib/components/custom/command-palette.svelte';
@@ -90,3 +91,4 @@
 <AddCategoryDialog bind:open={appState.isAddCategoryDialogOpen} />
 <AddTaxDialog />
 <AddPiggyBankDialog />
+<AddRecurringActionDialog />

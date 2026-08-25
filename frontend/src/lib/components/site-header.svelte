@@ -48,7 +48,7 @@
 			text: 'Create Recurring',
 			isDisplay: true,
 			action() {
-				// noop
+				appState.isAddRecurringActionDialogOpen = true;
 			}
 		},
 		piggyBank: {
