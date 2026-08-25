@@ -18,7 +18,7 @@
 	let name = $state('');
 	let amount = $state(0);
 	let startAt = $state('');
-	let recurrenceType = $state('Monthly');
+	let recurrenceType = $state(2);
 	let intervalValue = $state(1);
 	let dayOfMonth = $state<number | null>(null);
 	let description = $state('');
@@ -103,15 +103,28 @@
 				</div>
 				<div class="grid gap-3">
 					<Label for="edit-recurrenceType">Recurrence Type</Label>
-					<Select.Root type="single" name="recurrenceType" bind:value={recurrenceType}>
+					<Select.Root
+						type="single"
+						name="recurrenceType"
+						value={recurrenceType.toString()}
+						onValueChange={(value) => (recurrenceType = parseInt(value))}
+					>
 						<Select.Trigger id="edit-recurrenceType" class="w-full">
-							{recurrenceType}
+							{#if recurrenceType === 0}
+								Daily
+							{:else if recurrenceType === 1}
+								Weekly
+							{:else if recurrenceType === 2}
+								Monthly
+							{:else if recurrenceType === 3}
+								Yearly
+							{/if}
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="Daily" label="Daily">Daily</Select.Item>
-							<Select.Item value="Weekly" label="Weekly">Weekly</Select.Item>
-							<Select.Item value="Monthly" label="Monthly">Monthly</Select.Item>
-							<Select.Item value="Yearly" label="Yearly">Yearly</Select.Item>
+							<Select.Item value="0" label="Daily">Daily</Select.Item>
+							<Select.Item value="1" label="Weekly">Weekly</Select.Item>
+							<Select.Item value="2" label="Monthly">Monthly</Select.Item>
+							<Select.Item value="3" label="Yearly">Yearly</Select.Item>
 						</Select.Content>
 					</Select.Root>
 				</div>
