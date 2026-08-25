@@ -5,6 +5,7 @@
 	import data from '$lib/components/data';
 	import DataTable from '$lib/components/data-table.svelte';
 	import SectionCards from '$lib/components/section-cards.svelte';
+	import SmartInsights from '$lib/components/smart-insights.svelte';
 	import { appState } from '$lib/states.svelte';
 
 	onMount(() => {
@@ -19,6 +20,7 @@
 
 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 	<SectionCards />
+	<SmartInsights />
 	<div class="px-4 lg:px-6">
 		<ChartAreaInteractive {chartData} />
 	</div>
