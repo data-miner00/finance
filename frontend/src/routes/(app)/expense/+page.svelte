@@ -217,7 +217,7 @@
 		value.start = value.start.set({ day: 0 }).add({ months: 1 });
 		value.end = value.end.set({ day: 0 }).add({ months: 2 }).subtract({ days: 1 });
 
-		toast.success('Set date range to previous month.');
+		toast.success('Set date range to next month.');
 	}
 
 	let filteredExpensesByDateRange = $derived(
