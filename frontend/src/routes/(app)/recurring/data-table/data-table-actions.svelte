@@ -72,14 +72,7 @@
 	}
 </script>
 
-<RowActionsMenu
-	onEdit={openEditDialog}
-	onDelete={() => (isDeleteDialogOpen = true)}
-	editLabel="Edit recurring"
-	deleteLabel="Delete recurring"
-	copyId={id}
-	copyLabel="Copy recurring ID"
-/>
+<RowActionsMenu onEdit={openEditDialog} onDelete={() => (isDeleteDialogOpen = true)} copyId={id} />
 
 <Dialog.Root bind:open={isEditDialogOpen}>
 	<form>
