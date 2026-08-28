@@ -1,6 +1,7 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
 import { formatCurrency } from '$lib';
+import type { BudgetRow } from '$lib/budget';
 import { getCategoryIcon } from '$lib/category-icons';
 import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
@@ -8,15 +9,7 @@ import { renderComponent } from '$lib/components/ui/data-table';
 import DataTableActions from './data-table-actions.svelte';
 import DataTableStatus from './data-table-status.svelte';
 
-export type BudgetRow = {
-	id: string;
-	name: string;
-	icon?: string | null;
-	budgetAmount: number;
-	spent: number;
-	remaining: number;
-	progress: number;
-};
+export type { BudgetRow };
 
 export const columns: ColumnDef<BudgetRow>[] = [
 	{

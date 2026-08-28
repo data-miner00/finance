@@ -3,7 +3,8 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { formatCurrency, isCurrentMonth } from '$lib';
+	import { formatCurrency } from '$lib';
+	import { computeBudgetRows } from '$lib/budget';
 	import DataTable from '$lib/components/data-table-revamp.svelte';
 	import StatCard from '$lib/components/stat-card.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -14,7 +15,7 @@
 	import { updateCategory } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
-	import { columns, type BudgetRow } from './data-table/column';
+	import { type BudgetRow, columns } from './data-table/column';
 
 	onMount(() => {
 		appState.pageTitle = 'Budget';
@@ -27,25 +28,7 @@
 
 	let unbudgetedCategories = $derived(appState.categories.filter((c) => c.budgetAmount == null));
 
-	let budgetRows = $derived<BudgetRow[]>(
-		appState.categories
-			.filter((c) => c.budgetAmount != null)
-			.map((category) => {
-				const spent = appState.expenses
-					.filter((e) => e.categoryName === category.name && isCurrentMonth(e.actionedAt))
-					.reduce((sum, e) => sum + e.amount, 0);
-				const budgetAmount = category.budgetAmount ?? 0;
-				return {
-					id: category.id,
-					name: category.name,
-					icon: category.icon,
-					budgetAmount,
-					spent,
-					remaining: budgetAmount - spent,
-					progress: budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0
-				};
-			})
-	);
+	let budgetRows = $derived<BudgetRow[]>(computeBudgetRows(appState.categories, appState.expenses));
 
 	let totalBudgeted = $derived(budgetRows.reduce((sum, row) => sum + row.budgetAmount, 0));
 	let totalSpent = $derived(budgetRows.reduce((sum, row) => sum + row.spent, 0));
