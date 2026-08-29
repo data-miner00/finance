@@ -105,9 +105,11 @@ public class RecurrentActionService : BackgroundService
         where TEntity : Entity
     {
         var now = this.timeProvider.GetUtcNow();
-        var dueActions = GetDueActions(recurringActions, type, now);
-        var processedCount = 0;
         var entityTypeLower = entityTypeName.ToLowerInvariant();
+        var dueActions = GetDueActions(recurringActions, type, now)
+            .Where(action => this.HasValidRecurrenceConfig(action, entityTypeLower))
+            .ToList();
+        var processedCount = 0;
 
         foreach (var action in dueActions)
         {
@@ -123,7 +125,7 @@ public class RecurrentActionService : BackgroundService
                     if (action.RecurringAt <= previousRecurringAt)
                     {
                         this.logger.LogError(
-                            "Recurring {EntityType} action '{ActionName}' ({ActionId}) did not advance past {RecurringAt} (IntervalValue={IntervalValue}); stopping catch-up to avoid an infinite loop.",
+                            "Recurring {EntityType} action '{ActionName}' ({ActionId}) unexpectedly did not advance past {RecurringAt} (IntervalValue={IntervalValue}); stopping catch-up to avoid an infinite loop.",
                             entityTypeLower, action.Name, action.Id, action.RecurringAt, action.IntervalValue);
                         break;
                     }
@@ -155,6 +157,27 @@ public class RecurrentActionService : BackgroundService
 
     private static List<RecurringAction> GetDueActions(IEnumerable<RecurringAction> recurringActions, RecurringType type, DateTimeOffset now) =>
         recurringActions.Where(x => x.IsActive && x.Type == type && x.StartAt.Date <= now.Date && x.RecurringAt.Date <= now.Date).ToList();
+
+    private bool HasValidRecurrenceConfig(RecurringAction action, string entityTypeLower)
+    {
+        if (action.IntervalValue < 1)
+        {
+            this.logger.LogWarning(
+                "Skipping recurring {EntityType} action '{ActionName}' ({ActionId}): IntervalValue must be at least 1 (was {IntervalValue}).",
+                entityTypeLower, action.Name, action.Id, action.IntervalValue);
+            return false;
+        }
+
+        if (action.DayOfMonth is < 1 or > 31)
+        {
+            this.logger.LogWarning(
+                "Skipping recurring {EntityType} action '{ActionName}' ({ActionId}): DayOfMonth must be between 1 and 31 (was {DayOfMonth}).",
+                entityTypeLower, action.Name, action.Id, action.DayOfMonth);
+            return false;
+        }
+
+        return true;
+    }
 
     private static void AdvanceAction(RecurringAction action, DateTimeOffset now)
     {
