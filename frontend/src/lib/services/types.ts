@@ -17,7 +17,7 @@ export interface Account extends EntityBase {
 	description?: string | null;
 	type: AccountType;
 	balance: number;
-	currency?: string | null;
+	currency: string;
 	annualSpendTarget?: number | null;
 }
 
@@ -26,7 +26,7 @@ export interface CreateAccountRequest {
 	description?: string | null;
 	accountType: AccountType;
 	balance: number;
-	currency?: string | null;
+	currency: string;
 	annualSpendTarget?: number | null;
 }
 

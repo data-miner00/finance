@@ -6,12 +6,14 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { type AccountType, createAccount } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	let name = $state('');
 	let balance = $state(0);
 	let accountType = $state<AccountType>(0);
+	let currency = $state(appState.settings.defaultCurrency);
 	let annualSpendTarget = $state<number | null>(null);
 
 	async function addAccount() {
@@ -20,6 +22,7 @@
 				name,
 				accountType,
 				balance,
+				currency,
 				annualSpendTarget: annualSpendTarget || undefined
 			});
 
@@ -27,6 +30,7 @@
 			name = '';
 			balance = 0;
 			accountType = 0;
+			currency = appState.settings.defaultCurrency;
 			annualSpendTarget = null;
 			appState.openAddDialog = null;
 
@@ -93,6 +97,21 @@
 						step="0.01"
 						bind:value={balance}
 					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="currency-1">Currency</Label>
+					<Select.Root type="single" name="currency" bind:value={currency}>
+						<Select.Trigger id="currency-1" class="w-full">
+							{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+						</Select.Trigger>
+						<Select.Content>
+							{#each CURRENCIES as code (code)}
+								<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+									{CURRENCY_LABELS[code]}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="annual-spend-target-1">Annual Spend Target (Optional)</Label>

@@ -9,6 +9,7 @@ CREATE PROCEDURE [dbo].[usp_UpdateAccount]
     @Type NVARCHAR(50),
     @Balance MONEY,
     @Description NVARCHAR(255) = NULL,
+    @Currency NCHAR(3),
     @AnnualSpendTarget MONEY = NULL
 AS
 BEGIN
@@ -21,6 +22,7 @@ BEGIN
         [Type] = @Type,
         [Balance] = @Balance,
         [Description] = @Description,
+        [Currency] = @Currency,
         [AnnualSpendTarget] = @AnnualSpendTarget
     OUTPUT inserted.Id INTO @OutputTable
     WHERE [Id] = @Id;
@@ -31,6 +33,7 @@ BEGIN
         a.[Description],
         a.[Type],
         a.[Balance],
+        a.[Currency],
         a.[AnnualSpendTarget],
         a.[CreatedAt],
         a.[UpdatedAt]

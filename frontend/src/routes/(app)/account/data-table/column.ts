@@ -56,7 +56,7 @@ export const columns: ColumnDef<AccountRow>[] = [
 				title: 'Balance'
 			}),
 		cell: ({ row }) => {
-			return row.original.balance.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
+			return formatCurrency(row.original.balance, row.original.currency);
 		}
 	},
 	{

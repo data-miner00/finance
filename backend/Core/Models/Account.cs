@@ -14,7 +14,7 @@ namespace Core.Models
 
         public decimal Balance { get; set; }
 
-        public string? Currency { get; set; }
+        public string Currency { get; set; }
 
         /// <summary>
         /// Optional target for total spend on this account within the current calendar year

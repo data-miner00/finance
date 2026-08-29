@@ -17,7 +17,9 @@ namespace WebApi.Models
 
         public decimal Balance { get; set; }
 
-        public string? Currency { get; set; }
+        [Required]
+        [RegularExpression("^[A-Z]{3}$", ErrorMessage = "Currency must be a 3-letter uppercase code (e.g. MYR).")]
+        public string Currency { get; set; }
 
         public decimal? AnnualSpendTarget { get; set; }
     }

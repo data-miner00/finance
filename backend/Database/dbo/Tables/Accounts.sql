@@ -4,6 +4,7 @@
     [Description] NVARCHAR (255)   NULL,
     [Type]        NVARCHAR (50)    NOT NULL,
     [Balance]     MONEY            CONSTRAINT [DF_Accounts_Balance] DEFAULT ((0.00)) NOT NULL,
+    [Currency]    NCHAR (3)        CONSTRAINT [DF_Accounts_Currency] DEFAULT ('MYR') NOT NULL,
     [AnnualSpendTarget] MONEY      NULL,
     [CreatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Accounts_CreatedAt] DEFAULT (getdate()) NOT NULL,
     [UpdatedAt]   DATETIME2 (7)    CONSTRAINT [DF_Accounts_UpdatedAt] DEFAULT (getdate()) NOT NULL,

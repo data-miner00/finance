@@ -26,6 +26,7 @@ namespace Core.Repositories
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Description", entity.Description);
             parameters.Add("Balance", entity.Balance);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("AnnualSpendTarget", entity.AnnualSpendTarget);
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -56,7 +57,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT [Id], [Name], [Description], [Type], [Balance], [AnnualSpendTarget], [CreatedAt], [UpdatedAt] FROM Accounts;");
+                "SELECT [Id], [Name], [Description], [Type], [Balance], [Currency], [AnnualSpendTarget], [CreatedAt], [UpdatedAt] FROM Accounts;");
 
             using var connection = this.connectionFactory.CreateConnection();
             var accounts = await connection.QueryAsync<AccountDto>(command);
@@ -73,7 +74,7 @@ namespace Core.Repositories
                 return null;
             }
 
-            var query = "SELECT [Id], [Name], [Description], [Type], [Balance], [AnnualSpendTarget], [CreatedAt], [UpdatedAt] FROM [dbo].[Accounts] WHERE [Id] = @Id;";
+            var query = "SELECT [Id], [Name], [Description], [Type], [Balance], [Currency], [AnnualSpendTarget], [CreatedAt], [UpdatedAt] FROM [dbo].[Accounts] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
             var accountDto = await connection.QueryFirstOrDefaultAsync<AccountDto>(query, new { Id = guid });
@@ -91,6 +92,7 @@ namespace Core.Repositories
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Balance", entity.Balance);
             parameters.Add("Description", entity.Description);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("AnnualSpendTarget", entity.AnnualSpendTarget);
 
             using var connection = this.connectionFactory.CreateConnection();

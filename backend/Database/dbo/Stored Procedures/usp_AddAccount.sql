@@ -1,4 +1,4 @@
-﻿-- =============================================
+-- =============================================
 -- Author:		<Author,,Name>
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
@@ -8,6 +8,7 @@ CREATE PROCEDURE [dbo].[usp_AddAccount]
 	@Type NVARCHAR(50),
 	@Description NVARCHAR(255) = NULL,
 	@Balance MONEY = 0.00,
+	@Currency NCHAR(3),
 	@AnnualSpendTarget MONEY = NULL
 AS
 BEGIN
@@ -20,6 +21,7 @@ BEGIN
 		[Type],
 		[Description],
 		[Balance],
+		[Currency],
 		[AnnualSpendTarget]
 	)
 	OUTPUT inserted.Id INTO @OutputTable
@@ -29,6 +31,7 @@ BEGIN
 		@Type,
 		@Description,
 		@Balance,
+		@Currency,
 		@AnnualSpendTarget
 	);
 
@@ -38,6 +41,7 @@ BEGIN
 		[Description],
 		[Type],
 		[Balance],
+		[Currency],
 		[AnnualSpendTarget],
 		[CreatedAt],
 		[UpdatedAt]
