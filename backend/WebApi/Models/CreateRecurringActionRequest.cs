@@ -17,6 +17,10 @@ namespace WebApi.Models
         [Range(typeof(decimal), "0.01", "79228162514264337593543950335", ErrorMessage = "Amount must be greater than 0.")]
         public decimal Amount { get; set; }
 
+        [Required]
+        [RegularExpression("^[A-Z]{3}$", ErrorMessage = "Currency must be a 3-letter uppercase code (e.g. MYR).")]
+        public string Currency { get; set; }
+
         public RecurringType Type { get; set; }
 
         public DateTime StartAt { get; set; }

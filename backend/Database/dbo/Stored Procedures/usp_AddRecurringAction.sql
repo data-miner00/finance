@@ -1,4 +1,4 @@
-﻿-- =============================================
+-- =============================================
 -- Author:		<Author,,Name>
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
@@ -6,6 +6,7 @@
 CREATE PROCEDURE [dbo].[usp_AddRecurringAction]
 	@Name NVARCHAR(50),
 	@Amount MONEY,
+	@Currency NCHAR(3),
 	@Type NVARCHAR(50),
 	@RecurringAt DATETIME2(7),
 	@StartAt DATETIME2(7),
@@ -22,6 +23,7 @@ BEGIN
 	(
 		[Name],
 		[Amount],
+		[Currency],
 		[Type],
 		[Description],
 		[RecurringAt],
@@ -35,6 +37,7 @@ BEGIN
 	(
 		@Name,
 		@Amount,
+		@Currency,
 		@Type,
 		@Description,
 		@RecurringAt,
@@ -51,6 +54,7 @@ BEGIN
 		[IsActive],
 		[Type],
 		[Amount],
+		[Currency],
 		[RecurringAt],
 		[StartAt],
 		[RecurrenceType],

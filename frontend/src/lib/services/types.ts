@@ -128,6 +128,7 @@ export interface RecurringAction extends EntityBase {
 	description?: string | null;
 	isActive: boolean;
 	amount: number;
+	currency: string;
 	recurringAt: string;
 	startAt: string;
 	recurrenceType: number;
@@ -142,6 +143,7 @@ export interface CreateRecurringActionRequest {
 	description?: string | null;
 	isActive: boolean;
 	amount: number;
+	currency: string;
 	startAt: string;
 	recurrenceType: number;
 	intervalValue: number;

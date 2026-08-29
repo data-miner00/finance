@@ -8,6 +8,7 @@
     [UpdatedAt]       DATETIME2 (7)    CONSTRAINT [DF_Recurrings_UpdatedAt] DEFAULT (getdate()) NOT NULL,
     [Type]            NVARCHAR (50)    NOT NULL,
     [Amount]          MONEY            NOT NULL DEFAULT (0.00),
+    [Currency]        NCHAR (3)        CONSTRAINT [DF_Recurrings_Currency] DEFAULT ('MYR') NOT NULL,
     [StartAt]         DATETIME2 (7)    NOT NULL,
     [RecurrenceType]  NVARCHAR (50)    CONSTRAINT [DF_Recurrings_RecurrenceType] DEFAULT ('Monthly') NOT NULL,
     [IntervalValue]   INT              CONSTRAINT [DF_Recurrings_IntervalValue] DEFAULT (1) NOT NULL,

@@ -16,6 +16,8 @@ namespace Core.Models
 
         public decimal Amount { get; set; }
 
+        public string Currency { get; set; }
+
         public DateTime RecurringAt { get; set; }
 
         public DateTime StartAt { get; set; }

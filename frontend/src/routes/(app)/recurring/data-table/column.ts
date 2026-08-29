@@ -1,5 +1,6 @@
 import type { ColumnDef } from '@tanstack/table-core';
 
+import { formatCurrency } from '$lib';
 import DataTableSortButton from '$lib/components/custom/table-common/data-table-sort-button.svelte';
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { RecurringAction } from '$lib/services/types';
@@ -35,7 +36,7 @@ export const columns: ColumnDef<RecurringAction>[] = [
 				title: 'Amount'
 			}),
 		cell: ({ row }) => {
-			return row.original.amount.toLocaleString('en-MY', { style: 'currency', currency: 'MYR' });
+			return formatCurrency(row.original.amount, row.original.currency);
 		}
 	},
 	{

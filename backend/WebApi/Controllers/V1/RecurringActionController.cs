@@ -138,6 +138,7 @@ namespace WebApi.Controllers.V1
                 Description = request.Description,
                 IsActive = request.IsActive,
                 Amount = request.Amount,
+                Currency = request.Currency,
                 RecurringAt = nextExecutionDate,
                 Type = request.Type,
                 StartAt = request.StartAt,
@@ -162,6 +163,7 @@ namespace WebApi.Controllers.V1
             recurringAction.Name = request.Name;
             recurringAction.Description = request.Description;
             recurringAction.Amount = request.Amount;
+            recurringAction.Currency = request.Currency;
             recurringAction.IsActive = request.IsActive;
             recurringAction.StartAt = request.StartAt;
             recurringAction.RecurrenceType = request.RecurrenceType;

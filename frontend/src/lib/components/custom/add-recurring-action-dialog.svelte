@@ -6,11 +6,13 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { createRecurringAction } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
 	let name = $state('');
 	let amount = $state(0);
+	let currency = $state(appState.settings.defaultCurrency);
 	let startAt = $state('');
 	let recurrenceType = $state(2);
 	let intervalValue = $state(1);
@@ -23,6 +25,7 @@
 			const response = await createRecurringAction({
 				name,
 				amount,
+				currency,
 				startAt,
 				recurrenceType,
 				intervalValue,
@@ -36,6 +39,7 @@
 			appState.openAddDialog = null;
 			name = '';
 			amount = 0;
+			currency = appState.settings.defaultCurrency;
 			startAt = '';
 			recurrenceType = 2;
 			intervalValue = 1;
@@ -84,6 +88,21 @@
 						step="0.01"
 						bind:value={amount}
 					/>
+				</div>
+				<div class="grid gap-3">
+					<Label for="currency-1">Currency</Label>
+					<Select.Root type="single" name="currency" bind:value={currency}>
+						<Select.Trigger id="currency-1" class="w-full">
+							{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+						</Select.Trigger>
+						<Select.Content>
+							{#each CURRENCIES as code (code)}
+								<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+									{CURRENCY_LABELS[code]}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="startAt-1">Start Date</Label>

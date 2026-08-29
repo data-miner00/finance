@@ -8,6 +8,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { CURRENCIES, CURRENCY_LABELS, type CurrencyCode } from '$lib/constants/currencies';
 	import { deleteRecurringAction, updateRecurringAction } from '$lib/services';
 	import { appState } from '$lib/states.svelte';
 
@@ -17,6 +18,7 @@
 	let isDeleteDialogOpen = $state(false);
 	let name = $state('');
 	let amount = $state(0);
+	let currency = $state(appState.settings.defaultCurrency);
 	let startAt = $state('');
 	let recurrenceType = $state(2);
 	let intervalValue = $state(1);
@@ -29,6 +31,7 @@
 		if (!item) return;
 		name = item.name;
 		amount = item.amount;
+		currency = item.currency;
 		startAt = item.startAt;
 		recurrenceType = item.recurrenceType;
 		intervalValue = item.intervalValue;
@@ -44,6 +47,7 @@
 			const updated = await updateRecurringAction(id, {
 				name,
 				amount,
+				currency,
 				startAt,
 				recurrenceType,
 				intervalValue,
@@ -89,6 +93,21 @@
 				<div class="grid gap-3">
 					<Label for="edit-amount">Amount</Label>
 					<Input id="edit-amount" name="amount" type="number" step="0.01" bind:value={amount} />
+				</div>
+				<div class="grid gap-3">
+					<Label for="edit-currency">Currency</Label>
+					<Select.Root type="single" name="currency" bind:value={currency}>
+						<Select.Trigger id="edit-currency" class="w-full">
+							{CURRENCY_LABELS[currency as CurrencyCode] ?? currency}
+						</Select.Trigger>
+						<Select.Content>
+							{#each CURRENCIES as code (code)}
+								<Select.Item value={code} label={CURRENCY_LABELS[code]}>
+									{CURRENCY_LABELS[code]}
+								</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
 				</div>
 				<div class="grid gap-3">
 					<Label for="edit-startAt">Start Date</Label>

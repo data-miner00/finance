@@ -17,6 +17,8 @@ namespace Core.Dtos
 
         public decimal Amount { get; set; }
 
+        public string Currency { get; set; }
+
         public DateTime RecurringAt { get; set; }
 
         public DateTime StartAt { get; set; }
@@ -39,6 +41,7 @@ namespace Core.Dtos
                 IsActive = IsActive,
                 Type = Enum.Parse<RecurringType>(Type),
                 Amount = Amount,
+                Currency = Currency,
                 RecurringAt = RecurringAt,
                 StartAt = StartAt,
                 RecurrenceType = Enum.Parse<RecurrenceType>(RecurrenceType),

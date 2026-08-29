@@ -60,6 +60,7 @@ public class RecurrentActionService : BackgroundService
                     {
                         Name = action.Name,
                         Amount = action.Amount,
+                        Currency = action.Currency,
                         Description = action.Description,
                         ActionedAt = occurrenceDate,
                     },
@@ -74,6 +75,7 @@ public class RecurrentActionService : BackgroundService
                     {
                         Name = action.Name,
                         Amount = action.Amount,
+                        Currency = action.Currency,
                         Description = action.Description,
                         ActionedAt = occurrenceDate,
                     },

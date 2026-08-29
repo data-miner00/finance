@@ -24,6 +24,7 @@ namespace Core.Repositories
             var parameters = new DynamicParameters();
             parameters.Add("Name", entity.Name);
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Description", entity.Description);
             parameters.Add("RecurringAt", entity.RecurringAt);
@@ -60,7 +61,7 @@ namespace Core.Repositories
             cancellationToken.ThrowIfCancellationRequested();
 
             var command = new CommandDefinition(
-                "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
+                "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [Currency], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
                 "FROM Recurrings;");
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -77,7 +78,7 @@ namespace Core.Repositories
                 return null;
             }
 
-            var query = "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
+            var query = "SELECT [Id], [Name], [Description], [IsActive], [Type], [Amount], [Currency], [RecurringAt], [StartAt], [RecurrenceType], [IntervalValue], [DayOfMonth], [LastExecutedAt], [CreatedAt], [UpdatedAt] " +
                 "FROM [dbo].[Recurrings] WHERE [Id] = @Id;";
 
             using var connection = this.connectionFactory.CreateConnection();
@@ -98,6 +99,7 @@ namespace Core.Repositories
             parameters.Add("RecurringAt", entity.RecurringAt);
             parameters.Add("Type", entity.Type.ToString());
             parameters.Add("Amount", entity.Amount);
+            parameters.Add("Currency", entity.Currency);
             parameters.Add("StartAt", entity.StartAt);
             parameters.Add("RecurrenceType", entity.RecurrenceType.ToString());
             parameters.Add("IntervalValue", entity.IntervalValue);
